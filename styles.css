@@ -1,0 +1,44 @@
+.titre {
+    margin: auto;
+    width: auto;
+    text-align: center;
+}
+
+#plateau {
+    margin: auto;
+    width: auto;
+    display: flex;
+}
+
+canvas {
+    border: 1px solid black;
+    background: rgb(213, 253, 186);
+}
+body {
+    background: lightblue;
+}
+
+.btnWhite {
+
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background: green;
+}
+
+.nbPieceB, .nbPieceW, .nbPairesB, .nbPairesW {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#reset {
+    display: flex;
+    margin: auto;
+}
+
+#cercle {
+    width: 15px;
+    height: 15px;
+    border-radius: 20px;
+    margin-right: 10px;
+}
