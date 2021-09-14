@@ -23,7 +23,7 @@
 
 </head>
 
-<body onload="draw();">
+<body onload="createBoard();">
     <div class="titre">
         <h1 class="display-1">Gomoku</h1>
     </div>
@@ -38,8 +38,10 @@
                 <div class="nbPieceW"> 0 </div> pièces blanches (<div class="nbPairesW"> 0 </div> paires).
         </div>
     </div>
-    <canvas id="plateau" onClick="getPosition(event)" width="760" height="760">
-    </canvas>
+    
+    <div id="zone">
+    </div>
+
     <button id="reset" type="button" class="btn btn-primary" onClick="reset()">Reset</button>
     <div style="margin: 20px; display: flex; justify-content: center;">
         <button id="random" type="button" class="btn btn-info" onClick="makeRandom(1)">Random</button>

@@ -10,21 +10,6 @@ for (var i = 0; i < 19; i++) {
     matrix[i] = new Array(19);
 }
 
-/*    function test () {
-    let ligne = 0;
-    let retour = 0;
-    for ( ;ligne <= 18; ligne++) {
-        for( let colone = 0 ; colone <= 18; colone++) {
-            if (matrix[ligne][colone] != undefined && matrix[ligne][colone] == "B" || matrix[ligne][colone] == "W") {
-               retour = checkWin(ligne, colone, matrix[ligne][colone])
-               if (retour == true) {
-                   return retour;
-               }
-            }
-        }
-    }
-}*/
-
 // *********** CAPTURE ************ //
 
 function capture(y, x, piece) {
@@ -59,6 +44,8 @@ function capture(y, x, piece) {
         if (nbCxp == 2) {
             matrix[y][x + 1] = null;
             matrix[y][x + 2] = null;
+            $('#col'+y+'-'+(x+1)+' .cercle').css('opacity', '0');
+            $('#col'+y+'-'+(x+2)+' .cercle').css('opacity', '0');
             console.log("delete x+");
         }
         isOk = false;
@@ -85,6 +72,8 @@ function capture(y, x, piece) {
         if (nbCxm == 2) {
             matrix[y][x - 1] = null;
             matrix[y][x - 2] = null;
+            $('#col'+y+'-'+(x-1)+' .cercle').css('opacity', '0');
+            $('#col'+y+'-'+(x-2)+' .cercle').css('opacity', '0');
             console.log("delete x-");
         }
         isOk = false;
@@ -112,6 +101,8 @@ function capture(y, x, piece) {
         if (nbCyp == 2) {
             matrix[y + 1][x] = null;
             matrix[y + 2][x] = null;
+            $('#col'+(y+1)+'-'+x+' .cercle').css('opacity', '0');
+            $('#col'+(y+2)+'-'+x+' .cercle').css('opacity', '0');
             console.log("delete y+");
         }
         isOk = false;
@@ -140,6 +131,8 @@ function capture(y, x, piece) {
         if (nbCym == 2) {
             matrix[y - 1][x] = null;
             matrix[y - 2][x] = null;
+            $('#col'+(y-1)+'-'+x+' .cercle').css('opacity', '0');
+            $('#col'+(y-2)+'-'+x+' .cercle').css('opacity', '0');
             console.log("delete y-");
         }
         isOk = false;
@@ -167,6 +160,8 @@ function capture(y, x, piece) {
         if (nbCD1p == 2) {
             matrix[y - 1][x + 1] = null;
             matrix[y - 2][x + 2] = null;
+            $('#col'+(y-1)+'-'+(x + 1)+' .cercle').css('opacity', '0');
+            $('#col'+(y-2)+'-'+(x + 2)+' .cercle').css('opacity', '0');
             console.log("delete -+");
         }
         isOk = false;
@@ -194,6 +189,8 @@ function capture(y, x, piece) {
         if (nbCD1m == 2) {
             matrix[y + 1][x - 1] = null;
             matrix[y + 2][x - 2] = null;
+            $('#col'+(y + 1)+'-'+(x - 1)+' .cercle').css('opacity', '0');
+            $('#col'+(y + 2)+'-'+(x - 2)+' .cercle').css('opacity', '0');
             console.log("delete +-");
         }
         isOk = false;
@@ -220,6 +217,8 @@ function capture(y, x, piece) {
         if (nbCD2p == 2) {
             matrix[y - 1][x - 1] = null;
             matrix[y - 2][x - 2] = null;
+            $('#col'+(y - 1)+'-'+(x - 1)+' .cercle').css('opacity', '0');
+            $('#col'+(y - 2)+'-'+(x - 2)+' .cercle').css('opacity', '0');
             console.log("delete --");
         }
         isOk = false;
@@ -246,6 +245,8 @@ function capture(y, x, piece) {
         if (nbCD2m == 2) {
             matrix[y + 1][x + 1] = null;
             matrix[y + 2][x + 2] = null;
+            $('#col'+(y + 1)+'-'+(x + 1)+' .cercle').css('opacity', '0');
+            $('#col'+(y + 2)+'-'+(x + 2)+' .cercle').css('opacity', '0');
             console.log("delete ++");
         }
         isOk = false;
@@ -277,28 +278,29 @@ function capture(y, x, piece) {
 // *********** PARSER ************ //
 
 function checkType(y, x, piece) {
-    if (matrix == undefined || matrix[y] == undefined || matrix[y][x] == undefined) {
-        return -1;
+    if (y >= 0 && y < 19  && y >= 0 && y < 19) {
+        if (matrix[y][x] && matrix[y][x] == piece) {
+            return 1;
+        }
+        else if (matrix[y][x] && matrix[y][x] == "" || matrix[y][x] == undefined) {
+            return 0;
+        }
+        else {
+            return 2;
+        }
     }
-    if (matrix[y][x] && matrix[y][x] == piece) {
-        return 1;
-    }
-    else if (matrix[y][x] && matrix[y][x] == "" || matrix[y][x] == undefined) {
-        return 0;
-    }
-    else {
-        return 2;
-    }
+    return -1;
 }
 
 function checkArround(y, x, piece, direction) {
+    console.log("etat du y= " +y)
     //direction = {vertical : 1, horizontal : 2, diagonale1 : 3, diagonale2: 4}
     if (checkType(y, x, piece) == 0) {
         return true;
     }
     if (direction != 1) {
-        /* console.log("d 1");
-         console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+"encore en bas il y a = "+matrix[y + 2][x])
+         console.log("d 1");
+        /* console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+"encore en bas il y a = "+matrix[y + 2][x])
          console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+" en h + 2 il y a = "+matrix[y - 2][x])*/
         if (checkType(y + 1, x, piece) == 1 && ((checkType(y + 2, x, piece) == 2 && checkType(y - 1, x, piece) == 0) || (checkType(y + 2, x, piece) == 0 && checkType(y - 1, x, piece) == 2))) {
             console.log("ca return vrai 1");
@@ -311,15 +313,15 @@ function checkArround(y, x, piece, direction) {
     }
     if (direction != 2) {
         console.log("d 2");
-        console.log("y = " + y + " x = " + x);
-        console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])
+       /* console.log("y = " + y + " x = " + x);
+        console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])*/
         if (checkType(y, x + 1, piece) == 1 && ((checkType(y, x + 2, piece) == 2 && checkType(y, x - 1, piece) == 0) || (checkType(y, x + 2, piece) == 0 && checkType(y, x - 1, piece) == 2))) {
-            console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])
+           // console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])
             console.log("ca return vrai 3");
             return true;
         }
         else if (checkType(y, x - 1, piece) == 1 && ((checkType(y, x - 2, piece) == 2 && checkType(y, x + 1, piece) == 0) || (checkType(y, x - 2, piece) == 0 && checkType(y, x + 1, piece) == 2))) {
-            console.log("a gauche il y a = " + matrix[y][x - 1] + "encore à gauche il y a = " + matrix[y][x - 2] + " et à droite il y a = " + matrix[y][x + 1])
+         //   console.log("a gauche il y a = " + matrix[y][x - 1] + "encore à gauche il y a = " + matrix[y][x - 2] + " et à droite il y a = " + matrix[y][x + 1])
             console.log("ca return vrai 4");
             return true;
         }
@@ -337,7 +339,6 @@ function checkArround(y, x, piece, direction) {
     }
     if (direction != 4) {
         console.log("d 4");
-        //  console.log("en h-gauche il y a = "+matrix[y - 1][x - 1]+" en b-droite il y a = "+matrix[y + 1][x + 1]+"encore en b-droite il y a = "+matrix[y - 2][ x - 2])
         if (checkType(y - 1, x - 1, piece) == 1 && ((checkType(y - 2, x - 2, piece) == 2 && checkType(y + 1, x + 1, piece) == 0) || (checkType(y - 2, x - 2, piece) == 0 && checkType(y + 1, x + 1, piece) == 2))) {
             console.log("ca return vrai 7");
             return true;
@@ -351,26 +352,31 @@ function checkArround(y, x, piece, direction) {
 }
 
 function checkLigne(y, x, piece, direction) {
+    console.log("etat du y ligne= " +y)
     let nbPiece = 0;
     let side1 = true;
     let side2 = true;
     if (direction == 1) {
-        console.log("test dir 1 - 1")
+        console.log("   test dir 1 - 1")
         for (let cpt = 1; cpt < 5; cpt++) {
-            console.log("test dir 1 - 2")
-            if (checkArround(y + cpt, x, piece, direction) == true && side1 == true) {
-                console.log("test dir 1 - 3")
-                side1 = false;
+            console.log("       test dir 1 - 2")
+            if (y + cpt < 19) {                
+                if (checkArround(y + cpt, x, piece, direction) == true && side1 == true) {
+                    console.log("           test dir 1 - 3")
+                    side1 = false;
+                }
+                else if (side1 == true) {
+                    nbPiece++;
+                }
             }
-            else if (side1 == true) {
-                nbPiece++;
-            }
-            if (checkArround(y - cpt, x, piece, direction) == true && side2 == true) {
-                console.log("test dir 1 - 4")
-                side2 = false;
-            }
-            else if (side2 == true) {
-                nbPiece++;
+            if (y - cpt >= 0) {
+                if (checkArround(y - cpt, x, piece, direction) == true && side2 == true) {
+                    console.log("           test dir 1 - 4")
+                    side2 = false;
+                }
+                else if (side2 == true) {
+                    nbPiece++;
+                }
             }
             console.log("nbPieces = " + nbPiece);
             if (side1 == false && side2 == false) {
@@ -391,19 +397,25 @@ function checkLigne(y, x, piece, direction) {
         console.log("test dir 2 - 1")
         for (let cpt = 1; cpt < 5; cpt++) {
             console.log("test dir 2 - 2")
-            if (checkArround(y, x + cpt, piece, direction) == true && side1 == true) {
-                console.log("test dir 2 - 3")
-                side1 = false;
+            if (x + cpt < 19) {
+                console.log(" ici c'est pas bon")
+                if (checkArround(y, x + cpt, piece, direction) == true && side1 == true) {
+                    console.log("test dir 2 - 3")
+                    side1 = false;
+                }
+                else if (side1 == true) {
+                    nbPiece++;
+                }
             }
-            else if (side1 == true) {
-                nbPiece++;
-            }
-            if (checkArround(y, x - cpt, piece, direction) == true && side2 == true) {
-                console.log("test dir 2 - 4")
-                side2 = false;
-            }
-            else if (side2 == true) {
-                nbPiece++;
+            if (x - cpt >= 0 ) {
+                console.log(" ici c'est bon")
+                if (checkArround(y, x - cpt, piece, direction) == true && side2 == true) {
+                    console.log("test dir 2 - 4")
+                    side2 = false;
+                }
+                else if (side2 == true) {
+                    nbPiece++;
+                }
             }
             if (side1 == false && side2 == false) {
                 if (nbPiece >= 4) {
@@ -420,17 +432,21 @@ function checkLigne(y, x, piece, direction) {
     }
     if (direction == 3) {
         for (let cpt = 1; cpt < 5; cpt++) {
-            if (checkArround(y - cpt, x + cpt, piece, direction) == true && side1 == true) {
-                side1 = false;
+            if (y - cpt >= 0 && x + cpt < 19) {
+                if (checkArround(y - cpt, x + cpt, piece, direction) == true && side1 == true) {
+                    side1 = false;
+                }
+                else if (side1 == true) {
+                    nbPiece++;
+                }
             }
-            else if (side1 == true) {
-                nbPiece++;
-            }
-            if (checkArround(y + cpt, x - cpt, piece, direction) == true && side2 == true) {
-                side2 = false;
-            }
-            else if (side2 == true) {
-                nbPiece++;
+            if (y + cpt < 19 && x - cpt >= 0) {
+                if (checkArround(y + cpt, x - cpt, piece, direction) == true && side2 == true) {
+                    side2 = false;
+                }
+                else if (side2 == true) {
+                    nbPiece++;
+                }
             }
             if (side1 == false && side2 == false) {
                 if (nbPiece >= 4) {
@@ -589,69 +605,6 @@ function printMatrice() {
     }
 }
 
-function draw() {
-    var canvas = document.getElementById('plateau');
-    if (canvas.getContext) {
-        var ctx = canvas.getContext('2d');
-        var x = 0;
-        var y = 0;
-        for (; x < 18; x++) {
-            y = 0;
-            ctx.strokeRect((y * 40) + 20, (x * 40) + 20, 40, 40);
-            for (; y < 18; y++) {
-                ctx.strokeRect((y * 40) + 20, (x * 40) + 20, 40, 40);
-            }
-        }
-    }
-}
-
-function drawMatrice(ctx) {
-    for (y = 0; y <= 18; y++) {
-        for (x = 0; x <= 18; x++) {
-            if (matrix[y][x] == "B" || matrix[y][x] == "W") {
-                ctx.beginPath(); //Start path
-                ctx.fillStyle = (matrix[y][x] == "W") ? "#ffffff" : "#000000";
-                var cercle = new Path2D();
-                cercle.moveTo((x * 40) + 20, (y * 40) + 20);
-                cercle.arc((x * 40) + 20, (y * 40) + 20, 10, 0, 2 * Math.PI);
-                ctx.fill(cercle);
-            }
-        }
-    }
-}
-
-function drawCoordinates(x, y, ctx) {
-    var piece = (player) ? "W" : "B";
-    x = x - 20;
-    y = y - 20;
-    console.log("x = " + x + " y= " + y);
-
-    if ((x % 40 <= 15 || x % 40 >= 25) && (y % 40 <= 15 || y % 40 >= 25)) {
-        var xFake = x - ((x % 40 <= 15) ? x % 40 : x % 40 - 40);
-        var yFake = y - ((y % 40 <= 15) ? y % 40 : y % 40 - 40);
-        if (matrix[(yFake / 40)][(xFake / 40)] == null) {
-            matrix[(yFake / 40)][(xFake / 40)] = piece;
-            console.log(matrix);
-            capture(yFake / 40, xFake / 40, piece);
-            drawMatrice(ctx);
-            result = checkWin(yFake / 40, xFake / 40, piece); //test();
-            player = !player;
-
-            if (player) {
-                $('#white').addClass("isSelected");
-                $('#black').removeClass('isSelected');
-                $('#black').css('animation', '');
-            } else {
-                $('#black').addClass("isSelected");
-                $('#white').removeClass('isSelected');
-                $('#white').css('animation', '');
-            }
-            $('.isSelected').css('animation', 'isSelected 2s ease-out infinite');
-            return true;
-        }
-    }
-    drawMatrice(ctx);
-}
 
 // MOVE GENERATOR
 
@@ -702,28 +655,71 @@ function makeRandomNb(nb) {
 
 // GET POSITION
 
-function getPosition(event) {
-    console.log(event);
-    var canvas = document.getElementById("plateau")
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, 760, 760);
-    draw();
-    ctx.save();
-    var rect = canvas.getBoundingClientRect();
-    var x = event.clientX - rect.left; // x == the location of the click in the document - the location (relative to the left) of the canvas in the document
-    var y = event.clientY - rect.top; // y == the location of the click in the document - the location (relative to the top) of the canvas in the document
+
+function drawMatrice(y, x, piece) {
+    var color = piece == 'B' ? 'black' : 'white';
+    console.log('draw ?');
+    $('#col'+y+'-'+x+' .cercle').css('background-color', color).css('opacity', '1').css('position', 'relative');
+}
+
+function drawCoordinates(y, x) {
+    var piece = (player) ? "W" : "B";
     console.log("x = " + x + " y= " + y);
-    // This method will handle the coordinates and will draw them in the canvas.
-    drawCoordinates(x, y, ctx);
+
+
+    if (matrix[y][x] == null) {
+        matrix[y][x] = piece;
+        console.log(matrix);
+        capture(y, x, piece);
+        drawMatrice(y, x, piece);
+        result = checkWin(y, x, piece); //test();
+        player = !player;
+
+        if (player) {
+            $('#white').addClass("isSelected");
+            $('#black').removeClass('isSelected');
+            $('#black').css('animation', '');
+        } else {
+            $('#black').addClass("isSelected");
+            $('#white').removeClass('isSelected');
+            $('#white').css('animation', '');
+        }
+        $('.isSelected').css('animation', 'isSelected 2s ease-out infinite');
+        return true;
+    }
+    
+    //drawMatrice(y, x, piece);
+}
+
+function getPosition(event, x , y) {
+    console.log(event);
+    console.log(x, y);
+   // draw();
+    drawCoordinates(x, y);
     if (result == true) {
         setTimeout(function () {
             alert("Le joueur " + ((!player) ? "blanc" : "noir") + " a gagné !")
             $('#reset').click();
         }, 50)
     }
-    //printMatrice();
 }
 
 function reset() {
     document.location.reload();
+}
+
+
+/// x = vers droite
+
+/// y = vers bas
+
+function createBoard() {
+    $('#zone').html('<table id="board"></table>')
+    for (var y = 0; y < 19; y++ ) {
+        $('#board').append('<tr id="line'+y+'">')
+        for (var x = 0; x < 19; x++ ) {
+            $('#line'+y).append('<td id="col'+y+'-'+x+'"><div onClick="getPosition(event,'+y+','+x+')" class="cercle"></div></td>')
+        }
+    }
+  $('td .cercle').css('opacity', '0');
 }
