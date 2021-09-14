@@ -3,7 +3,7 @@
     transform: scale(1, 1);
     }
     50% {
-    transform: scale(1.5, 1.5);
+    transform: scale(2, 2);
     }
     100% {
     transform: scale(1, 1);
@@ -19,9 +19,24 @@
     margin: auto;
     width: auto;
     text-align: center;
+    vertical-align: middle;
+    text-align: center;
+    padding: 25px;
+    display: flex;
+    justify-content: center;
+    background-color: #b8cbdc;
+    vertical-align: middle;
 }
 
+.lead {
+    font-size: 18px !important;
+}
 
+@media (min-width: 768px) {
+    .lead {
+        font-size: 18px;
+    }
+}
 
 #plateau {
     margin: auto;
@@ -34,7 +49,7 @@ canvas {
     background: rgb(213, 253, 186);
 }
 body {
-    background: lightblue;
+    background: rgb(126, 120, 120) !important;
 }
 
 .btnWhite {
