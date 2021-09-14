@@ -1,4 +1,7 @@
 
+$( document ).ready(function() {
+    createBoard();
+});
 
 var player = true;
 var result = false;
@@ -592,6 +595,7 @@ function checkWin(y, x, piece) {
         }
         if (ret != true) {
             console.log("ligne compelete");
+            
             return true;
         }
     }
@@ -709,9 +713,6 @@ function reset() {
 }
 
 
-/// x = vers droite
-
-/// y = vers bas
 
 function createBoard() {
     $('#zone').html('<table id="board"></table>')
@@ -721,5 +722,9 @@ function createBoard() {
             $('#line'+y).append('<td id="col'+y+'-'+x+'"><div onClick="getPosition(event,'+y+','+x+')" class="cercle"></div></td>')
         }
     }
-  $('td .cercle').css('opacity', '0');
+    $('td .cercle').css('opacity', '0');
 }
+
+/// x = vers droite
+
+/// y = vers bas
