@@ -785,7 +785,7 @@ function checkDoubleFreeThree(y, x, piece) {
         console.log(tab);
         total = tab.left + tab.right + tab.top + tab.topRight + tab.topLeft + tab.bot + tab.botLeft + tab.botRight;
         console.log("total = "+total);
-        if (doubleFree != 0 && doubleFree % 2 == 0) {
+        if (doubleFree >= 2) {
             console.log('doubleFree')
             return true;
         }
@@ -853,8 +853,6 @@ function drawMatrice(y, x, piece) {
         marginTop: '-33px',
         marginLeft: '-13px'
     }, 'fast');
-    
-   // .css('background-color', color).css('opacity', '1').css('position', 'relative');
 }
 
 function drawCoordinates(y, x) {
@@ -864,7 +862,7 @@ function drawCoordinates(y, x) {
 
     if (matrix[y][x] == null) {
         if (checkDoubleFreeThree(y, x, piece)) {
-            $('#zone').append('<div class="alert alert-success" role="alert">Double 3 libres : Coup interdit !</div>');
+            $('#zone').prepend('<div class="alert alert-danger" role="alert">Double 3 libres : Coup interdit !</div>');
             setTimeout(function() {
                 $('.alert').remove();
             }, 3000);
@@ -875,7 +873,7 @@ function drawCoordinates(y, x) {
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         result = checkWin(y, x, piece); //test();
-        player = !player;
+      /* player = !player;*/
 
         if (player) {
             $('#white').addClass("isSelected");
