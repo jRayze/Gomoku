@@ -657,7 +657,7 @@ function checkPiece(y, x, piece) {
             return -1
         }
     }
-    return -1;
+    return 0;
 }
 
 function checkDoubleFreeThree(y, x, piece) {
