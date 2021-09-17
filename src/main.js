@@ -3,7 +3,8 @@ $( document ).ready(function() {
     createBoard();
 });
 
-var player = true;
+
+var player = false;
 var result = false;
 var nbPionW = 0;
 var nbPionB = 0;
@@ -47,8 +48,9 @@ function capture(y, x, piece) {
         if (nbCxp == 2) {
             matrix[y][x + 1] = null;
             matrix[y][x + 2] = null;
-            $('#col'+y+'-'+(x+1)+' .cercle').css('opacity', '0');
-            $('#col'+y+'-'+(x+2)+' .cercle').css('opacity', '0');
+            $('#col'+y+'-'+(x + 1)+' .cercle, #col'+y+'-'+(x + 2)+' .cercle').animate({
+                opacity: '0',
+            }, 'slow');
             console.log("delete x+");
         }
         isOk = false;
@@ -75,8 +77,9 @@ function capture(y, x, piece) {
         if (nbCxm == 2) {
             matrix[y][x - 1] = null;
             matrix[y][x - 2] = null;
-            $('#col'+y+'-'+(x-1)+' .cercle').css('opacity', '0');
-            $('#col'+y+'-'+(x-2)+' .cercle').css('opacity', '0');
+            $('#col'+y+'-'+(x - 1)+' .cercle , #col'+y+'-'+(x - 2)+' .cercle').animate({
+                opacity: '0',
+            }, 'fast');
             console.log("delete x-");
         }
         isOk = false;
@@ -104,8 +107,10 @@ function capture(y, x, piece) {
         if (nbCyp == 2) {
             matrix[y + 1][x] = null;
             matrix[y + 2][x] = null;
-            $('#col'+(y+1)+'-'+x+' .cercle').css('opacity', '0');
-            $('#col'+(y+2)+'-'+x+' .cercle').css('opacity', '0');
+            $('#col'+(y + 1)+'-'+x+' .cercle, #col'+(y + 2)+'-'+x+' .cercle').animate({
+                opacity: '0',
+            }, 'slow');
+            
             console.log("delete y+");
         }
         isOk = false;
@@ -134,8 +139,9 @@ function capture(y, x, piece) {
         if (nbCym == 2) {
             matrix[y - 1][x] = null;
             matrix[y - 2][x] = null;
-            $('#col'+(y-1)+'-'+x+' .cercle').css('opacity', '0');
-            $('#col'+(y-2)+'-'+x+' .cercle').css('opacity', '0');
+            $('#col'+(y - 1)+'-'+x+' .cercle, #col'+(y - 2)+'-'+x+' .cercle').animate({
+                opacity: '0',
+            }, 'slow');
             console.log("delete y-");
         }
         isOk = false;
@@ -163,8 +169,9 @@ function capture(y, x, piece) {
         if (nbCD1p == 2) {
             matrix[y - 1][x + 1] = null;
             matrix[y - 2][x + 2] = null;
-            $('#col'+(y-1)+'-'+(x + 1)+' .cercle').css('opacity', '0');
-            $('#col'+(y-2)+'-'+(x + 2)+' .cercle').css('opacity', '0');
+            $('#col'+(y - 1)+'-'+(x + 1)+' .cercle, #col'+(y - 2)+'-'+(x + 2)+' .cercle').animate({
+                opacity: '0',
+            }, 'slow');
             console.log("delete -+");
         }
         isOk = false;
@@ -192,8 +199,9 @@ function capture(y, x, piece) {
         if (nbCD1m == 2) {
             matrix[y + 1][x - 1] = null;
             matrix[y + 2][x - 2] = null;
-            $('#col'+(y + 1)+'-'+(x - 1)+' .cercle').css('opacity', '0');
-            $('#col'+(y + 2)+'-'+(x - 2)+' .cercle').css('opacity', '0');
+            $('#col'+(y + 1)+'-'+(x - 1)+' .cercle, #col'+(y + 2)+'-'+(x - 2)+' .cercle').animate({
+                opacity: '0',
+            }, 'slow');
             console.log("delete +-");
         }
         isOk = false;
@@ -220,8 +228,9 @@ function capture(y, x, piece) {
         if (nbCD2p == 2) {
             matrix[y - 1][x - 1] = null;
             matrix[y - 2][x - 2] = null;
-            $('#col'+(y - 1)+'-'+(x - 1)+' .cercle').css('opacity', '0');
-            $('#col'+(y - 2)+'-'+(x - 2)+' .cercle').css('opacity', '0');
+            $('#col'+(y - 1)+'-'+(x - 1)+' .cercle, #col'+(y - 2)+'-'+(x - 2)+' .cercle').animate({
+                opacity: '0',
+            }, 'slow');
             console.log("delete --");
         }
         isOk = false;
@@ -248,8 +257,9 @@ function capture(y, x, piece) {
         if (nbCD2m == 2) {
             matrix[y + 1][x + 1] = null;
             matrix[y + 2][x + 2] = null;
-            $('#col'+(y + 1)+'-'+(x + 1)+' .cercle').css('opacity', '0');
-            $('#col'+(y + 2)+'-'+(x + 2)+' .cercle').css('opacity', '0');
+            $('#col'+(y + 1)+'-'+(x + 1)+' .cercle, #col'+(y + 2)+'-'+(x + 2)+' .cercle').animate({
+                opacity: '0',
+            }, 'slow');
             console.log("delete ++");
         }
         isOk = false;
@@ -601,6 +611,190 @@ function checkWin(y, x, piece) {
     }
 }
 
+
+function topCheck(x, y, type) {
+
+}
+
+function topLeftCheck() {
+    
+}
+function topRightCheck() {
+    
+}
+
+function botCheck() {
+
+}
+function botLeftCheck() {
+    
+}
+function botRightCheck() {
+    
+}
+
+function leftCheck() {
+
+}
+
+function rightCheck() {
+
+}
+
+
+
+function checkDoubleFreeThreeDirection(y, x, piece, dir, type) {
+    
+}
+
+function checkPiece(y, x, piece) {
+    if (y >= 0 && y <= 18 && x >= 0 && x <= 18) {
+        if (matrix[y][x] == piece) {
+            return 1;
+        } else if (matrix[y][x] == '' || matrix[y][x] == null) {
+            return 0
+        } else {
+            return -1
+        }
+    }
+    return -1;
+}
+
+function checkDoubleFreeThree(y, x, piece) {
+
+    let state = new Array();
+
+    let tab = { top : 0, bot : 0, left : 0, right : 0, topLeft : 0, topRight : 0, botLeft : 0, botRight : 0 }
+
+    var doubleFree = 0;
+    var total = 0;
+    let type = -1; // 0 = ooo - ooo / 1 = ooo - oo o / 2 =oo o - oo o
+
+    
+    for (let cpt = 1; cpt <= 4; cpt++ ) {
+        // check toutes les directions 
+        tab.left += checkPiece(y, x - cpt, piece);
+        tab.right += checkPiece(y, x + cpt, piece);
+        tab.top += checkPiece(y - cpt, x, piece);
+        tab.bot += checkPiece(y + cpt, x, piece);
+        tab.topLeft += checkPiece(y - cpt, x - cpt, piece);
+        tab.topRight += checkPiece(y - cpt, x + cpt, piece);
+        tab.botLeft += checkPiece(y + cpt, x - cpt, piece);
+        tab.botRight += checkPiece(y + cpt, x + cpt, piece);
+
+       if (cpt <= 2 ) {
+            if (cpt == 2 && ((tab.left + tab.right) == 4 || (tab.top + tab.bot) == 4 
+                || (tab.topLeft + tab.botRight) == 4 || (tab.topRight + tab.botLeft) == 4)) {
+                console.log("3 libres impossible");
+                state[cpt - 1] = Object.assign({}, tab);
+                break;
+            }
+            if (cpt == 2 && (tab.left + tab.right) == 2 && (state[0].left + state[0].right) == 2)
+                doubleFree++;
+            if (cpt == 2 && (tab.top + tab.bot) == 2 && (state[0].top + state[0].bot) == 2)
+                doubleFree++;
+            if (cpt == 2 && (tab.topLeft + tab.botRight) == 2 && (state[0].topLeft + state[0].botRight) == 2)
+                doubleFree++;
+            if (cpt == 2 && (tab.topRight + tab.botLeft) == 2 && (state[0].topRight + state[0].botLeft) == 2)
+                doubleFree++;
+
+            if (cpt == 2 && ((tab.left + tab.right) == 3 || (tab.top + tab.bot) == 3 
+                || (tab.topLeft + tab.botRight) == 3 || (tab.topRight + tab.botLeft) == 3)) {
+                console.log("here ?")
+                if ((tab.left == 1 && tab.right == 2 && (checkPiece(y, x - 1, piece) == 1)) 
+                    || (tab.left == 2 && tab.right == 1 && (checkPiece(y, x + 1, piece) == 1))) {
+                    console.log("3 libres impossible");
+                    state[cpt - 1] = Object.assign({}, tab);
+                    break;
+                }
+                if ((tab.top == 1 && tab.bot == 2 && (checkPiece(y - 1, x, piece) == 1)) 
+                    || (tab.top == 2 && tab.bot == 1 && (checkPiece(y + 1, x, piece) == 1))) {
+                    console.log("3 libres impossible");
+                    state[cpt - 1] = Object.assign({}, tab);                     
+                    break;
+                }
+                if ((tab.topLeft == 1 && tab.botRight == 2 && (checkPiece(y - 1, x - 1, piece) == 1)) 
+                    || (tab.topLeft == 2 && tab.botRight == 1 && (checkPiece(y + 1, x + 1, piece) == 1))) {
+                    console.log("3 libres impossible");
+                    state[cpt - 1] = Object.assign({}, tab);
+                    break;
+                }
+                if ((tab.topRight == 1 && tab.botLeft == 2 && (checkPiece(y - 1, x + 1, piece) == 1)) 
+                    || (tab.topRight == 2 && tab.botLeft == 1 && (checkPiece(y + 1, x - 1, piece) == 1))) {
+                    console.log("3 libres impossible");
+                    state[cpt - 1] = Object.assign({}, tab);
+                    break;
+                }
+            }
+            console.log("3 libres possible");
+        }
+        if (cpt > 2) {
+           /* if (((tab.left + tab.right) >= 5 || (tab.top + tab.bot) >= 5
+                || (tab.topLeft + tab.botRight) >= 5 || (tab.topRight + tab.botLeft) >= 5)) {
+                let cpt = 0;
+                cpt += (tab.left + tab.right) >= 5 ? 0 : 1;
+                console.log('trop de piece sur une meme ligne on peut pas faire de double 3')
+                break;
+            }*/
+            if (cpt == 3 && ((tab.left + tab.right) <= 1 && (tab.top + tab.bot) <= 1
+                && (tab.topLeft + tab.botRight) <= 1 && (tab.topRight + tab.botLeft) <= 1)) {
+                console.log("3 libres impossible");
+                state[cpt - 1] = Object.assign({}, tab);
+                break;
+            }
+            if (cpt == 3 && ((tab.left + tab.right) == 2 || (tab.top + tab.bot) == 2
+                || (tab.topLeft + tab.botRight) == 2 || (tab.topRight + tab.botLeft) == 2)) {
+                console.log("test1");
+                if (cpt == 3 && (tab.left + tab.right) == 2 && (state[1].left == tab.left && state[1].right == tab.right) 
+                    && (state[0].left + state[0].right) == 1)
+                    doubleFree++;
+                if (cpt == 3 && (tab.top + tab.bot) == 2 && (state[1].top == tab.top && state[1].bot == tab.bot) 
+                    && (state[0].top + state[0].bot) == 1)
+                    doubleFree++;
+                if (cpt == 3 && (tab.topLeft + tab.botRight) == 2 
+                    && (state[1].topLeft == tab.topLeft && state[1].botRight == tab.botRight) 
+                        && (state[0].topLeft + state[0].botRight) == 1)
+                    doubleFree++;
+                if (cpt == 3 && (tab.topRight + tab.botLeft) == 2 
+                    && (state[1].topRight == tab.topRight && state[1].botLeft == tab.botLeft)
+                        && (state[0].topRight + state[0].botLeft) == 1)
+                    doubleFree++;
+            }
+            if (cpt == 4 && ((tab.left + tab.right) == 2 || (tab.top + tab.bot) == 2 
+                || (tab.topLeft + tab.botRight) == 2 || (tab.topRight + tab.botLeft) == 2)) {
+                console.log('test 3 3');
+                if (cpt == 4 && (tab.left + tab.right) == 2 && (state[2].left == tab.left && state[2].right == tab.right) 
+                    && (state[1].left + state[1].right) == 1)
+                    doubleFree++;
+                if (cpt == 4 && (tab.top + tab.bot) == 2 && (state[2].top == tab.top && state[2].bot == tab.bot) 
+                    && (state[1].top + state[1].bot) == 1)
+                    doubleFree++;
+                if (cpt == 4 && (tab.topLeft + tab.botRight) == 2 
+                    && (state[2].topLeft == tab.topLeft && state[2].botRight == tab.botRight) 
+                        && (state[1].topLeft + state[1].botRight) == 1)
+                    doubleFree++;
+                if (cpt == 4 && (tab.topRight + tab.botLeft) == 2 
+                    && (state[2].topRight == tab.topRight && state[2].botLeft == tab.botLeft)
+                        && (state[1].topRight + state[1].botLeft) == 1)
+                    doubleFree++;
+                    //alert('double free');0
+            }
+        }
+        state[cpt - 1] = Object.assign({}, tab);
+        console.log("doubleFree = "+doubleFree)
+        console.log(tab);
+        total = tab.left + tab.right + tab.top + tab.topRight + tab.topLeft + tab.bot + tab.botLeft + tab.botRight;
+        console.log("total = "+total);
+        if (doubleFree != 0 && doubleFree % 2 == 0) {
+            console.log('doubleFree')
+            return true;
+        }
+    }
+    console.log(state);
+    return false;
+}
+
+
 // *********** DRAW ************ //
 
 function printMatrice() {
@@ -619,25 +813,10 @@ function getRandomIntInclusive(min, max) {
 }
 
 function makeRandom() {
-    var rx = (getRandomIntInclusive(0, 18) * 40) + 20;
-    var ry = (getRandomIntInclusive(0, 18) * 40) + 20;
+    var x = getRandomIntInclusive(0, 18);
+    var y = getRandomIntInclusive(0, 18);
 
-    console.log("rx = " + rx);
-    console.log("ry = " + ry);
-    var canvas = document.getElementById("plateau")
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, 760, 760);
-    draw();
-    ctx.save();
-    var rect = canvas.getBoundingClientRect();
-    drawCoordinates(rx, ry, ctx);
-    if (result == true) {
-        setTimeout(function () {
-            alert("Le joueur " + ((!player) ? "blanc" : "noir") + " a gagné !")
-            $('#reset').click();
-        }, 50)
-    }
-
+    getPosition(x, y);
 }
 
 function makeRandomNb(nb) {
@@ -663,7 +842,19 @@ function makeRandomNb(nb) {
 function drawMatrice(y, x, piece) {
     var color = piece == 'B' ? 'black' : 'white';
     console.log('draw ?');
-    $('#col'+y+'-'+x+' .cercle').css('background-color', color).css('opacity', '1').css('position', 'relative');
+    $('#col'+y+'-'+x+' .cercle').css('background-color', color).css('position', 'relative')
+        .css('opacity', '1').css('width', '40px').css('height', '40px')
+            .css('border-radius', '30px').css('margin-top', '-40px').css('margin-left', '-20px')
+
+    $('#col'+y+'-'+x+' .cercle').animate({
+        width: '26px',
+        height: '26px',
+        borderRadius: '20px',
+        marginTop: '-33px',
+        marginLeft: '-13px'
+    }, 'fast');
+    
+   // .css('background-color', color).css('opacity', '1').css('position', 'relative');
 }
 
 function drawCoordinates(y, x) {
@@ -672,6 +863,13 @@ function drawCoordinates(y, x) {
 
 
     if (matrix[y][x] == null) {
+        if (checkDoubleFreeThree(y, x, piece)) {
+            $('#zone').append('<div class="alert alert-success" role="alert">Double 3 libres : Coup interdit !</div>');
+            setTimeout(function() {
+                $('.alert').remove();
+            }, 3000);
+            return false;
+        }
         matrix[y][x] = piece;
         console.log(matrix);
         capture(y, x, piece);
@@ -691,14 +889,10 @@ function drawCoordinates(y, x) {
         $('.isSelected').css('animation', 'isSelected 2s ease-out infinite');
         return true;
     }
-    
-    //drawMatrice(y, x, piece);
 }
 
-function getPosition(event, x , y) {
-    console.log(event);
+function getPosition(x , y) {
     console.log(x, y);
-   // draw();
     drawCoordinates(x, y);
     if (result == true) {
         setTimeout(function () {
@@ -709,7 +903,22 @@ function getPosition(event, x , y) {
 }
 
 function reset() {
-    document.location.reload();
+    newMatrix = []
+    for (var i = 0; i < 19; i++) {
+        newMatrix[i] = new Array(19);
+    }
+    matrix = newMatrix;
+    nbPionW = 0;
+    nbPionB = 0;
+    player = false;
+    $('#black').addClass("isSelected");
+    $('#white').removeClass('isSelected');
+    $('#white').css('animation', '');
+    $('.nbPieceB').html(nbPionB);
+    $('.nbPairesB').html(nbPionB);
+    $('.nbPieceW').html(nbPionW);
+    $('.nbPairesW').html(nbPionW);
+    createBoard()
 }
 
 
@@ -719,12 +928,12 @@ function createBoard() {
     for (var y = 0; y < 19; y++ ) {
         $('#board').append('<tr id="line'+y+'">')
         for (var x = 0; x < 19; x++ ) {
-            $('#line'+y).append('<td id="col'+y+'-'+x+'"><div onClick="getPosition(event,'+y+','+x+')" class="cercle"></div></td>')
+            $('#line'+y).append('<td id="col'+y+'-'+x+'"><div onClick="getPosition('+y+','+x+')" class="cercle"></div></td>')
         }
     }
     $('td .cercle').css('opacity', '0');
 }
 
-/// x = vers droite
+/// x = vers droite 
 
-/// y = vers bas
+/// y = vers bas 
