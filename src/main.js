@@ -736,30 +736,47 @@ function checkDoubleFreeThree(y, x, piece) {
                 console.log('trop de piece sur une meme ligne on peut pas faire de double 3')
                 break;
             }*/
-            if (cpt == 3 && ((tab.left + tab.right) <= 1 && (tab.top + tab.bot) <= 1
-                && (tab.topLeft + tab.botRight) <= 1 && (tab.topRight + tab.botLeft) <= 1)) {
-                console.log("3 libres impossible");
-                state[cpt - 1] = Object.assign({}, tab);
-                break;
+            if (cpt == 3) {
+                if ((tab.left + tab.right) <= 1 && (tab.top + tab.bot) <= 1
+                    && (tab.topLeft + tab.botRight) <= 1 && (tab.topRight + tab.botLeft) <= 1) {
+                    console.log("3 libres impossible");
+                    state[cpt - 1] = Object.assign({}, tab);
+                    break;
+                }
+                if ((tab.left + tab.right) >= 3 && ((state[0].left == 0 && tab.right == 2) || (state[0].right == 0 && tab.left == 2)))
+                    doubleFree++;
+                if ((tab.top + tab.bot) >= 3 && ((state[0].top == 0 && tab.bot == 2) || (state[0].bot == 0 && tab.top == 2)))
+                    doubleFree++;
+                if ((tab.topLeft + tab.botRight) >= 3 && ((state[0].topLeft == 0 && tab.botRight == 2) || (state[0].botRight == 0 && tab.topLeft == 2)))
+                    doubleFree++;
+                if ((tab.topRight + tab.botLeft) >= 3 && ((state[0].topRight == 0 && tab.botLeft == 2) || (state[0].botLeft == 0 && tab.topRight == 2)))
+                    doubleFree++;
+                /*if (tab.left + tab.right) == 3){
+
+                }*/
+
+                if (((tab.left + tab.right) == 2 || (tab.top + tab.bot) == 2
+                    || (tab.topLeft + tab.botRight) == 2 || (tab.topRight + tab.botLeft) == 2)) {
+                    console.log("test1");
+                    if ((tab.left + tab.right) == 2 && (state[1].left == tab.left && state[1].right == tab.right) 
+                        && (state[0].left + state[0].right) == 1)
+                        doubleFree++;
+                    if ((tab.top + tab.bot) == 2 && (state[1].top == tab.top && state[1].bot == tab.bot) 
+                        && (state[0].top + state[0].bot) == 1)
+                        doubleFree++;
+                    if ((tab.topLeft + tab.botRight) == 2 
+                        && (state[1].topLeft == tab.topLeft && state[1].botRight == tab.botRight) 
+                            && (state[0].topLeft + state[0].botRight) == 1)
+                        doubleFree++;
+                    if ((tab.topRight + tab.botLeft) == 2 
+                        && (state[1].topRight == tab.topRight && state[1].botLeft == tab.botLeft)
+                            && (state[0].topRight + state[0].botLeft) == 1)
+                        doubleFree++;
+                }
             }
-            if (cpt == 3 && ((tab.left + tab.right) == 2 || (tab.top + tab.bot) == 2
-                || (tab.topLeft + tab.botRight) == 2 || (tab.topRight + tab.botLeft) == 2)) {
-                console.log("test1");
-                if (cpt == 3 && (tab.left + tab.right) == 2 && (state[1].left == tab.left && state[1].right == tab.right) 
-                    && (state[0].left + state[0].right) == 1)
-                    doubleFree++;
-                if (cpt == 3 && (tab.top + tab.bot) == 2 && (state[1].top == tab.top && state[1].bot == tab.bot) 
-                    && (state[0].top + state[0].bot) == 1)
-                    doubleFree++;
-                if (cpt == 3 && (tab.topLeft + tab.botRight) == 2 
-                    && (state[1].topLeft == tab.topLeft && state[1].botRight == tab.botRight) 
-                        && (state[0].topLeft + state[0].botRight) == 1)
-                    doubleFree++;
-                if (cpt == 3 && (tab.topRight + tab.botLeft) == 2 
-                    && (state[1].topRight == tab.topRight && state[1].botLeft == tab.botLeft)
-                        && (state[0].topRight + state[0].botLeft) == 1)
-                    doubleFree++;
-            }
+            ////////////
+            ////////////
+
             if (cpt == 4 && ((tab.left + tab.right) == 2 || (tab.top + tab.bot) == 2 
                 || (tab.topLeft + tab.botRight) == 2 || (tab.topRight + tab.botLeft) == 2)) {
                 console.log('test 3 3');
@@ -873,7 +890,7 @@ function drawCoordinates(y, x) {
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         result = checkWin(y, x, piece); //test();
-      /* player = !player;*/
+        player = !player;
 
         if (player) {
             $('#white').addClass("isSelected");
