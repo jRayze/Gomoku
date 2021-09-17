@@ -612,40 +612,158 @@ function checkWin(y, x, piece) {
 }
 
 
-function topCheck(x, y, type) {
+function checkDFTD(y, x, piece, dir) {
 
+    if (dir == 0) {
+        let ret = checkPiece(y, x + 1, piece)
+        let ret2 = checkPiece(y, x + 2, piece)
+        let ret3 = checkPiece(y, x + 3, piece)
+        let ret4 = checkPiece(y, x + 4, piece)
+        let oret = checkPiece(y, x - 1, piece)
+        let oret2 = checkPiece(y, x - 2, piece)
+        let oret3 = checkPiece(y, x - 3, piece)
+        let oret4 = checkPiece(y, x - 4, piece)
+
+        if (ret < 0)
+            return 0;
+        if (ret == 1) {
+            if (ret2 == 1) {
+                if (ret3 == 0 && oret == 0)
+                    return 1;
+            }
+            else if (ret2 == 0) {
+                if ((oret == 1 && oret2 == 0) || (ret3 == 1 && ret4 == 0 && oret == 0 )
+                    ||( oret == 0 && oret2 == 1 && oret3 == 0))
+                    return 1;
+            }
+        }
+        if (ret == 0) {
+            if (ret2 == 1) {
+                if ((ret3 == 0 && oret == 1 && oret2 == 0) || ret3 == 1 && ret4 == 0 && oret == 0)
+                    return 1;
+            }
+            if (oret == 1) {
+                if ((oret2 == 0 && oret3 == 1 && oret4 == 0) || oret2 == 1 && oret3 == 0)
+                    return 1
+            }
+            if (oret == 0 && oret2 == 1 && oret3 == 1 && oret4 == 0) 
+                return 1
+        }
+    }
+
+    if (dir == 1) {
+        let ret = checkPiece(y + 1, x, piece)
+        let ret2 = checkPiece(y + 2, x, piece)
+        let ret3 = checkPiece(y + 3, x, piece)
+        let ret4 = checkPiece(y + 4, x, piece)
+        let oret = checkPiece(y - 1, x, piece)
+        let oret2 = checkPiece(y - 2, x, piece)
+        let oret3 = checkPiece(y - 3, x, piece)
+        let oret4 = checkPiece(y - 4, x, piece)
+
+        if (ret < 0)
+            return 0;
+        if (ret == 1) {
+            if (ret2 == 1) {
+                if (ret3 == 0 && oret == 0)
+                    return 1;
+            }
+            else if (ret2 == 0) {
+                if ((oret == 1 && oret2 == 0)  || (ret3 == 1 && ret4 == 0 && oret == 0 ) 
+                    || ( oret == 0 && oret2 == 1 && oret3 == 0))
+                    return 1;
+            }
+        }
+        if (ret == 0) {
+            if (ret2 == 1) {
+                if ((ret3 == 0 && oret == 1 && oret2 == 0) || ret3 == 1 && ret4 == 0 && oret == 0)
+                    return 1;
+            }
+            if (oret == 1) {
+                if ((oret2 == 0 && oret3 == 1 && oret4 == 0) || oret2 == 1 && oret3 == 0)    
+                    return 1
+            }
+            if (oret == 0 && oret2 == 1 && oret3 == 1 && oret4 == 0)
+                return 1
+        }
+    }
+
+    if (dir == 2) {
+        let ret = checkPiece(y + 1 , x + 1, piece)
+        let ret2 = checkPiece(y + 2, x + 2, piece)
+        let ret3 = checkPiece(y + 3, x + 3, piece)
+        let ret4 = checkPiece(y + 4, x + 4, piece)
+        let oret = checkPiece(y - 1, x - 1, piece)
+        let oret2 = checkPiece(y - 2, x - 2, piece)
+        let oret3 = checkPiece(y - 3, x - 3, piece)
+        let oret4 = checkPiece(y - 4, x - 4, piece)
+
+        if (ret < 0)
+            return 0;
+        if (ret == 1) {
+            if (ret2 == 1) {
+                if (ret3 == 0 && oret == 0)
+                    return 1;
+            }
+            else if (ret2 == 0) {
+                if ((oret == 1 && oret2 == 0) || (ret3 == 1 && ret4 == 0 && oret == 0 )
+                    ||( oret == 0 && oret2 == 1 && oret3 == 0))
+                    return 1;
+            }
+        }
+        if (ret == 0) {
+            if (ret2 == 1) {
+                if ((ret3 == 0 && oret == 1 && oret2 == 0) || ret3 == 1 && ret4 == 0 && oret == 0)
+                    return 1;
+            }
+            if (oret == 1) {
+                if ((oret2 == 0 && oret3 == 1 && oret4 == 0) || oret2 == 1 && oret3 == 0)
+                    return 1
+            }
+            if (oret == 0 && oret2 == 1 && oret3 == 1 && oret4 == 0) 
+                return 1
+        }
+    }
+
+    if (dir == 3) {
+        let ret = checkPiece(y - 1, x + 1, piece)
+        let ret2 = checkPiece(y - 2, x + 2, piece)
+        let ret3 = checkPiece(y - 3, x + 3, piece)
+        let ret4 = checkPiece(y - 4, x + 4, piece)
+        let oret = checkPiece(y + 1, x - 1, piece)
+        let oret2 = checkPiece(y + 1, x - 2, piece)
+        let oret3 = checkPiece(y + 1, x - 3, piece)
+        let oret4 = checkPiece(y + 1, x - 4, piece)
+
+        if (ret < 0)
+            return 0;
+        if (ret == 1) {
+            if (ret2 == 1) {
+                if (ret3 == 0 && oret == 0)
+                    return 1;
+            }
+            else if (ret2 == 0) {
+                if ((oret == 1 && oret2 == 0) || (ret3 == 1 && ret4 == 0 && oret == 0 )
+                    ||( oret == 0 && oret2 == 1 && oret3 == 0))
+                    return 1;
+            }
+        }
+        if (ret == 0) {
+            if (ret2 == 1) {
+                if ((ret3 == 0 && oret == 1 && oret2 == 0) || ret3 == 1 && ret4 == 0 && oret == 0)
+                    return 1;
+            }
+            if (oret == 1) {
+                if ((oret2 == 0 && oret3 == 1 && oret4 == 0) || oret2 == 1 && oret3 == 0)
+                    return 1
+            }
+            if (oret == 0 && oret2 == 1 && oret3 == 1 && oret4 == 0) 
+                return 1
+        }
+    }
+    return 0;
 }
 
-function topLeftCheck() {
-    
-}
-function topRightCheck() {
-    
-}
-
-function botCheck() {
-
-}
-function botLeftCheck() {
-    
-}
-function botRightCheck() {
-    
-}
-
-function leftCheck() {
-
-}
-
-function rightCheck() {
-
-}
-
-
-
-function checkDoubleFreeThreeDirection(y, x, piece, dir, type) {
-    
-}
 
 function checkPiece(y, x, piece) {
     if (y >= 0 && y <= 18 && x >= 0 && x <= 18) {
@@ -660,157 +778,31 @@ function checkPiece(y, x, piece) {
     return 0;
 }
 
-function checkDoubleFreeThree(y, x, piece) {
-
-    let state = new Array();
-
-    let tab = { top : 0, bot : 0, left : 0, right : 0, topLeft : 0, topRight : 0, botLeft : 0, botRight : 0 }
-
-    var doubleFree = 0;
-    var total = 0;
-    let type = -1; // 0 = ooo - ooo / 1 = ooo - oo o / 2 =oo o - oo o
-
-    
-    for (let cpt = 1; cpt <= 4; cpt++ ) {
-        // check toutes les directions 
-        tab.left += checkPiece(y, x - cpt, piece);
-        tab.right += checkPiece(y, x + cpt, piece);
-        tab.top += checkPiece(y - cpt, x, piece);
-        tab.bot += checkPiece(y + cpt, x, piece);
-        tab.topLeft += checkPiece(y - cpt, x - cpt, piece);
-        tab.topRight += checkPiece(y - cpt, x + cpt, piece);
-        tab.botLeft += checkPiece(y + cpt, x - cpt, piece);
-        tab.botRight += checkPiece(y + cpt, x + cpt, piece);
-
-       if (cpt <= 2 ) {
-            if (cpt == 2 && ((tab.left + tab.right) == 4 || (tab.top + tab.bot) == 4 
-                || (tab.topLeft + tab.botRight) == 4 || (tab.topRight + tab.botLeft) == 4)) {
-                console.log("3 libres impossible");
-                state[cpt - 1] = Object.assign({}, tab);
+function checkDoubleFree(y, x, piece) {
+    let nb = 0;
+    let retour = 0;
+    while (nb <= 3) {
+        console.log("switch "+nb);
+        switch (nb) {
+            case 0: // a droite 
+                retour += checkDFTD(y, x, piece, 0);
                 break;
-            }
-            if (cpt == 2 && (tab.left + tab.right) == 2 && (state[0].left + state[0].right) == 2)
-                doubleFree++;
-            if (cpt == 2 && (tab.top + tab.bot) == 2 && (state[0].top + state[0].bot) == 2)
-                doubleFree++;
-            if (cpt == 2 && (tab.topLeft + tab.botRight) == 2 && (state[0].topLeft + state[0].botRight) == 2)
-                doubleFree++;
-            if (cpt == 2 && (tab.topRight + tab.botLeft) == 2 && (state[0].topRight + state[0].botLeft) == 2)
-                doubleFree++;
-
-            if (cpt == 2 && ((tab.left + tab.right) == 3 || (tab.top + tab.bot) == 3 
-                || (tab.topLeft + tab.botRight) == 3 || (tab.topRight + tab.botLeft) == 3)) {
-                console.log("here ?")
-                if ((tab.left == 1 && tab.right == 2 && (checkPiece(y, x - 1, piece) == 1)) 
-                    || (tab.left == 2 && tab.right == 1 && (checkPiece(y, x + 1, piece) == 1))) {
-                    console.log("3 libres impossible");
-                    state[cpt - 1] = Object.assign({}, tab);
-                    break;
-                }
-                if ((tab.top == 1 && tab.bot == 2 && (checkPiece(y - 1, x, piece) == 1)) 
-                    || (tab.top == 2 && tab.bot == 1 && (checkPiece(y + 1, x, piece) == 1))) {
-                    console.log("3 libres impossible");
-                    state[cpt - 1] = Object.assign({}, tab);                     
-                    break;
-                }
-                if ((tab.topLeft == 1 && tab.botRight == 2 && (checkPiece(y - 1, x - 1, piece) == 1)) 
-                    || (tab.topLeft == 2 && tab.botRight == 1 && (checkPiece(y + 1, x + 1, piece) == 1))) {
-                    console.log("3 libres impossible");
-                    state[cpt - 1] = Object.assign({}, tab);
-                    break;
-                }
-                if ((tab.topRight == 1 && tab.botLeft == 2 && (checkPiece(y - 1, x + 1, piece) == 1)) 
-                    || (tab.topRight == 2 && tab.botLeft == 1 && (checkPiece(y + 1, x - 1, piece) == 1))) {
-                    console.log("3 libres impossible");
-                    state[cpt - 1] = Object.assign({}, tab);
-                    break;
-                }
-            }
-            console.log("3 libres possible");
-        }
-        if (cpt > 2) {
-           /* if (((tab.left + tab.right) >= 5 || (tab.top + tab.bot) >= 5
-                || (tab.topLeft + tab.botRight) >= 5 || (tab.topRight + tab.botLeft) >= 5)) {
-                let cpt = 0;
-                cpt += (tab.left + tab.right) >= 5 ? 0 : 1;
-                console.log('trop de piece sur une meme ligne on peut pas faire de double 3')
+            case 1: // en bas
+                retour += checkDFTD(y, x, piece, 1);
                 break;
-            }*/
-            if (cpt == 3) {
-                if ((tab.left + tab.right) <= 1 && (tab.top + tab.bot) <= 1
-                    && (tab.topLeft + tab.botRight) <= 1 && (tab.topRight + tab.botLeft) <= 1) {
-                    console.log("3 libres impossible");
-                    state[cpt - 1] = Object.assign({}, tab);
-                    break;
-                }
-                if ((tab.left + tab.right) >= 3 && ((state[0].left == 0 && tab.right == 2) || (state[0].right == 0 && tab.left == 2)))
-                    doubleFree++;
-                if ((tab.top + tab.bot) >= 3 && ((state[0].top == 0 && tab.bot == 2) || (state[0].bot == 0 && tab.top == 2)))
-                    doubleFree++;
-                if ((tab.topLeft + tab.botRight) >= 3 && ((state[0].topLeft == 0 && tab.botRight == 2) || (state[0].botRight == 0 && tab.topLeft == 2)))
-                    doubleFree++;
-                if ((tab.topRight + tab.botLeft) >= 3 && ((state[0].topRight == 0 && tab.botLeft == 2) || (state[0].botLeft == 0 && tab.topRight == 2)))
-                    doubleFree++;
-                /*if (tab.left + tab.right) == 3){
-
-                }*/
-
-                if (((tab.left + tab.right) == 2 || (tab.top + tab.bot) == 2
-                    || (tab.topLeft + tab.botRight) == 2 || (tab.topRight + tab.botLeft) == 2)) {
-                    console.log("test1");
-                    if ((tab.left + tab.right) == 2 && (state[1].left == tab.left && state[1].right == tab.right) 
-                        && (state[0].left + state[0].right) == 1)
-                        doubleFree++;
-                    if ((tab.top + tab.bot) == 2 && (state[1].top == tab.top && state[1].bot == tab.bot) 
-                        && (state[0].top + state[0].bot) == 1)
-                        doubleFree++;
-                    if ((tab.topLeft + tab.botRight) == 2 
-                        && (state[1].topLeft == tab.topLeft && state[1].botRight == tab.botRight) 
-                            && (state[0].topLeft + state[0].botRight) == 1)
-                        doubleFree++;
-                    if ((tab.topRight + tab.botLeft) == 2 
-                        && (state[1].topRight == tab.topRight && state[1].botLeft == tab.botLeft)
-                            && (state[0].topRight + state[0].botLeft) == 1)
-                        doubleFree++;
-                }
-            }
-            ////////////
-            ////////////
-
-            if (cpt == 4 && ((tab.left + tab.right) == 2 || (tab.top + tab.bot) == 2 
-                || (tab.topLeft + tab.botRight) == 2 || (tab.topRight + tab.botLeft) == 2)) {
-                console.log('test 3 3');
-                if (cpt == 4 && (tab.left + tab.right) == 2 && (state[2].left == tab.left && state[2].right == tab.right) 
-                    && (state[1].left + state[1].right) == 1)
-                    doubleFree++;
-                if (cpt == 4 && (tab.top + tab.bot) == 2 && (state[2].top == tab.top && state[2].bot == tab.bot) 
-                    && (state[1].top + state[1].bot) == 1)
-                    doubleFree++;
-                if (cpt == 4 && (tab.topLeft + tab.botRight) == 2 
-                    && (state[2].topLeft == tab.topLeft && state[2].botRight == tab.botRight) 
-                        && (state[1].topLeft + state[1].botRight) == 1)
-                    doubleFree++;
-                if (cpt == 4 && (tab.topRight + tab.botLeft) == 2 
-                    && (state[2].topRight == tab.topRight && state[2].botLeft == tab.botLeft)
-                        && (state[1].topRight + state[1].botLeft) == 1)
-                    doubleFree++;
-                    //alert('double free');0
-            }
+            case 2: // en bas a droite 
+                retour += checkDFTD(y, x, piece, 2);
+                break;
+            case 3: // en haut a gauche
+                retour += checkDFTD(y, x, piece, 3);
+                break;
         }
-        state[cpt - 1] = Object.assign({}, tab);
-        console.log("doubleFree = "+doubleFree)
-        console.log(tab);
-        total = tab.left + tab.right + tab.top + tab.topRight + tab.topLeft + tab.bot + tab.botLeft + tab.botRight;
-        console.log("total = "+total);
-        if (doubleFree >= 2) {
-            console.log('doubleFree')
-            return true;
-        }
+        nb++;
     }
-    console.log(state);
+    if (retour >= 2)
+        return true;
     return false;
 }
-
 
 // *********** DRAW ************ //
 
@@ -878,7 +870,7 @@ function drawCoordinates(y, x) {
 
 
     if (matrix[y][x] == null) {
-        if (checkDoubleFreeThree(y, x, piece)) {
+        if (checkDoubleFree(y, x, piece)) {
             $('#zone').prepend('<div class="alert alert-danger" role="alert">Double 3 libres : Coup interdit !</div>');
             setTimeout(function() {
                 $('.alert').remove();
