@@ -731,9 +731,9 @@ function checkDFTD(y, x, piece, dir) {
         let ret3 = checkPiece(y - 3, x + 3, piece)
         let ret4 = checkPiece(y - 4, x + 4, piece)
         let oret = checkPiece(y + 1, x - 1, piece)
-        let oret2 = checkPiece(y + 1, x - 2, piece)
-        let oret3 = checkPiece(y + 1, x - 3, piece)
-        let oret4 = checkPiece(y + 1, x - 4, piece)
+        let oret2 = checkPiece(y + 2, x - 2, piece)
+        let oret3 = checkPiece(y + 3, x - 3, piece)
+        let oret4 = checkPiece(y + 4, x - 4, piece)
 
         if (ret < 0)
             return 0;
@@ -804,14 +804,6 @@ function checkDoubleFree(y, x, piece) {
     return false;
 }
 
-// *********** DRAW ************ //
-
-function printMatrice() {
-    for (y = 0; y < matrix.length; y++) {
-        console.log(matrix[y]);
-    }
-}
-
 
 // MOVE GENERATOR
 
@@ -845,8 +837,13 @@ function makeRandomNb(nb) {
 }
 
 
-// GET POSITION
+// *********** DRAW ************ //
 
+function printMatrice() {
+    for (y = 0; y < matrix.length; y++) {
+        console.log(matrix[y]);
+    }
+}
 
 function drawMatrice(y, x, piece) {
     var color = piece == 'B' ? 'black' : 'white';
