@@ -39,6 +39,11 @@ td {
     vertical-align: middle;
 }
 
+.display-1 {
+    animation : display-1 3s linear 1s slidein;
+    
+}
+
 .lead {
     font-size: 18px !important;
 }
@@ -111,4 +116,8 @@ td[id^="col18"] {
 #zone {
     padding: 50px;
     background-color: 	#DEB887;
+}
+
+.hover {
+    opacity: 0.5 !important; 
 }

@@ -926,16 +926,33 @@ function reset() {
 }
 
 
-
 function createBoard() {
     $('#zone').html('<table id="board"></table>')
-    for (var y = 0; y < 19; y++ ) {
+    for (let y = 0; y < 19; y++ ) {
         $('#board').append('<tr id="line'+y+'">')
-        for (var x = 0; x < 19; x++ ) {
-            $('#line'+y).append('<td id="col'+y+'-'+x+'"><div onClick="getPosition('+y+','+x+')" class="cercle"></div></td>')
+        for (let x = 0; x < 19; x++ ) {
+            $('#line'+y).append('<td id="col'+y+'-'+x+'"><div  onClick="getPosition('+y+','+x+')" class="cercle"></div></td>')
         }
     }
     $('td .cercle').css('opacity', '0');
+    $('td').mousemove(function() {
+        var colorP = player ? 'white': 'black';
+        if ($(this).children().css('opacity') != 1) {
+            $(this).children().css('opacity', '0.5').css('background-color', colorP);
+        }
+    })
+
+    $('td').mouseout(function() {
+        var regex = /[0-9]+/gm;
+        var y = regex.exec(this.id)[0]
+        var x = regex.exec(this.id)[0];
+        if (matrix[y][x] == '' || matrix[y][x] == undefined) {
+            $(this).children().css('opacity', '0');
+        }
+        else { 
+            $(this).children().css('opacity', '1');
+        }
+    })
 }
 
 /// x = vers droite 
