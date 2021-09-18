@@ -735,7 +735,7 @@ function checkDFTD(y, x, piece, dir) {
         let oret3 = checkPiece(y + 3, x - 3, piece)
         let oret4 = checkPiece(y + 4, x - 4, piece)
 
-        if (ret < 0)
+        if (ret < 0 || oret < 0)
             return 0;
         if (ret == 1) {
             if (ret2 == 1) {
@@ -775,7 +775,7 @@ function checkPiece(y, x, piece) {
             return -1
         }
     }
-    return 0;
+    return -2;
 }
 
 function checkDoubleFree(y, x, piece) {
