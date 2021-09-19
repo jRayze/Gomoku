@@ -12,13 +12,14 @@ var matrix = [];
 
 for (var i = 0; i < 19; i++) {
     matrix[i] = new Array(19);
+    matrix[i].fill(0, 0, 19)
 }
 
 // *********** CAPTURE ************ //
 
 function capture(y, x, piece) {
     let isOk = false;
-    let counter = (piece == "B") ? "W" : "B";
+    let counter = (piece == 2) ? 1 : 2;
     let nbCxp = 0;
     let nbCxm = 0;
     let nbCyp = 0;
@@ -46,8 +47,8 @@ function capture(y, x, piece) {
     }
     if (isOk == true) {
         if (nbCxp == 2) {
-            matrix[y][x + 1] = null;
-            matrix[y][x + 2] = null;
+            matrix[y][x + 1] = 0;
+            matrix[y][x + 2] = 0;
             $('#col'+y+'-'+(x + 1)+' .cercle, #col'+y+'-'+(x + 2)+' .cercle').animate({
                 opacity: '0',
             }, 'slow');
@@ -75,8 +76,8 @@ function capture(y, x, piece) {
 
     if (isOk == true) {
         if (nbCxm == 2) {
-            matrix[y][x - 1] = null;
-            matrix[y][x - 2] = null;
+            matrix[y][x - 1] = 0;
+            matrix[y][x - 2] = 0;
             $('#col'+y+'-'+(x - 1)+' .cercle , #col'+y+'-'+(x - 2)+' .cercle').animate({
                 opacity: '0',
             }, 'fast');
@@ -105,8 +106,8 @@ function capture(y, x, piece) {
 
     if (isOk == true) {
         if (nbCyp == 2) {
-            matrix[y + 1][x] = null;
-            matrix[y + 2][x] = null;
+            matrix[y + 1][x] = 0;
+            matrix[y + 2][x] = 0;
             $('#col'+(y + 1)+'-'+x+' .cercle, #col'+(y + 2)+'-'+x+' .cercle').animate({
                 opacity: '0',
             }, 'slow');
@@ -137,8 +138,8 @@ function capture(y, x, piece) {
 
     if (isOk == true) {
         if (nbCym == 2) {
-            matrix[y - 1][x] = null;
-            matrix[y - 2][x] = null;
+            matrix[y - 1][x] = 0;
+            matrix[y - 2][x] = 0;
             $('#col'+(y - 1)+'-'+x+' .cercle, #col'+(y - 2)+'-'+x+' .cercle').animate({
                 opacity: '0',
             }, 'slow');
@@ -167,8 +168,8 @@ function capture(y, x, piece) {
 
     if (isOk == true) {
         if (nbCD1p == 2) {
-            matrix[y - 1][x + 1] = null;
-            matrix[y - 2][x + 2] = null;
+            matrix[y - 1][x + 1] = 0;
+            matrix[y - 2][x + 2] = 0;
             $('#col'+(y - 1)+'-'+(x + 1)+' .cercle, #col'+(y - 2)+'-'+(x + 2)+' .cercle').animate({
                 opacity: '0',
             }, 'slow');
@@ -197,8 +198,8 @@ function capture(y, x, piece) {
 
     if (isOk == true) {
         if (nbCD1m == 2) {
-            matrix[y + 1][x - 1] = null;
-            matrix[y + 2][x - 2] = null;
+            matrix[y + 1][x - 1] = 0;
+            matrix[y + 2][x - 2] = 0;
             $('#col'+(y + 1)+'-'+(x - 1)+' .cercle, #col'+(y + 2)+'-'+(x - 2)+' .cercle').animate({
                 opacity: '0',
             }, 'slow');
@@ -226,8 +227,8 @@ function capture(y, x, piece) {
 
     if (isOk == true) {
         if (nbCD2p == 2) {
-            matrix[y - 1][x - 1] = null;
-            matrix[y - 2][x - 2] = null;
+            matrix[y - 1][x - 1] = 0;
+            matrix[y - 2][x - 2] = 0;
             $('#col'+(y - 1)+'-'+(x - 1)+' .cercle, #col'+(y - 2)+'-'+(x - 2)+' .cercle').animate({
                 opacity: '0',
             }, 'slow');
@@ -255,8 +256,8 @@ function capture(y, x, piece) {
     }
     if (isOk == true) {
         if (nbCD2m == 2) {
-            matrix[y + 1][x + 1] = null;
-            matrix[y + 2][x + 2] = null;
+            matrix[y + 1][x + 1] = 0;
+            matrix[y + 2][x + 2] = 0;
             $('#col'+(y + 1)+'-'+(x + 1)+' .cercle, #col'+(y + 2)+'-'+(x + 2)+' .cercle').animate({
                 opacity: '0',
             }, 'slow');
@@ -270,12 +271,12 @@ function capture(y, x, piece) {
     // console.log("captureLigne = "+nbCxp+" CaptureColone = "+nbCy+" CaptureDiag1 = "+nbCD1+" CaptureDiag2 = "+nbCD2)
     console.log("----------- fin capture --------------");
     if (nbCxp == 2 || nbCxm == 2 || nbCyp == 2 || nbCym == 2 || nbCD1p == 2 || nbCD1m == 2 || nbCD2p == 2 || nbCD2m == 2) {
-        if (piece == "W") {
+        if (piece == 1) {
             nbPionB += 2;
             $('.nbPieceB').html(nbPionB);
             $('.nbPairesB').html(nbPionB / 2);
         }
-        if (piece == "B") {
+        if (piece == 2) {
             console.log("nbPionW = " + nbPionW)
             nbPionW += 2;
             console.log("nbPionW = " + nbPionW)
@@ -295,7 +296,7 @@ function checkType(y, x, piece) {
         if (matrix[y][x] && matrix[y][x] == piece) {
             return 1;
         }
-        else if (matrix[y][x] && matrix[y][x] == "" || matrix[y][x] == undefined) {
+        else if (matrix[y][x] && matrix[y][x] == 0) {
             return 0;
         }
         else {
@@ -769,7 +770,7 @@ function checkPiece(y, x, piece) {
     if (y >= 0 && y <= 18 && x >= 0 && x <= 18) {
         if (matrix[y][x] == piece) {
             return 1;
-        } else if (matrix[y][x] == '' || matrix[y][x] == null) {
+        } else if (matrix[y][x] == 0) {
             return 0
         } else {
             return -1
@@ -846,7 +847,7 @@ function printMatrice() {
 }
 
 function drawMatrice(y, x, piece) {
-    var color = piece == 'B' ? 'black' : 'white';
+    var color = piece == 2 ? 'black' : 'white';
     console.log('draw ?');
     $('#col'+y+'-'+x+' .cercle').css('background-color', color).css('position', 'relative')
         .css('opacity', '1').css('width', '40px').css('height', '40px')
@@ -862,11 +863,11 @@ function drawMatrice(y, x, piece) {
 }
 
 function drawCoordinates(y, x) {
-    var piece = (player) ? "W" : "B";
+    var piece = (player) ? 1 : 2;
     console.log("x = " + x + " y= " + y);
 
 
-    if (matrix[y][x] == null) {
+    if (matrix[y][x] == 0) {
         if (checkDoubleFree(y, x, piece)) {
             $('#zone').prepend('<div class="alert alert-danger" role="alert">Double 3 libres : Coup interdit !</div>');
             setTimeout(function() {
@@ -910,6 +911,7 @@ function reset() {
     newMatrix = []
     for (var i = 0; i < 19; i++) {
         newMatrix[i] = new Array(19);
+        newMatrix[i].fill(0, 0, 19)
     }
     matrix = newMatrix;
     nbPionW = 0;
@@ -946,7 +948,7 @@ function createBoard() {
         var regex = /[0-9]+/gm;
         var y = regex.exec(this.id)[0]
         var x = regex.exec(this.id)[0];
-        if (matrix[y][x] == '' || matrix[y][x] == undefined) {
+        if (matrix[y][x] == 0) {
             $(this).children().css('opacity', '0');
         }
         else { 
@@ -958,3 +960,59 @@ function createBoard() {
 /// x = vers droite 
 
 /// y = vers bas 
+
+/////////////////////////////////////////////////////////// MINMAX /////////////////////////////////////////////////////////
+
+class IA {
+    constructor(node, player) {
+        this.node = [... node];
+        this.depth = 0;
+        this.maximizingPlayer = player;
+        this.eval = 0;
+        this.maxEval = 0;
+        this.prevNode = [];
+        this.id = "";
+      /*  var test = node.reduce( (prev, curr) => {
+            if (curr == 0) {
+                curr = 0;
+            } else if (curr == player) {
+                curr = 1;
+            } else {
+                curr = 2;
+            }
+            console.log(curr)
+           // prev.toString().concat(prev.toString());
+        })
+        console.log(test)*/
+    }
+
+    minMax(node, depth, maximizingPlayer) {
+
+        if (depth == 0 || node.gameStatus == -1) {
+            return heuristicValue(node);
+        }
+    
+        if (maximizingPlayer) {
+            maxEval = -Infinity
+            node.forEach(function(child){
+                this.eval = minMax(child, depth -1, false);    
+                maxEval = max(maxEval, eval);
+            })
+            return maxEval
+        }
+        else {
+            maxEval = -Infinity
+            node.forEach(function(child){
+                this.eval = minMax(child, depth -1, false);    
+                maxEval = max(maxEval, eval);
+            })
+            return maxEval
+        }
+    
+    }
+}
+
+/*const ia = new IA(matrix, player) 
+
+console.log(ia.id)*/
+//maximizingPlayer bool => if depth is odd == true 
