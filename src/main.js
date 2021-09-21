@@ -289,20 +289,19 @@ function capture(y, x, piece) {
 }
 
 
+
 // *********** PARSER ************ //
 
 function checkType(y, x, piece) {
     if (y >= 0 && y < 19  && y >= 0 && y < 19) {
-        if (matrix[y][x] && matrix[y][x] == piece) {
+        if (matrix[y][x] && matrix[y][x] == piece)
             return 1;
-        }
-        else if (matrix[y][x] && matrix[y][x] == 0) {
+        else if (matrix[y][x] && matrix[y][x] == "0")
             return 0;
-        }
-        else {
+        else 
             return 2;
-        }
     }
+    console.log("retourne -1 ");
     return -1;
 }
 
@@ -314,14 +313,15 @@ function checkArround(y, x, piece, direction) {
     }
     if (direction != 1) {
          console.log("d 1");
-        /* console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+"encore en bas il y a = "+matrix[y + 2][x])
+        /*console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+"encore en bas il y a = "+matrix[y + 2][x])
          console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+" en h + 2 il y a = "+matrix[y - 2][x])*/
         if (checkType(y + 1, x, piece) == 1 && ((checkType(y + 2, x, piece) == 2 && checkType(y - 1, x, piece) == 0) || (checkType(y + 2, x, piece) == 0 && checkType(y - 1, x, piece) == 2))) {
             console.log("ca return vrai 1");
             return true;
         }
-        else if (checkType(y - 1, x, piece) == 1 && ((checkType(y - 2, x, piece) == 2 && checkType(y + 1, x, piece) == 0) || (checkType(y - 2, x, piece) == 0 && checkType(y + 1, x, piece) == 2))) {
-            console.log("ca return vrai 2");
+        else if (checkType(y - 1, x, piece) == 1  && ((checkType(y - 2, x, piece) == 2 && checkType(y + 1, x, piece) == 0) ||(checkType(y - 2, x, piece) == 0 && checkType(y + 1, x, piece) == 2))) {
+            console.log("x = "+x+" et y = "+y);
+            console.log("vrai 2 - 2");
             return true;
         }
     }
@@ -362,6 +362,7 @@ function checkArround(y, x, piece, direction) {
             return true;
         }
     }
+    console.log("le retour est faux");
     return false;
 }
 
@@ -783,7 +784,7 @@ function checkDoubleFree(y, x, piece) {
     let nb = 0;
     let retour = 0;
     while (nb <= 3) {
-        console.log("switch "+nb);
+       // console.log("switch "+nb);
         switch (nb) {
             case 0: // a droite 
                 retour += checkDFTD(y, x, piece, 0);
@@ -848,7 +849,7 @@ function printMatrice() {
 
 function drawMatrice(y, x, piece) {
     var color = piece == 2 ? 'black' : 'white';
-    console.log('draw ?');
+   // console.log('draw ?');
     $('#col'+y+'-'+x+' .cercle').css('background-color', color).css('position', 'relative')
         .css('opacity', '1').css('width', '40px').css('height', '40px')
             .css('border-radius', '30px').css('margin-top', '-40px').css('margin-left', '-20px')
@@ -864,8 +865,8 @@ function drawMatrice(y, x, piece) {
 
 function drawCoordinates(y, x) {
     var piece = (player) ? 1 : 2;
-    console.log("x = " + x + " y= " + y);
-
+    //console.log("x = " + x + " y= " + y);
+    let ia = new IA();
 
     if (matrix[y][x] == 0) {
         if (checkDoubleFree(y, x, piece)) {
@@ -875,11 +876,13 @@ function drawCoordinates(y, x) {
             }, 3000);
             return false;
         }
+
         matrix[y][x] = piece;
-        console.log(matrix);
+        //console.log(matrix);
         capture(y, x, piece);
         drawMatrice(y, x, piece);
-        result = checkWin(y, x, piece); //test();
+        //result = ia.checkWinner(matrix)
+         result = checkWin(y, x, piece); //test();
         player = !player;
 
         if (player) {
@@ -892,19 +895,21 @@ function drawCoordinates(y, x) {
             $('#white').css('animation', '');
         }
         $('.isSelected').css('animation', 'isSelected 2s ease-out infinite');
-        return true;
     }
-}
 
-function getPosition(x , y) {
-    console.log(x, y);
-    drawCoordinates(x, y);
     if (result == true) {
         setTimeout(function () {
             alert("Le joueur " + ((!player) ? "blanc" : "noir") + " a gagné !")
             $('#reset').click();
         }, 50)
     }
+    if (player) {
+        ia.bestMove(matrix);
+    }
+}
+
+function getPosition(x , y) {
+    drawCoordinates(x, y);
 }
 
 function reset() {
@@ -959,60 +964,692 @@ function createBoard() {
 
 /// x = vers droite 
 
-/// y = vers bas 
+/// y = vers bas è
 
 /////////////////////////////////////////////////////////// MINMAX /////////////////////////////////////////////////////////
 
 class IA {
-    constructor(node, player) {
-        this.node = [... node];
-        this.depth = 0;
-        this.maximizingPlayer = player;
-        this.eval = 0;
-        this.maxEval = 0;
-        this.prevNode = [];
-        this.id = "";
-      /*  var test = node.reduce( (prev, curr) => {
-            if (curr == 0) {
-                curr = 0;
-            } else if (curr == player) {
-                curr = 1;
-            } else {
-                curr = 2;
-            }
-            console.log(curr)
-           // prev.toString().concat(prev.toString());
-        })
-        console.log(test)*/
+    constructor() {
+
     }
 
     minMax(node, depth, maximizingPlayer) {
-
-        if (depth == 0 || node.gameStatus == -1) {
+        let gameStatus = checkWinner()
+        if (depth == 0 || gameStatus == -1) {
             return heuristicValue(node);
         }
     
         if (maximizingPlayer) {
             maxEval = -Infinity
             node.forEach(function(child){
-                this.eval = minMax(child, depth -1, false);    
-                maxEval = max(maxEval, eval);
+                score = minMax(child, depth -1, false);    
+                maxEval = max(maxEval, score);
             })
             return maxEval
         }
         else {
-            maxEval = -Infinity
+            minEval = Infinity
             node.forEach(function(child){
-                this.eval = minMax(child, depth -1, false);    
-                maxEval = max(maxEval, eval);
+                score = minMax(child, depth -1, true);    
+                minEval = min(maxEval, score);
             })
-            return maxEval
+            return minEval
+        }
+    }
+
+    captureIA(y, x, piece, iaTab) {
+        let isOk = false;
+        let counter = (piece == 2) ? 1 : 2;
+        let nbCxp = 0;
+        let nbCxm = 0;
+        let nbCyp = 0;
+        let nbCym = 0;
+        let nbCD1p = 0;
+        let nbCD1m = 0;
+        let nbCD2p = 0;
+        let nbCD2m = 0;
+        //x+
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((x + mv) <= 18 && iaTab[y][x + mv]) {
+                if (mv < 3) {
+                    if (iaTab[y][x + mv] == counter) {
+                        nbCxp++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y][x + mv] == piece) {
+                    isOk = true;
+                }
+            }
+        }
+        if (isOk == true) {
+            if (nbCxp == 2) {
+                iaTab[y][x + 1] = 0;
+                iaTab[y][x + 2] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCxp = 0;
+        }
+        //x-
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((x - mv) >= 0 && iaTab[y][x - mv]) {
+                if (mv < 3) {
+                    if (iaTab[y][x - mv] == counter) {
+                        nbCxm++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y][x - mv] == piece) {
+                    isOk = true;
+                }
+            }
+    
         }
     
+        if (isOk == true) {
+            if (nbCxm == 2) {
+                iaTab[y][x - 1] = 0;
+                iaTab[y][x - 2] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCxm = 0;
+        }
+    
+        //y+
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((y + mv) <= 18 && iaTab[y + mv][x]) {
+                if (mv < 3) {
+                    if (iaTab[y + mv][x] == counter) {
+                        nbCyp++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y + mv][x] == piece) {
+                    isOk = true;
+                }
+            }
+    
+        }
+    
+        if (isOk == true) {
+            if (nbCyp == 2) {
+                iaTab[y + 1][x] = 0;
+                iaTab[y + 2][x] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCyp = 0;
+        }
+    
+    
+        //y-
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((y - mv) >= 0 && iaTab[y - mv][x]) {
+                if (mv < 3) {
+                    if (iaTab[y - mv][x] == counter) {
+                        nbCym++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y - mv][x] == piece) {
+                    isOk = true;
+                }
+            }
+    
+        }
+    
+        if (isOk == true) {
+            if (nbCym == 2) {
+                iaTab[y - 1][x] = 0;
+                iaTab[y - 2][x] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCym = 0;
+        }
+    
+        // -+
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((y - mv) >= 0 && (x + mv) <= 18 && iaTab[y - mv][x + mv]) {
+                if (mv < 3) {
+                    if (iaTab[y - mv][x + mv] == counter) {
+                        nbCD1p++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y - mv][x + mv] == piece) {
+                    isOk = true;
+                }
+            }
+    
+        }
+    
+        if (isOk == true) {
+            if (nbCD1p == 2) {
+                iaTab[y - 1][x + 1] = 0;
+                iaTab[y - 2][x + 2] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCD1p = 0;
+        }
+    
+        //+-
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((y + mv) <= 18 && (x - mv) >= 0 && iaTab[y + mv][x - mv]) {
+                if (mv < 3) {
+                    if (iaTab[y + mv][x - mv] == counter) {
+                        nbCD1m++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y + mv][x - mv] == piece) {
+                    isOk = true;
+                }
+            }
+    
+        }
+    
+        if (isOk == true) {
+            if (nbCD1m == 2) {
+                iaTab[y + 1][x - 1] = 0;
+                iaTab[y + 2][x - 2] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCD1m = 0;
+        }
+        // --
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((y - mv) >= 0 && (x - mv) >= 0 && iaTab[y - mv][x - mv]) {
+                if (mv < 3) {
+                    if (iaTab[y - mv][x - mv] == counter) {
+                        nbCD2p++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y - mv][x - mv] == piece) {
+                    isOk = true;
+                }
+            }
+    
+        }
+    
+        if (isOk == true) {
+            if (nbCD2p == 2) {
+                iaTab[y - 1][x - 1] = 0;
+                iaTab[y - 2][x - 2] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCD2p = 0;
+        }
+    
+        //++
+        for (let mv = 1; mv <= 3; mv++) {
+            if ((y + mv) <= 18 && (x + mv) <= 18 && iaTab[y + mv][x + mv]) {
+                if (mv < 3) {
+                    if (iaTab[y + mv][x + mv] == counter) {
+                        nbCD2m++;
+                    }
+                }
+                else if (mv == 3 && iaTab[y + mv][x + mv] == piece) {
+                    isOk = true;
+                }
+            }
+    
+        }
+        if (isOk == true) {
+            if (nbCD2m == 2) {
+                iaTab[y + 1][x + 1] = 0;
+                iaTab[y + 2][x + 2] = 0;
+            }
+            isOk = false;
+        }
+        else {
+            nbCD2m = 0;
+        }
+        if (nbCxp == 2 || nbCxm == 2 || nbCyp == 2 || nbCym == 2 || nbCD1p == 2 || nbCD1m == 2 || nbCD2p == 2 || nbCD2m == 2) {
+            if (piece == 1) {
+                nbPionB += 2;
+            }
+            if (piece == 2) {
+                nbPionW += 2;
+            }
+            return true;
+        }
+    }
+
+    createChilds(node, maximizingPlayer) {
+        let p = maximizingPlayer ? 1 : 2;
+        var childs = [];
+        for (var y = 0; y <= 18; y++ ){
+            for (var x = 0; x <= 18; x++ ) {
+                if (node[y][x] == 0) {
+                    let cp = [...node];
+                    cp[y][x] == p
+                    captureIA(y, x, p, cp)
+                    childs = childs.push(cp);
+                }
+            }
+        }
+        return childs;
+    }
+
+    bestMove(board) {
+        let bestScore = -Infinity;
+        let move;
+        for (let i = 0; i <= 18; i++) {
+          for (let j = 0; j <= 18; j++) {
+            if (board[i][j] == 0) {
+                board[i][j] = 1;
+              let score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, true) 
+              console.log(score);
+              board[i][j] = 0;
+              if (score > bestScore) {
+                bestScore = score;
+                move = { i, j };
+              }
+            }
+          }
+        }
+        drawCoordinates(move.i, move.j);
+    }
+    
+    checkType(y, x, p, board) {
+        if (y >= 0 && y < 19  && y >= 0 && y < 19) {
+            if (board[y][x] == p) 
+                return 1;
+            else if (board[y][x] == 0)
+                return 0;
+            else 
+                return 2;
+
+        }
+        return -1;
+    }
+    
+    checkArround(y, x, p, direction, board) {
+      //  console.log(board)
+        //direction = {vertical : 1, horizontal : 2, diagonale1 : 3, diagonale2: 4}
+        if (this.checkType(y, x, p, board) == 0) {
+            return true;
+        }
+        if (direction != 1) {
+            /*console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+"encore en bas il y a = "+matrix[y + 2][x])
+             console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+" en h + 2 il y a = "+matrix[y - 2][x])*/
+            if (this.checkType(y + 1, x, p, board) == 1 && ((this.checkType(y + 2, x, p, board) == 2 && this.checkType(y - 1, x, p, board) == 0) || (this.checkType(y + 2, x, p, board) == 0 && this.checkType(y - 1, x, p, board) == 2))) {
+             //   console.log("ca return vrai 1");
+                return true;
+            }
+            else if (this.checkType(y - 1, x, p, board) == 1  && ((this.checkType(y - 2, x, p, board) == 2 && this.checkType(y + 1, x, p, board) == 0) ||(this.checkType(y - 2, x, p, board) == 0 && this.checkType(y + 1, x, p, board) == 2))) {
+               // console.log("x = "+x+" et y = "+y);
+               // console.log("vrai 2 - 2");
+                return true;
+            }
+        }
+        if (direction != 2) {
+           /* console.log("y = " + y + " x = " + x);
+            console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])*/
+            if (this.checkType(y, x + 1, p, board) == 1 && ((this.checkType(y, x + 2, p, board) == 2 && this.checkType(y, x - 1, p, board) == 0) || (this.checkType(y, x + 2, p, board) == 0 && this.checkType(y, x - 1, p, board) == 2))) {
+               // console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])
+               // console.log("ca return vrai 3");
+                return true;
+            }
+            else if (this.checkType(y, x - 1, p, board) == 1 && ((this.checkType(y, x - 2, p, board) == 2 && this.checkType(y, x + 1, p, board) == 0) || (this.checkType(y, x - 2, p, board) == 0 && this.checkType(y, x + 1, p, board) == 2))) {
+             //   console.log("a gauche il y a = " + matrix[y][x - 1] + "encore à gauche il y a = " + matrix[y][x - 2] + " et à droite il y a = " + matrix[y][x + 1])
+                //console.log("ca return vrai 4");
+                return true;
+            }
+        }
+        if (direction != 3) {
+            if (this.checkType(y - 1, x + 1, p, board) == 1 && ((this.checkType(y - 2, x + 2, p, board) == 2 && this.checkType(y + 1, x - 1, p, board) == 0) || (this.checkType(y - 2, x + 2, p, board) == 0 && this.checkType(y + 1, x - 1, p, board) == 2))) {
+              //  console.log("ca return vrai 5");
+                return true;
+            }
+            else if (this.checkType(y + 1, x - 1, p, board) == 1 && ((this.checkType(y + 2, x - 2, p, board) == 2 && this.checkType(y - 1, x + 1, p, board) == 0) || (this.checkType(y + 2, x - 2, p, board) == 0 && this.checkType(y - 1, x + 1, p, board) == 2))) {
+              //  console.log("ca return vrai 6");
+                return true;
+            }
+        }
+        if (direction != 4) {
+            if (this.checkType(y - 1, x - 1, p, board) == 1 && ((this.checkType(y - 2, x - 2, p, board) == 2 && this.checkType(y + 1, x + 1, p, board) == 0) || (this.checkType(y - 2, x - 2, p, board) == 0 && this.checkType(y + 1, x + 1, p, board) == 2))) {
+              //  console.log("ca return vrai 7");
+                return true;
+            }
+            else if (this.checkType(y + 1, x + 1, p, board) == 1 && ((this.checkType(y + 2, x + 2, p, board) == 2 && this.checkType(y - 1, x - 1, p, board) == 0) || (this.checkType(y + 2, x + 2, p, board) == 0 && this.checkType(y - 1, x - 1, p, board) == 2))) {
+               // console.log("ca return vrai 8");
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    checkWinner(board) {
+        for (var y = 0; y <= 18; y++) {
+            for (var x = 0; x <= 18; x++) {
+                for (var dir = 1; dir <= 4; dir++) {
+                    if (dir == 1) {
+                        if (y <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    if (board[y + 1][x] == 1 && board[y + 2 ][x] == 1 && board[y + 3][x] == 1 && board[y + 4][x] == 1)
+                                        if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y + 1, x, 1, dir, board) && !this.checkArround(y + 2, x, 1, dir, board) && !this.checkArround(y + 3, x, 1, dir, board) && !this.checkArround(y + 4, x, 1, dir, board))
+                                            return true;
+                                    break;
+                                case 2:
+                                    if (board[y + 1][x] == 2 && board[y + 2][x] == 2 && board[y + 3][x] == 2 && board[y + 4][x] == 2)
+                                        if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y + 1, x, 2, dir, board) && !this.checkArround(y + 2, x, 2, dir, board) && !this.checkArround(y + 3, x, 2, dir, board) && !this.checkArround(y + 4, x, 2, dir, board))
+                                            return true;
+                                    break;
+                            }
+                        }
+                    }
+                    if (dir == 2) {
+                        if (x <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:   
+                                    if (board[y][x + 1] == 1 && board[y][x + 2] == 1 && board[y][x + 3] == 1 && board[y][x + 4] == 1){
+                                        if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y, x + 1, 1, dir, board) && !this.checkArround(y, x + 2, 1, dir, board) && !this.checkArround(y, x + 3, 1, dir, board) && !this.checkArround(y, x + 4, 1, dir, board))
+                                            return true;
+                                    }
+                                    break;
+                                case 2:
+                                    if (board[y][x + 1] == 2 && board[y][x + 2] == 2 && board[y][x + 3] == 2 && board[y][x + 4] == 2) {
+                                        if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y, x + 1, 2, dir, board) && !this.checkArround(y, x + 2, 2, dir, board) && !this.checkArround(y, x + 3, 2, dir, board) && !this.checkArround(y, x + 4, 2, dir, board)){
+                                            return true;
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    if (dir == 3) {
+                        if (y >= 4 && x <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    if (board[y - 1][x + 1] == 1 && board[y - 2][x + 2] == 1 && board[y - 3][x + 3] == 1 && board[y - 3][x + 4] == 1)
+                                        if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y - 1, x + 1, 1, dir, board) && !this.checkArround(y - 2, x + 2, 1, dir, board) && !this.checkArround(y - 3, x + 3, 1, dir, board) && !this.checkArround(y - 4, x + 4, 1, dir, board))
+                                            return true;
+                                    break;
+                                case 2:
+                                    if (board[y - 1][x + 1] == 2 && board[y - 2][x + 2] == 2 && board[y - 3][x + 3] == 2 && board[y - 4][x + 4] == 2)
+                                        if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y - 1, x + 1, 2, dir, board) && !this.checkArround(y - 2, x + 2, 2, dir, board) && !this.checkArround(y - 3, x + 3, 2, dir, board) && !this.checkArround(y - 4, x + 4, 2, dir, board))
+                                            return true;
+                                    break;
+                            }
+                        }
+                    }
+                    if (dir == 4) {
+                        if (x <= 14 && y <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    if (board[y + 1][x + 1] == 1 && board[y + 2][x + 2] == 1 && board[y + 3][x + 3] == 1 && board[y + 3][x + 4] == 1)
+                                        if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y + 1, x + 1, 1, dir, board) && !this.checkArround(y + 2, x + 2, 1, dir, board) && !this.checkArround(y + 3, x + 3, 1, dir, board) && !this.checkArround(y + 4, x + 4, 1, dir, board))
+                                            return true;
+                                    break;
+                                case 2:
+                                    if (board[y + 1][x + 1] == 2 && board[y + 2][x + 2] == 2 && board[y + 3][x + 3] == 2 && board[y + 4][x + 4] == 2)
+                                        if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y + 1, x + 1, 2, dir, board) && !this.checkArround(y + 2, x + 2, 2, dir, board) && !this.checkArround(y + 3, x + 3, 2, dir, board) && !this.checkArround(y + 4, x + 4, 2, dir, board))
+                                            return true;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    minMaxAlphaBeta(node, depth, alpha, beta, maximizingPlayer) {
+
+        let gameOver = this.checkWinner(node)
+        
+        if (depth == 0 || gameOver == true) {
+            //return depth * 2 + 1
+            return this.heuristicValue(node);
+        }
+
+        //let node = createChilds(matrix, maximizingPlayer);
+        //console.log(node)
+
+        if (maximizingPlayer) {
+            //console.log("maximise");
+            let maxEval = -Infinity
+            for (let i = 0; i <= 18; i++) {
+                for (let j = 0; j <= 18; j++) {
+                    if (node[i][j] == 0) {
+                        node[i][j] = 1
+                        let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, false);
+                        node[i][j] = 0
+                        maxEval = Math.max(maxEval, score);
+                        alpha = Math.max(alpha, score)
+                        if (beta <= alpha) {
+                            break;
+                        }
+                    }
+                }
+            }
+            return maxEval
+        }
+        else {
+           // console.log("minimise");
+            let minEval = Infinity
+            for (let i = 0; i <= 18; i++) {
+                for (let j = 0; j <= 18; j++) {
+                    if (node[i][j] == 0) {
+                        node[i][j] = 1
+                        let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, true);
+                        node[i][j] = 0
+                        minEval = Math.min(minEval, score);
+                        beta = Math.min(beta, score)
+                        if (beta <= alpha) {
+                            break;
+                        }
+                    }
+                }
+            }
+            return minEval
+        }
+    }
+
+    heuristic(board) {
+        let score = 0;
+        let tmpScore = 0;
+        let nbAlign = 0;
+        for (var y = 0; y <= 18; y++) {
+            for (var x = 0; x <= 18; x++) {
+                for (var dir = 1; dir <= 4; dir++) {
+                    if (dir == 1) {
+                        if (y <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y + tmp][x] == 1) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y + tmp, x, 1, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y + tmp][x] == 2)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore  ? tmpScore : score;
+                                    break;
+                                case 2:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y + tmp][x] == 2) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y + tmp, x, 2, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y + tmp][x] == 1)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore ? tmpScore : score;
+                                    break;
+                            }
+                        }
+                    }
+                    if (dir == 2) {
+                        if (x <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y][x  + tmp] == 1) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y, x  + tmp, 1, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y][x  + tmp] == 2)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore ? tmpScore : score;
+                                    break;
+                                case 2:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y][x + tmp] == 2) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y, x  + tmp, 2, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y][x  + tmp] == 1)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore ? tmpScore : score;
+                                    break;
+                            }
+                        }
+                    }
+                    if (dir == 3) {
+                        if (y >= 4 && x <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y - tmp][x  + tmp] == 1) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y - tmp, x  + tmp, 1, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y - tmp][x  + tmp] == 2)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore ? tmpScore : score;
+                                    break;
+                                case 2:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y - tmp][x + tmp] == 2) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y - tmp, x  + tmp, 2, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y - tmp][x  + tmp] == 1)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore ? tmpScore : score;
+                                    break;
+                            }
+                        }
+                    }
+                    if (dir == 4) {
+                        if (x <= 14 && y <= 14) {
+                            switch (board[y][x]) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y + tmp][x  + tmp] == 1) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y + tmp, x  + tmp, 1, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y + tmp][x  + tmp] == 2)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore ? tmpScore : score;
+                                    break;
+                                case 2:
+                                    tmpScore = 0;
+                                    for (var tmp = 1; tmp <= 4; tmp++) {
+                                        if (board[y + tmp][x + tmp] == 2) {
+                                            tmpScore += 2;
+                                            nbAlign += 2;
+                                            if (!this.checkArround(y + tmp, x  + tmp, 2, dir, board) )
+                                                tmpScore += 3;
+                                        }
+                                        else if (board[y + tmp][x  + tmp] == 1)
+                                            tmpScore -= 1;
+                                    }
+                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
+                                    tmpScore += nbAlign
+                                    score += score <= tmpScore ? tmpScore : score;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }    
+        }
+        return score;
+    }
+    
+    heuristicValue(board, player) {
+        /*if (this.checkWinner(board)) {
+            return Infinity;
+        }*/
+        return this.heuristic(board)
     }
 }
 
-/*const ia = new IA(matrix, player) 
 
-console.log(ia.id)*/
+  
+  // Usage!
+
+//console.log(ia.id)
+//minMax(matrix, 2, true) my turn is true and opponant turn is false
 //maximizingPlayer bool => if depth is odd == true 
