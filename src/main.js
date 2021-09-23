@@ -28,7 +28,7 @@ function capture(y, x, piece) {
     let nbCD1m = 0;
     let nbCD2p = 0;
     let nbCD2m = 0;
-    console.log("----------- capture --------------");
+    //console.log("----------- capture --------------");
     //x+
     for (let mv = 1; mv <= 3; mv++) {
         if ((x + mv) <= 18 && matrix[y][x + mv]) {
@@ -269,7 +269,7 @@ function capture(y, x, piece) {
         nbCD2m = 0;
     }
     // console.log("captureLigne = "+nbCxp+" CaptureColone = "+nbCy+" CaptureDiag1 = "+nbCD1+" CaptureDiag2 = "+nbCD2)
-    console.log("----------- fin capture --------------");
+ //   console.log("----------- fin capture --------------");
     if (nbCxp == 2 || nbCxm == 2 || nbCyp == 2 || nbCym == 2 || nbCD1p == 2 || nbCD1m == 2 || nbCD2p == 2 || nbCD2m == 2) {
         if (piece == 1) {
             nbPionB += 2;
@@ -277,9 +277,9 @@ function capture(y, x, piece) {
             $('.nbPairesB').html(nbPionB / 2);
         }
         if (piece == 2) {
-            console.log("nbPionW = " + nbPionW)
+           // console.log("nbPionW = " + nbPionW)
             nbPionW += 2;
-            console.log("nbPionW = " + nbPionW)
+           // console.log("nbPionW = " + nbPionW)
             $('.nbPieceW').html(nbPionW);
             $('.nbPairesW').html(nbPionW / 2);
         }
@@ -301,83 +301,61 @@ function checkType(y, x, piece) {
         else 
             return 2;
     }
-    console.log("retourne -1 ");
+   // console.log("retourne -1 ");
     return -1;
 }
 
 function checkArround(y, x, piece, direction) {
-    console.log("etat du y= " +y)
-    //direction = {vertical : 1, horizontal : 2, diagonale1 : 3, diagonale2: 4}
     if (checkType(y, x, piece) == 0) {
         return true;
     }
     if (direction != 1) {
-         console.log("d 1");
-        /*console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+"encore en bas il y a = "+matrix[y + 2][x])
-         console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+" en h + 2 il y a = "+matrix[y - 2][x])*/
         if (checkType(y + 1, x, piece) == 1 && ((checkType(y + 2, x, piece) == 2 && checkType(y - 1, x, piece) == 0) || (checkType(y + 2, x, piece) == 0 && checkType(y - 1, x, piece) == 2))) {
-            console.log("ca return vrai 1");
             return true;
         }
         else if (checkType(y - 1, x, piece) == 1  && ((checkType(y - 2, x, piece) == 2 && checkType(y + 1, x, piece) == 0) ||(checkType(y - 2, x, piece) == 0 && checkType(y + 1, x, piece) == 2))) {
-            console.log("x = "+x+" et y = "+y);
-            console.log("vrai 2 - 2");
             return true;
         }
     }
     if (direction != 2) {
-        console.log("d 2");
-       /* console.log("y = " + y + " x = " + x);
-        console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])*/
         if (checkType(y, x + 1, piece) == 1 && ((checkType(y, x + 2, piece) == 2 && checkType(y, x - 1, piece) == 0) || (checkType(y, x + 2, piece) == 0 && checkType(y, x - 1, piece) == 2))) {
-           // console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])
-            console.log("ca return vrai 3");
             return true;
         }
         else if (checkType(y, x - 1, piece) == 1 && ((checkType(y, x - 2, piece) == 2 && checkType(y, x + 1, piece) == 0) || (checkType(y, x - 2, piece) == 0 && checkType(y, x + 1, piece) == 2))) {
-         //   console.log("a gauche il y a = " + matrix[y][x - 1] + "encore à gauche il y a = " + matrix[y][x - 2] + " et à droite il y a = " + matrix[y][x + 1])
-            console.log("ca return vrai 4");
             return true;
         }
     }
     if (direction != 3) {
-        console.log("d 3");
         if (checkType(y - 1, x + 1, piece) == 1 && ((checkType(y - 2, x + 2, piece) == 2 && checkType(y + 1, x - 1, piece) == 0) || (checkType(y - 2, x + 2, piece) == 0 && checkType(y + 1, x - 1, piece) == 2))) {
-            console.log("ca return vrai 5");
             return true;
         }
         else if (checkType(y + 1, x - 1, piece) == 1 && ((checkType(y + 2, x - 2, piece) == 2 && checkType(y - 1, x + 1, piece) == 0) || (checkType(y + 2, x - 2, piece) == 0 && checkType(y - 1, x + 1, piece) == 2))) {
-            console.log("ca return vrai 6");
             return true;
         }
     }
     if (direction != 4) {
-        console.log("d 4");
         if (checkType(y - 1, x - 1, piece) == 1 && ((checkType(y - 2, x - 2, piece) == 2 && checkType(y + 1, x + 1, piece) == 0) || (checkType(y - 2, x - 2, piece) == 0 && checkType(y + 1, x + 1, piece) == 2))) {
-            console.log("ca return vrai 7");
             return true;
         }
         else if (checkType(y + 1, x + 1, piece) == 1 && ((checkType(y + 2, x + 2, piece) == 2 && checkType(y - 1, x - 1, piece) == 0) || (checkType(y + 2, x + 2, piece) == 0 && checkType(y - 1, x - 1, piece) == 2))) {
-            console.log("ca return vrai 8");
             return true;
         }
     }
-    console.log("le retour est faux");
     return false;
 }
 
 function checkLigne(y, x, piece, direction) {
-    console.log("etat du y ligne= " +y)
+  //  console.log("etat du y ligne= " +y)
     let nbPiece = 0;
     let side1 = true;
     let side2 = true;
     if (direction == 1) {
-        console.log("   test dir 1 - 1")
+       // console.log("   test dir 1 - 1")
         for (let cpt = 1; cpt < 5; cpt++) {
-            console.log("       test dir 1 - 2")
+         //   console.log("       test dir 1 - 2")
             if (y + cpt < 19) {                
                 if (checkArround(y + cpt, x, piece, direction) == true && side1 == true) {
-                    console.log("           test dir 1 - 3")
+           //         console.log("           test dir 1 - 3")
                     side1 = false;
                 }
                 else if (side1 == true) {
@@ -386,14 +364,14 @@ function checkLigne(y, x, piece, direction) {
             }
             if (y - cpt >= 0) {
                 if (checkArround(y - cpt, x, piece, direction) == true && side2 == true) {
-                    console.log("           test dir 1 - 4")
+             //       console.log("           test dir 1 - 4")
                     side2 = false;
                 }
                 else if (side2 == true) {
                     nbPiece++;
                 }
             }
-            console.log("nbPieces = " + nbPiece);
+           // console.log("nbPieces = " + nbPiece);
             if (side1 == false && side2 == false) {
                 if (nbPiece >= 4) {
                     return false;
@@ -403,19 +381,19 @@ function checkLigne(y, x, piece, direction) {
                 }
             }
             if (cpt == 4 && nbPiece >= 4) {
-                console.log("test");
+            //    console.log("test");
                 return false;
             }
         }
     }
     if (direction == 2) {
-        console.log("test dir 2 - 1")
+      //  console.log("test dir 2 - 1")
         for (let cpt = 1; cpt < 5; cpt++) {
-            console.log("test dir 2 - 2")
+        //    console.log("test dir 2 - 2")
             if (x + cpt < 19) {
-                console.log(" ici c'est pas bon")
+          //      console.log(" ici c'est pas bon")
                 if (checkArround(y, x + cpt, piece, direction) == true && side1 == true) {
-                    console.log("test dir 2 - 3")
+            //        console.log("test dir 2 - 3")
                     side1 = false;
                 }
                 else if (side1 == true) {
@@ -423,9 +401,9 @@ function checkLigne(y, x, piece, direction) {
                 }
             }
             if (x - cpt >= 0 ) {
-                console.log(" ici c'est bon")
+            //    console.log(" ici c'est bon")
                 if (checkArround(y, x - cpt, piece, direction) == true && side2 == true) {
-                    console.log("test dir 2 - 4")
+            //        console.log("test dir 2 - 4")
                     side2 = false;
                 }
                 else if (side2 == true) {
@@ -477,18 +455,18 @@ function checkLigne(y, x, piece, direction) {
         }
     }
     if (direction == 4) {
-        console.log("test dir 4 - 1")
+     //   console.log("test dir 4 - 1")
         for (let cpt = 1; cpt < 5; cpt++) {
-            console.log("test dir 4 - 2")
+       //     console.log("test dir 4 - 2")
             if (checkArround(y + cpt, x + cpt, piece, direction) == true && side1 == true) {
-                console.log("test dir 4 - 3")
+         //       console.log("test dir 4 - 3")
                 side1 = false;
             }
             else if (side1 == true) {
                 nbPiece++;
             }
             if (checkArround(y - cpt, x - cpt, piece, direction) == true && side2 == true) {
-                console.log("test dir 4 - 4")
+       //         console.log("test dir 4 - 4")
                 side2 = false;
             }
             else if (side2 == true) {
@@ -515,7 +493,7 @@ function checkWin(y, x, piece) {
     var nbBD1 = 0;
     var nbBD2 = 0;
     var ret = -1;
-    console.log("checkWin");
+   // console.log("checkWin");
     //x 
     for (mv = 1; mv <= 4; mv++) {
         if (matrix[y][x + mv] && matrix[y][x + mv] == piece) {
@@ -551,7 +529,7 @@ function checkWin(y, x, piece) {
     //-+ +-
     for (mv = 1; mv <= 4; mv++) {
         if (matrix[y - mv] && matrix[y - mv][x + mv] && matrix[y - mv][x + mv] == piece) {
-            console.log("matrix[y - mv ][x + mv] = [" + (y - mv) + "][" + (x + mv) + "]");
+       //     console.log("matrix[y - mv ][x + mv] = [" + (y - mv) + "][" + (x + mv) + "]");
             nbBD1++;
         }
         else
@@ -559,7 +537,7 @@ function checkWin(y, x, piece) {
     }
     for (mv = 1; mv <= 4; mv++) {
         if (matrix[y + mv] && matrix[y + mv][x - mv] && matrix[y + mv][x - mv] == piece) {
-            console.log("matrix[y + mv ][x - mv] = [" + (y + mv) + "][" + (x - mv) + "]");
+         //   console.log("matrix[y + mv ][x - mv] = [" + (y + mv) + "][" + (x - mv) + "]");
             nbBD1++;
         }
         else
@@ -569,7 +547,7 @@ function checkWin(y, x, piece) {
     //++ --
     for (mv = 1; mv <= 4; mv++) {
         if (matrix[y - mv] && matrix[y - mv][x - mv] && matrix[y - mv][x - mv] == piece) {
-            console.log("matrix[y - mv ][x - mv] = [" + (y - mv) + "][" + (x - mv) + "]");
+         //   console.log("matrix[y - mv ][x - mv] = [" + (y - mv) + "][" + (x - mv) + "]");
             nbBD2++;
         }
         else
@@ -577,13 +555,13 @@ function checkWin(y, x, piece) {
     }
     for (mv = 1; mv <= 4; mv++) {
         if (matrix[y + mv] && matrix[y + mv][x + mv] && matrix[y + mv][x + mv] == piece) {
-            console.log("matrix[y + mv ][x + mv] = [" + (y + mv) + "][" + (x + mv) + "]");
+           // console.log("matrix[y + mv ][x + mv] = [" + (y + mv) + "][" + (x + mv) + "]");
             nbBD2++;
         }
         else
             break;
     }
-    console.log("nbBx = " + nbBx + " nbBy = " + nbBy + " nbBD1 = " + nbBD1 + " nbBD2 = " + nbBD2)
+    //console.log("nbBx = " + nbBx + " nbBy = " + nbBy + " nbBD1 = " + nbBD1 + " nbBD2 = " + nbBD2)
     /* if (nbPionB == 10 || nbPionW == 10) {
          console.log("10 captures effectuées");
          return true;
@@ -591,22 +569,22 @@ function checkWin(y, x, piece) {
     if (nbBx >= 4 || nbBy >= 4 || nbBD1 >= 4 || nbBD2 >= 4) {
         if (nbBy >= 4) {
             ret = checkLigne(y, x, piece, 1)
-            console.log("nbBy = " + ret)
+      //      console.log("nbBy = " + ret)
         }
         if (nbBx >= 4) {
             ret = checkLigne(y, x, piece, 2)
-            console.log("nbBx 2= " + ret)
+        //    console.log("nbBx 2= " + ret)
         }
         if (nbBD1 >= 4) {
             ret = checkLigne(y, x, piece, 3)
-            console.log("nbBD1 = " + ret)
+          //  console.log("nbBD1 = " + ret)
         }
         if (nbBD2 >= 4) {
             ret = checkLigne(y, x, piece, 4)
-            console.log("nbBD2 = " + ret)
+          //  console.log("nbBD2 = " + ret)
         }
         if (ret != true) {
-            console.log("ligne compelete");
+           // console.log("ligne compelete");
             
             return true;
         }
@@ -878,7 +856,7 @@ function drawCoordinates(y, x) {
         }
 
         matrix[y][x] = piece;
-        //console.log(matrix);
+        console.log(matrix);
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         //result = ia.checkWinner(matrix)
@@ -903,7 +881,7 @@ function drawCoordinates(y, x) {
             $('#reset').click();
         }, 50)
     }
-    if (player) {
+    else if (player) {
         ia.bestMove(matrix);
     }
 }
@@ -1245,8 +1223,8 @@ class IA {
           for (let j = 0; j <= 18; j++) {
             if (board[i][j] == 0) {
                 board[i][j] = 1;
-              let score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, true) 
-              console.log(score);
+              let score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, false) 
+              //console.log(score);
               board[i][j] = 0;
               if (score > bestScore) {
                 bestScore = score;
@@ -1418,12 +1396,8 @@ class IA {
         let gameOver = this.checkWinner(node)
         
         if (depth == 0 || gameOver == true) {
-            //return depth * 2 + 1
             return this.heuristicValue(node);
         }
-
-        //let node = createChilds(matrix, maximizingPlayer);
-        //console.log(node)
 
         if (maximizingPlayer) {
             //console.log("maximise");
@@ -1467,8 +1441,6 @@ class IA {
 
     heuristic(board) {
         let score = 0;
-        let tmpScore = 0;
-        let nbAlign = 0;
         for (var y = 0; y <= 18; y++) {
             for (var x = 0; x <= 18; x++) {
                 for (var dir = 1; dir <= 4; dir++) {
@@ -1478,36 +1450,44 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
-                                    tmpScore = 0;
+                                    let nbAlign = 0;
+                                    let isNoCapt = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y + tmp][x] == 1) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign += 1;
                                             if (!this.checkArround(y + tmp, x, 1, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y + tmp][x] == 2)
-                                            tmpScore -= 1;
+                                                isNoCapt += 1
+                                        } else if (board[y + tmp][x] == 2)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore  ? tmpScore : score;
+                                    if (nbAlign == 1) 
+                                        score += 1;
+                                    else if (nbAlign == 2) 
+                                        score += 10;
+                                    else if (nbAlign == 3)
+                                        score += (board[y + 4][x] == 0) ? 450 : 100;
+                                    else if (nbAlign == 4)
+                                        score += 1000;
                                     break;
                                 case 2:
-                                    tmpScore = 0;
+                                    let nbAlign2 = 0;
+                                    let isNoCapt2 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y + tmp][x] == 2) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign2 += 1;
                                             if (!this.checkArround(y + tmp, x, 2, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y + tmp][x] == 1)
-                                            tmpScore -= 1;
+                                                isNoCapt2 += 1;
+                                        } else if (board[y + tmp][x] == 1)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore ? tmpScore : score;
+                                    if (nbAlign2 == 1) 
+                                        score -= 1;
+                                    else if (nbAlign2 == 2) 
+                                        score -= 10;
+                                    else if (nbAlign2 == 3)
+                                        score -= (board[y + 4][x] == 0) ? 1000 : 100;
+                                    else if (nbAlign2 == 4)
+                                        score -= 1000;
                                     break;
                             }
                         }
@@ -1518,36 +1498,44 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
-                                    tmpScore = 0;
+                                    let nbAlign3 = 0;
+                                    let isNoCapt3 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y][x  + tmp] == 1) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign3 += 1;
                                             if (!this.checkArround(y, x  + tmp, 1, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y][x  + tmp] == 2)
-                                            tmpScore -= 1;
+                                                isNoCapt3 += 1;
+                                        } else if (board[y][x + tmp] == 2)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore ? tmpScore : score;
+                                    if (nbAlign3 == 1) 
+                                        score += 1;
+                                    else if (nbAlign3 == 2) 
+                                        score += 10;
+                                    else if (nbAlign3 == 3)
+                                        score += (board[y][x + 4] == 0) ? 450 : 100;
+                                    else if (nbAlign3 == 4)
+                                        score += 1000;
                                     break;
                                 case 2:
-                                    tmpScore = 0;
+                                    let nbAlign4 = 0;
+                                    let isNoCapt4 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y][x + tmp] == 2) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign4 += 1;
                                             if (!this.checkArround(y, x  + tmp, 2, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y][x  + tmp] == 1)
-                                            tmpScore -= 1;
+                                                isNoCapt4 += 1;
+                                        } else if (board[y][x + tmp] == 1)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore ? tmpScore : score;
+                                    if (nbAlign4 == 1) 
+                                        score -= 1;
+                                    else if (nbAlign4 == 2) 
+                                        score -= 10;
+                                    else if (nbAlign4 == 3)
+                                        score -= (board[y][x + 4] == 0) ? 1000 : 100;
+                                    else if (nbAlign4 == 4)
+                                        score -= 1000;
                                     break;
                             }
                         }
@@ -1558,36 +1546,44 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
-                                    tmpScore = 0;
+                                    let nbAlign5 = 0;
+                                    let isNoCapt5 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y - tmp][x  + tmp] == 1) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign5 += 1;
                                             if (!this.checkArround(y - tmp, x  + tmp, 1, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y - tmp][x  + tmp] == 2)
-                                            tmpScore -= 1;
+                                                isNoCapt5 += 1;
+                                        } else if (board[y - tmp][x  + tmp] == 2)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore ? tmpScore : score;
+                                    if (nbAlign5 == 1) 
+                                        score += 1;
+                                    else if (nbAlign5 == 2) 
+                                        score += 10;
+                                    else if (nbAlign5 == 3)
+                                        score += (board[y - 4][x + 4] == 0) ? 450 : 100;
+                                    else if (nbAlign5 == 4)
+                                        score += 1000;
                                     break;
                                 case 2:
-                                    tmpScore = 0;
+                                    let nbAlign6 = 0;
+                                    let isNoCapt6 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y - tmp][x + tmp] == 2) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign6 += 1;
                                             if (!this.checkArround(y - tmp, x  + tmp, 2, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y - tmp][x  + tmp] == 1)
-                                            tmpScore -= 1;
+                                                isNoCapt6 += 1;
+                                        } else if (board[y - tmp][x  + tmp] == 1)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore ? tmpScore : score;
+                                    if (nbAlign6 == 1) 
+                                        score -= 1;
+                                    else if (nbAlign6 == 2) 
+                                        score -= 10;
+                                    else if (nbAlign6 == 3)
+                                        score -= (board[y - 4][x + 4] == 0) ? 1000 : 100;
+                                    else if (nbAlign6 == 4)
+                                        score -= 1000;
                                     break;
                             }
                         }
@@ -1598,36 +1594,44 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
-                                    tmpScore = 0;
+                                    let nbAlign7 = 0;
+                                    let isNoCapt7 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y + tmp][x  + tmp] == 1) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign7 += 1;
                                             if (!this.checkArround(y + tmp, x  + tmp, 1, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y + tmp][x  + tmp] == 2)
-                                            tmpScore -= 1;
+                                                isNoCapt7 += 1;
+                                        } else if (board[y + tmp][x  + tmp] == 2)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore ? tmpScore : score;
+                                    if (nbAlign7 == 1) 
+                                        score += 1;
+                                    else if (nbAlign7 == 2) 
+                                        score += 10;
+                                    else if (nbAlign7 == 3)
+                                        score += (board[y + 4][x + 4] == 0) ? 450 : 100;
+                                    else if (nbAlign7 == 4)
+                                        score += 1000;
                                     break;
                                 case 2:
-                                    tmpScore = 0;
+                                    let nbAlign8 = 0;
+                                    let isNoCapt8 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
                                         if (board[y + tmp][x + tmp] == 2) {
-                                            tmpScore += 2;
-                                            nbAlign += 2;
+                                            nbAlign8 += 1;
                                             if (!this.checkArround(y + tmp, x  + tmp, 2, dir, board) )
-                                                tmpScore += 3;
-                                        }
-                                        else if (board[y + tmp][x  + tmp] == 1)
-                                            tmpScore -= 1;
+                                                isNoCapt8 += 1;
+                                        } else if (board[y + tmp][x + tmp] == 1)
+                                            break;
                                     }
-                                    nbAlign *= nbAlign >= 4 ? 10 : 1;
-                                    tmpScore += nbAlign
-                                    score += score <= tmpScore ? tmpScore : score;
+                                    if (nbAlign8 == 1) 
+                                        score -= 1;
+                                    else if (nbAlign8 == 2) 
+                                        score -= 10;
+                                    else if (nbAlign8 == 3)
+                                        score -= (board[y + 4][x + 4] == 0) ? 1000 : 100;
+                                    else if (nbAlign8 == 4)
+                                        score -= 1000;
                                     break;
                             }
                         }
@@ -1640,6 +1644,7 @@ class IA {
     
     heuristicValue(board, player) {
         /*if (this.checkWinner(board)) {
+            console.log('solution trouvée');
             return Infinity;
         }*/
         return this.heuristic(board)
