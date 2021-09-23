@@ -1462,7 +1462,7 @@ class IA {
                                             if (!this.checkArround(y + tmp, x, 1, dir, board) )
                                                 isNoCapt += 1
                                         } else if (board[y + tmp][x] == 2)
-                                            nbAlign =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign == 1) 
                                         score += 1;
@@ -1482,7 +1482,7 @@ class IA {
                                             if (!this.checkArround(y + tmp, x, 2, dir, board) )
                                                 isNoCapt2 += 1;
                                         } else if (board[y + tmp][x] == 1)
-                                            nbAlign2 =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign2 == 1) 
                                         score -= 1;
@@ -1510,7 +1510,7 @@ class IA {
                                             if (!this.checkArround(y, x  + tmp, 1, dir, board) )
                                                 isNoCapt3 += 1;
                                         } else if (board[y][x + tmp] == 2)
-                                            nbAlign3 =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign3 == 1) 
                                         score += 1;
@@ -1530,7 +1530,7 @@ class IA {
                                             if (!this.checkArround(y, x  + tmp, 2, dir, board) )
                                                 isNoCapt4 += 1;
                                         } else if (board[y][x + tmp] == 1)
-                                            nbAlign4 =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign4 == 1) 
                                         score -= 1;
@@ -1558,7 +1558,7 @@ class IA {
                                             if (!this.checkArround(y - tmp, x  + tmp, 1, dir, board) )
                                                 isNoCapt5 += 1;
                                         } else if (board[y - tmp][x  + tmp] == 2)
-                                            nbAlign5 =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign5 == 1) 
                                         score += 1;
@@ -1578,7 +1578,7 @@ class IA {
                                             if (!this.checkArround(y - tmp, x  + tmp, 2, dir, board) )
                                                 isNoCapt6 += 1;
                                         } else if (board[y - tmp][x  + tmp] == 1)
-                                            nbAlign6 =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign6 == 1) 
                                         score -= 1;
@@ -1606,7 +1606,7 @@ class IA {
                                             if (!this.checkArround(y + tmp, x  + tmp, 1, dir, board) )
                                                 isNoCapt7 += 1;
                                         } else if (board[y + tmp][x  + tmp] == 2)
-                                            nbAlign7 =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign7 == 1) 
                                         score += 1;
@@ -1626,7 +1626,7 @@ class IA {
                                             if (!this.checkArround(y + tmp, x  + tmp, 2, dir, board) )
                                                 isNoCapt8 += 1;
                                         } else if (board[y + tmp][x + tmp] == 1)
-                                            nbAlign8 =- 1;
+                                            score -= 1;
                                     }
                                     if (nbAlign8 == 1) 
                                         score -= 1;
