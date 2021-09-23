@@ -860,7 +860,7 @@ function drawCoordinates(y, x) {
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         //result = ia.checkWinner(matrix)
-         result = checkWin(y, x, piece); //test();
+        result = checkWin(y, x, piece); //test();
         player = !player;
 
         if (player) {
@@ -1441,6 +1441,10 @@ class IA {
 
     heuristic(board) {
         let score = 0;
+        let ws = 20;
+        let bs = 40;
+        let ws2 = 200;
+        let bs2 = 400;
         for (var y = 0; y <= 18; y++) {
             for (var x = 0; x <= 18; x++) {
                 for (var dir = 1; dir <= 4; dir++) {
@@ -1458,14 +1462,14 @@ class IA {
                                             if (!this.checkArround(y + tmp, x, 1, dir, board) )
                                                 isNoCapt += 1
                                         } else if (board[y + tmp][x] == 2)
-                                            break;
+                                            nbAlign =- 1;
                                     }
                                     if (nbAlign == 1) 
                                         score += 1;
                                     else if (nbAlign == 2) 
-                                        score += 10;
+                                        score += (10 + ((board[y + 4][x] == 0) ? ws : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? ws : 0)) ;
                                     else if (nbAlign == 3)
-                                        score += (board[y + 4][x] == 0) ? 450 : 100;
+                                        score += (100 + ((board[y + 4][x] == 0) ? ws2 : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? ws2 : 0)) ;
                                     else if (nbAlign == 4)
                                         score += 1000;
                                     break;
@@ -1478,16 +1482,16 @@ class IA {
                                             if (!this.checkArround(y + tmp, x, 2, dir, board) )
                                                 isNoCapt2 += 1;
                                         } else if (board[y + tmp][x] == 1)
-                                            break;
+                                            nbAlign2 =- 1;
                                     }
                                     if (nbAlign2 == 1) 
                                         score -= 1;
                                     else if (nbAlign2 == 2) 
-                                        score -= 10;
+                                        score -= (10 + ((board[y + 4][x] == 0) ? bs : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? bs : 0)) ;
                                     else if (nbAlign2 == 3)
-                                        score -= (board[y + 4][x] == 0) ? 1000 : 100;
+                                        score -= (100 + ((board[y + 4][x] == 0) ? bs2 : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? bs2 : 0)) ;
                                     else if (nbAlign2 == 4)
-                                        score -= 1000;
+                                        score -= 1000 ;
                                     break;
                             }
                         }
@@ -1506,16 +1510,16 @@ class IA {
                                             if (!this.checkArround(y, x  + tmp, 1, dir, board) )
                                                 isNoCapt3 += 1;
                                         } else if (board[y][x + tmp] == 2)
-                                            break;
+                                            nbAlign3 =- 1;
                                     }
                                     if (nbAlign3 == 1) 
                                         score += 1;
                                     else if (nbAlign3 == 2) 
-                                        score += 10;
+                                        score += (10 + ((board[y][x + 4] == 0) ? ws : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? ws : 0)) ;
                                     else if (nbAlign3 == 3)
-                                        score += (board[y][x + 4] == 0) ? 450 : 100;
+                                        score += (100 + ((board[y][x + 4] == 0) ? ws2 : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? ws2 : 0)) ;
                                     else if (nbAlign3 == 4)
-                                        score += 1000;
+                                        score += 1000 ;
                                     break;
                                 case 2:
                                     let nbAlign4 = 0;
@@ -1526,14 +1530,14 @@ class IA {
                                             if (!this.checkArround(y, x  + tmp, 2, dir, board) )
                                                 isNoCapt4 += 1;
                                         } else if (board[y][x + tmp] == 1)
-                                            break;
+                                            nbAlign4 =- 1;
                                     }
                                     if (nbAlign4 == 1) 
                                         score -= 1;
                                     else if (nbAlign4 == 2) 
-                                        score -= 10;
+                                        score -= (10 + ((board[y][x + 4] == 0) ? bs : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? bs : 0)) ;
                                     else if (nbAlign4 == 3)
-                                        score -= (board[y][x + 4] == 0) ? 1000 : 100;
+                                        score -= (100 + ((board[y][x + 4] == 0) ? bs2 : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? bs2 : 0)) ;
                                     else if (nbAlign4 == 4)
                                         score -= 1000;
                                     break;
@@ -1554,14 +1558,14 @@ class IA {
                                             if (!this.checkArround(y - tmp, x  + tmp, 1, dir, board) )
                                                 isNoCapt5 += 1;
                                         } else if (board[y - tmp][x  + tmp] == 2)
-                                            break;
+                                            nbAlign5 =- 1;
                                     }
                                     if (nbAlign5 == 1) 
                                         score += 1;
                                     else if (nbAlign5 == 2) 
-                                        score += 10;
+                                        score += (10 + ((board[y - 4][x + 4] == 0) ? ws : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? ws : 0));
                                     else if (nbAlign5 == 3)
-                                        score += (board[y - 4][x + 4] == 0) ? 450 : 100;
+                                        score += (100 + ((board[y - 4][x + 4] == 0) ? ws2 : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? ws2 : 0));
                                     else if (nbAlign5 == 4)
                                         score += 1000;
                                     break;
@@ -1574,14 +1578,14 @@ class IA {
                                             if (!this.checkArround(y - tmp, x  + tmp, 2, dir, board) )
                                                 isNoCapt6 += 1;
                                         } else if (board[y - tmp][x  + tmp] == 1)
-                                            break;
+                                            nbAlign6 =- 1;
                                     }
                                     if (nbAlign6 == 1) 
                                         score -= 1;
                                     else if (nbAlign6 == 2) 
-                                        score -= 10;
+                                        score -= (10 + ((board[y - 4][x + 4] == 0) ? bs : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? bs : 0));
                                     else if (nbAlign6 == 3)
-                                        score -= (board[y - 4][x + 4] == 0) ? 1000 : 100;
+                                        score -= (100 + ((board[y - 4][x + 4] == 0) ? bs2 : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? bs2 : 0));
                                     else if (nbAlign6 == 4)
                                         score -= 1000;
                                     break;
@@ -1602,14 +1606,14 @@ class IA {
                                             if (!this.checkArround(y + tmp, x  + tmp, 1, dir, board) )
                                                 isNoCapt7 += 1;
                                         } else if (board[y + tmp][x  + tmp] == 2)
-                                            break;
+                                            nbAlign7 =- 1;
                                     }
                                     if (nbAlign7 == 1) 
                                         score += 1;
                                     else if (nbAlign7 == 2) 
-                                        score += 10;
+                                        score += (10 + ((board[y + 4][x + 4] == 0) ? ws : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? ws : 0));
                                     else if (nbAlign7 == 3)
-                                        score += (board[y + 4][x + 4] == 0) ? 450 : 100;
+                                        score += (100 + ((board[y + 4][x + 4] == 0) ? ws2 : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? ws2 : 0));
                                     else if (nbAlign7 == 4)
                                         score += 1000;
                                     break;
@@ -1622,14 +1626,14 @@ class IA {
                                             if (!this.checkArround(y + tmp, x  + tmp, 2, dir, board) )
                                                 isNoCapt8 += 1;
                                         } else if (board[y + tmp][x + tmp] == 1)
-                                            break;
+                                            nbAlign8 =- 1;
                                     }
                                     if (nbAlign8 == 1) 
                                         score -= 1;
                                     else if (nbAlign8 == 2) 
-                                        score -= 10;
+                                        score -= (10 + ((board[y + 4][x + 4] == 0) ? bs : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? bs : 0));
                                     else if (nbAlign8 == 3)
-                                        score -= (board[y + 4][x + 4] == 0) ? 1000 : 100;
+                                        score -= (100 + ((board[y + 4][x + 4] == 0) ? bs2 : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? bs2 : 0));
                                     else if (nbAlign8 == 4)
                                         score -= 1000;
                                     break;
