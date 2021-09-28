@@ -1538,7 +1538,7 @@ class IA {
                                     else if (nbAlign == 3){
                                         if (y > 0 && board[y - 1][x] == 0){
                                             if (board[y + 4][x] == 0 && isNoCapt == 4) {
-                                                score += Infinity;
+                                                score += 10000;
                                                 break;
                                             }
                                             score += ws + this.scoreSpace(y + tmp, x, board);;
@@ -1571,7 +1571,7 @@ class IA {
                                     else if (nbAlign2 == 3){
                                         if (y > 0 && board[y - 1][x] == 0){
                                             if (board[y + 4][x] == 0 && isNoCapt2 == 4) {
-                                                score -= Infinity;
+                                                score -= 10000;
                                                 break;
                                             }
                                             score -= (bs2 + this.scoreSpace(y + tmp, x, board));
@@ -1612,7 +1612,7 @@ class IA {
                                     else if (nbAlign3 == 3) {
                                         if (x > 0 && board[x - 1][x] == 0){
                                             if (board[x + 4][x] == 0 && isNoCapt3 == 4) {
-                                                score += Infinity;
+                                                score += 10000;
                                                 break;
                                             }
                                             score += ws2 + this.scoreSpace(y, x + tmp, board);
@@ -1645,7 +1645,7 @@ class IA {
                                     else if (nbAlign4 == 3){
                                         if (x > 0 && board[x - 1][x] == 0){
                                             if (board[x + 4][x] == 0 && isNoCapt4 == 4) {
-                                                score -= Infinity;
+                                                score -= 10000;
                                                 break;
                                             }
                                             score -= (bs2 + this.scoreSpace(y, x + tmp, board));
@@ -1686,7 +1686,7 @@ class IA {
                                     else if (nbAlign5 == 3){
                                         if (x > 0 && y < 18  && board[y + 1][x - 1] == 0){
                                             if (board[y - 4][x + 4] == 0 && isNoCapt5 == 4) {
-                                                score += Infinity;
+                                                score += 10000;
                                                 break;
                                             }
                                             score += ws2 + this.scoreSpace(y - tmp, x + tmp, board);
@@ -1719,7 +1719,7 @@ class IA {
                                     else if (nbAlign6 == 3) {
                                         if (x > 0 && y < 18  && board[y + 1][x - 1] == 0){
                                             if (board[y - 4][x + 4] == 0 && isNoCapt6 == 4) {
-                                                score -= Infinity;
+                                                score -= 10000;
                                                 break;
                                             }
                                             score -= (bs2 + this.scoreSpace(y - tmp, x + tmp, board));
@@ -1760,7 +1760,7 @@ class IA {
                                     else if (nbAlign7 == 3) {
                                         if (x > 0 && y > 0  && board[y - 1][x - 1] == 0){
                                             if (board[y + 4][x + 4] == 0 && isNoCapt7 == 4) {
-                                                score += Infinity;
+                                                score += 10000;
                                                 break;
                                             }
                                             score += ws2 + this.scoreSpace(y + tmp, x + tmp, board);
@@ -1793,7 +1793,7 @@ class IA {
                                     else if (nbAlign8 == 3) {
                                         if (x > 0 && y > 0  && board[y - 1][x - 1] == 0){
                                             if (board[y + 4][x + 4] == 0 && isNoCapt8 == 4) {
-                                                score -= Infinity;
+                                                score -= 10000;
                                                 break;
                                             }
                                             score -= (bs2 + this.scoreSpace(y + tmp, x + tmp, board));
