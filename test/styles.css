@@ -1,0 +1,114 @@
+@keyframes isSelected {
+    0% {
+    transform: scale(1, 1);
+    }
+    50% {
+    transform: scale(2, 2);
+    }
+    100% {
+    transform: scale(1, 1);
+    }
+}
+
+.isSelected {
+    animation : isSelected 2s ease-out infinite;
+}
+
+#board {
+    margin: auto;
+    width: auto;
+    justify-content: center;
+}
+
+td {
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+}
+
+.titre {
+    margin: auto;
+    width: auto;
+    text-align: center;
+    vertical-align: middle;
+    text-align: center;
+    padding: 25px;
+    display: flex;
+    justify-content: center;
+    background-color: #b8cbdc;
+    vertical-align: middle;
+}
+
+.lead {
+    font-size: 18px !important;
+}
+
+@media (min-width: 768px) {
+    .lead {
+        font-size: 18px;
+    }
+}
+
+#plateau {
+    margin: auto;
+    width: auto;
+    display: flex;
+}
+
+canvas {
+    border: 1px solid black;
+    background: rgb(213, 253, 186);
+}
+body {
+    background: rgb(126, 120, 120) !important;
+}
+
+.btnWhite {
+
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background: green;
+}
+
+.nbPieceB, .nbPieceW, .nbPairesB, .nbPairesW {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#reset {
+    display: flex;
+    margin: auto;
+}
+
+.cercle {
+    width: 15px;
+    height: 15px;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+td .cercle {
+    background-color: black;
+    margin-top: -33px;
+    margin-left: -13px;
+    width: 26px;
+    height: 26px;
+}
+
+td[id$="-18"] {
+    border-top: none ;
+    border-right: none ;
+    border-bottom: none ;
+}
+
+td[id^="col18"] {
+    border-left: none ;
+    border-right: none ;
+    border-bottom: none ;
+}
+
+#zone {
+    padding: 50px;
+    background-color: 	#DEB887;
+}
