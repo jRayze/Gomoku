@@ -80,7 +80,7 @@ function capture(y, x, piece) {
             matrix[y][x - 2] = 0;
             $('#col'+y+'-'+(x - 1)+' .cercle , #col'+y+'-'+(x - 2)+' .cercle').animate({
                 opacity: '0',
-            }, 'fast');
+            }, 'slow');
             console.log("delete x-");
         }
         isOk = false;
@@ -827,10 +827,18 @@ function printMatrice() {
 
 function drawMatrice(y, x, piece) {
     var color = piece == 2 ? 'black' : 'white';
-   // console.log('draw ?');
-    $('#col'+y+'-'+x+' .cercle').css('background-color', color).css('position', 'relative')
-        .css('opacity', '1').css('width', '40px').css('height', '40px')
-            .css('border-radius', '30px').css('margin-top', '-40px').css('margin-left', '-20px')
+    console.log('draw ?');
+    console.log(color)
+    console.log('#col'+y+'-'+x+' .cercle');
+    $('#col'+y+'-'+x+' .cercle').css('background-color', color)
+    $('#col'+y+'-'+x+' .cercle').css('position', 'relative')
+    $('#col'+y+'-'+x+' .cercle').css('opacity', '1')
+    console.log($('#col'+y+'-'+x+' .cercle').css('opacity'));
+    $('#col'+y+'-'+x+' .cercle').css('width', '40px')
+    $('#col'+y+'-'+x+' .cercle').css('height', '40px')
+    $('#col'+y+'-'+x+' .cercle').css('border-radius', '30px')
+    $('#col'+y+'-'+x+' .cercle').css('margin-top', '-40px')
+    $('#col'+y+'-'+x+' .cercle').css('margin-left', '-20px')
 
     $('#col'+y+'-'+x+' .cercle').animate({
         width: '26px',
@@ -856,11 +864,12 @@ function drawCoordinates(y, x) {
         }
 
         matrix[y][x] = piece;
-        console.log(matrix);
+        //console.log(matrix);
         capture(y, x, piece);
         drawMatrice(y, x, piece);
-        //result = ia.checkWinner(matrix)
-        result = checkWin(y, x, piece); //test();
+        console.log($('#col'+y+'-'+x+' .cercle').css('opacity'));
+        result = ia.checkWinner(matrix)
+        //result = checkWin(y, x, piece); //test();
         player = !player;
 
         if (player) {
@@ -868,7 +877,7 @@ function drawCoordinates(y, x) {
             $('#black').removeClass('isSelected');
             $('#black').css('animation', '');
         } else {
-            $('#black').addClass("isSelected");
+            $('#black').addClass("isSelected"); 
             $('#white').removeClass('isSelected');
             $('#white').css('animation', '');
         }
@@ -881,13 +890,15 @@ function drawCoordinates(y, x) {
             $('#reset').click();
         }, 50)
     }
-    else if (player) {
-        ia.bestMove(matrix);
-    }
 }
 
 function getPosition(x , y) {
     drawCoordinates(x, y);
+    if (player && !result ) {
+        let ia = new IA();
+        ia.bestMove(matrix);
+    }
+
 }
 
 function reset() {
@@ -919,7 +930,7 @@ function createBoard() {
             $('#line'+y).append('<td id="col'+y+'-'+x+'"><div  onClick="getPosition('+y+','+x+')" class="cercle"></div></td>')
         }
     }
-    $('td .cercle').css('opacity', '0');
+   $('td .cercle').css('opacity', '0');
     $('td').mousemove(function() {
         var colorP = player ? 'white': 'black';
         if ($(this).children().css('opacity') != 1) {
@@ -935,7 +946,8 @@ function createBoard() {
             $(this).children().css('opacity', '0');
         }
         else { 
-            $(this).children().css('opacity', '1');
+            var color = matrix[y][x] == 1 ? 'white' : 'black';
+            $(this).children().css('opacity', '1').css('background-color', color);
         }
     })
 }
@@ -949,30 +961,6 @@ function createBoard() {
 class IA {
     constructor() {
 
-    }
-
-    minMax(node, depth, maximizingPlayer) {
-        let gameStatus = checkWinner()
-        if (depth == 0 || gameStatus == -1) {
-            return heuristicValue(node);
-        }
-    
-        if (maximizingPlayer) {
-            maxEval = -Infinity
-            node.forEach(function(child){
-                score = minMax(child, depth -1, false);    
-                maxEval = max(maxEval, score);
-            })
-            return maxEval
-        }
-        else {
-            minEval = Infinity
-            node.forEach(function(child){
-                score = minMax(child, depth -1, true);    
-                minEval = min(maxEval, score);
-            })
-            return minEval
-        }
     }
 
     captureIA(y, x, piece, iaTab) {
@@ -1200,30 +1188,74 @@ class IA {
         }
     }
 
-    createChilds(node, maximizingPlayer) {
-        let p = maximizingPlayer ? 1 : 2;
-        var childs = [];
-        for (var y = 0; y <= 18; y++ ){
-            for (var x = 0; x <= 18; x++ ) {
-                if (node[y][x] == 0) {
-                    let cp = [...node];
-                    cp[y][x] == p
-                    captureIA(y, x, p, cp)
-                    childs = childs.push(cp);
-                }
-            }
-        }
-        return childs;
+    isCapturable(board, y, x, piece) {
+        let p1 = 1;
+		let p2 = 0;
+		if (piece == 0) {
+			p1 = 0;
+			p2 = 1;
+		}
+        // ------------------------------------------------x
+        if (x - 2 >= 0 && x + 1 <= 18){
+			if ((board[y][x - 1] == p1 && board[y][x - 2] == p2 && board[y][x + 1] == -1) ||
+				(board[y][x - 1] == p1 && board[y][ x + 1] == p2 && board[y][x - 2] == -1))
+				return true;
+		}
+		if (x + 2 <= 18 && x - 1 >= 0){
+			if ((board[y][x + 1] == p1 && board[y][x + 2] == p2 && board[y][x - 1] == -1) ||
+				(board[y][x + 1] == p1 && board[y][x - 1] == p2 && board[y][x + 2] == -1))
+				return true;
+		}
+		// ------------------------------------------------y
+		if (y - 2 >= 0 && y + 1 <= 18){
+			if ((board[y - 1][x] == p1 && board[y - 2][x] == p2 && board[y + 1][x] == -1) ||
+				(board[y - 1][x] == p1 && board[y + 1][x] == p2 && board[y - 2][x] == -1))
+				return true;
+		}
+		if (y + 2 <= 18 && y - 1 >= 0){
+			if ((board[y + 1][x] == p1 && board[y + 2][x] == p2 && board[y - 1][x] == -1) ||
+				(board[y + 1][x] == p1 && board[y - 1][x] == p2 && board[y + 2][x] == -1))
+				return true;
+		}
+		// ------------------------------------------------yx
+		if (y - 2 >= 0 && x - 2 >= 0 && y + 1 <= 18 && x + 1 <= 18){
+			if ((board[y - 1][x - 1] == p1 && board[y - 2][x - 2] == p2 && board[y + 1][x + 1] == -1) ||
+				(board[y - 1][x - 1] == p1 && board[y + 1][x + 1] == p2 && board[y - 2][x - 2] == -1))
+				return true;
+		}
+		if (y + 2 <= 18 && x + 2 <= 18 && y - 1 >= 0 && x - 1 >= 0){
+			if ((board[y + 1][x + 1] == p1 && board[y + 2][x + 2] == p2 && board[y - 1][x - 1] == -1) ||
+				(board[y + 1][x + 1] == p1 && board[y - 1][x - 1] == p2 && board[y + 2][x + 2] == -1))
+				return true;
+		}
+		// ------------------------------------------------xy
+		if (y - 2 >= 0 && x + 2 <= 18 && y + 1 <= 18 && x - 1 >= 0){
+			if ((board[y - 1][x + 1] == p1 && board[y - 2][x + 2] == p2 && board[y + 1][x - 1] == -1) ||
+				(board[y - 1][x + 1] == p1 && board[y + 1][x - 1] == p2 && board[y - 2][x + 2] == -1))
+				return true;
+		}
+		if (y + 2 <= 18 && x - 2 >= 0 && y - 1 >= 0 && x + 1 <= 18){
+			if ((board[y + 1][x - 1] == p1 && board[y + 2][x - 2] == p2 && board[y - 1][x + 1] == -1) ||
+				(board[y + 1][x - 1] == p1 && board[y - 1][x + 1] == p2 && board[y + 2][x - 2] == -1))
+				return true;
+		}
+		return false;
     }
+
 
     bestMove(board) {
         let bestScore = -Infinity;
         let move;
+        let score = 0;
         for (let i = 0; i <= 18; i++) {
           for (let j = 0; j <= 18; j++) {
             if (board[i][j] == 0) {
                 board[i][j] = 1;
-              let score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, false) 
+                if (checkDoubleFree(i, j, 1)) {
+                    board[i][j] = 0
+                    continue;    
+                }
+                score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, false) 
               //console.log(score);
               board[i][j] = 0;
               if (score > bestScore) {
@@ -1233,7 +1265,9 @@ class IA {
             }
           }
         }
+        console.log(move)
         drawCoordinates(move.i, move.j);
+        $('.score').html("Score : "+score)
     }
     
     checkType(y, x, p, board) {
@@ -1406,13 +1440,17 @@ class IA {
                 for (let j = 0; j <= 18; j++) {
                     if (node[i][j] == 0) {
                         node[i][j] = 1
+                        if (checkDoubleFree(i, j, 1)) {
+                            node[i][j] = 0
+                            continue;    
+                        }
                         let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, false);
                         node[i][j] = 0
                         maxEval = Math.max(maxEval, score);
-                        alpha = Math.max(alpha, score)
-                        if (beta <= alpha) {
-                            break;
+                        if (maxEval >= beta) {
+                            return maxEval;
                         }
+                        alpha = Math.max(alpha, maxEval)
                     }
                 }
             }
@@ -1425,13 +1463,17 @@ class IA {
                 for (let j = 0; j <= 18; j++) {
                     if (node[i][j] == 0) {
                         node[i][j] = 1
+                        if (checkDoubleFree(i, j, 2)) {
+                            node[i][j] = 0
+                            continue;
+                        }
                         let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, true);
                         node[i][j] = 0
                         minEval = Math.min(minEval, score);
-                        beta = Math.min(beta, score)
-                        if (beta <= alpha) {
-                            break;
+                        if (alpha >= minEval) {
+                            return minEval
                         }
+                        beta = Math.min(beta, minEval)
                     }
                 }
             }
@@ -1439,12 +1481,35 @@ class IA {
         }
     }
 
+    scoreSpace(y, x, board) {
+        let score = 0
+        if (y >= 0 && x >= 0 && y <= 18 && x <= 18) {
+            if (y >= 1  && board[y - 1][x] == 0)
+                score += 0.0125;
+            if (x >= 1 && board[y][x - 1] == 0)
+                score += 0.0125;
+            if (y <= 17 && board[y + 1][x] == 0)
+                score += 0.0125;
+            if (x <= 17 && board[y][x + 1] == 0)
+                score += 0.0125;
+            if (y <= 17 && x >= 1 && board[y + 1][x - 1] == 0)
+                score += 0.0125;
+            if (y <= 17 && x <= 17 && board[y + 1][x + 1] == 0)
+                score += 0.0125;
+            if (y >= 1 && x >= 1 && board[y - 1][x - 1] == 0)
+                score += 0.0125;
+            if (y >= 1 && x <= 17 && board[y - 1][x + 1] == 0)
+                score += 0.0125;
+        }
+        return score;
+    }
+
     heuristic(board) {
         let score = 0;
-        let ws = 20;
-        let bs = 40;
-        let ws2 = 200;
-        let bs2 = 400;
+        let ws = 200;
+        let bs = 500;
+        let ws2 = 400;
+        let bs2 = 1000;
         for (var y = 0; y <= 18; y++) {
             for (var x = 0; x <= 18; x++) {
                 for (var dir = 1; dir <= 4; dir++) {
@@ -1454,29 +1519,44 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
+                                    score += this.scoreSpace(y, x, board) 
                                     let nbAlign = 0;
                                     let isNoCapt = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score += this.scoreSpace(y + tmp, x, board) 
                                         if (board[y + tmp][x] == 1) {
                                             nbAlign += 1;
-                                            if (!this.checkArround(y + tmp, x, 1, dir, board) )
+                                            if (!this.checkArround(y + tmp, x, 1, dir, board))
                                                 isNoCapt += 1
                                         } else if (board[y + tmp][x] == 2)
                                             break;
                                     }
                                     if (nbAlign == 1) 
-                                        score += 1;
+                                        score += 1 + this.scoreSpace(y + tmp, x, board);
                                     else if (nbAlign == 2) 
-                                        score += (10 + ((board[y + 4][x] == 0) ? ws : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? ws : 0)) ;
-                                    else if (nbAlign == 3)
-                                        score += (100 + ((board[y + 4][x] == 0) ? ws2 : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? ws2 : 0)) ;
+                                        score += (10 + ((board[y + 3][x] == 0) ? ws : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? ws : 0) + this.scoreSpace(y + tmp, x, board));
+                                    else if (nbAlign == 3){
+                                        if (y > 0 && board[y - 1][x] == 0){
+                                            if (board[y + 4][x] == 0 && isNoCapt == 4) {
+                                                score += 10000;
+                                                break;
+                                            }
+                                            score += ws + this.scoreSpace(y + tmp, x, board);;
+                                        }
+                                        else if (board[y + 4][x] == 0) {
+                                            score += ws2 + this.scoreSpace(y + tmp, x, board);
+                                        }
+                                        score += 100;
+                                    }
                                     else if (nbAlign == 4)
-                                        score += 1000;
+                                        score += (!this.checkArround(y, x, 1, dir, board) && isNoCapt == 4) ? Infinity : 1000;
                                     break;
                                 case 2:
+                                    score -= this.scoreSpace(y, x, board) 
                                     let nbAlign2 = 0;
                                     let isNoCapt2 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score -= this.scoreSpace(y + tmp, x, board) 
                                         if (board[y + tmp][x] == 2) {
                                             nbAlign2 += 1;
                                             if (!this.checkArround(y + tmp, x, 2, dir, board) )
@@ -1485,13 +1565,24 @@ class IA {
                                             break;
                                     }
                                     if (nbAlign2 == 1) 
-                                        score -= 1;
+                                        score -= 1 + this.scoreSpace(y + tmp, x, board);
                                     else if (nbAlign2 == 2) 
-                                        score -= (10 + ((board[y + 4][x] == 0) ? bs : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? bs : 0)) ;
-                                    else if (nbAlign2 == 3)
-                                        score -= (100 + ((board[y + 4][x] == 0) ? bs2 : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? bs2 : 0)) ;
+                                        score -= (10 + ((board[y + 3][x] == 0) ? bs : 0) + ((y > 0 && board[y - 1][x] == 0 == true) ? bs : 0) + this.scoreSpace(y + tmp, x, board));
+                                    else if (nbAlign2 == 3){
+                                        if (y > 0 && board[y - 1][x] == 0){
+                                            if (board[y + 4][x] == 0 && isNoCapt2 == 4) {
+                                                score -= 10000;
+                                                break;
+                                            }
+                                            score -= (bs2 + this.scoreSpace(y + tmp, x, board));
+                                        }
+                                        else if (board[y + 4][x] == 0) {
+                                            score -= (bs2 + this.scoreSpace(y + tmp, x, board));
+                                        }
+                                        score -= 100;
+                                    }
                                     else if (nbAlign2 == 4)
-                                        score -= 1000 ;
+                                        score -= (!this.checkArround(y, x, 2, dir, board) && isNoCapt2 == 4) ? Infinity : 1000;
                                     break;
                             }
                         }
@@ -1502,9 +1593,11 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
+                                    score += this.scoreSpace(y, x, board) 
                                     let nbAlign3 = 0;
                                     let isNoCapt3 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score += this.scoreSpace(y, x + tmp, board) 
                                         if (board[y][x  + tmp] == 1) {
                                             nbAlign3 += 1;
                                             if (!this.checkArround(y, x  + tmp, 1, dir, board) )
@@ -1513,18 +1606,31 @@ class IA {
                                             break;
                                     }
                                     if (nbAlign3 == 1) 
-                                        score += 1;
+                                        score += 1 + this.scoreSpace(y, x + tmp, board);
                                     else if (nbAlign3 == 2) 
-                                        score += (10 + ((board[y][x + 4] == 0) ? ws : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? ws : 0)) ;
-                                    else if (nbAlign3 == 3)
-                                        score += (100 + ((board[y][x + 4] == 0) ? ws2 : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? ws2 : 0)) ;
+                                        score += (10 + ((board[y][x + 3] == 0) ? ws : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? ws : 0) + this.scoreSpace(y, x + tmp, board));
+                                    else if (nbAlign3 == 3) {
+                                        if (x > 0 && board[x - 1][x] == 0){
+                                            if (board[x + 4][x] == 0 && isNoCapt3 == 4) {
+                                                score += 10000;
+                                                break;
+                                            }
+                                            score += ws2 + this.scoreSpace(y, x + tmp, board);
+                                        }
+                                        else if (board[y][x + 4] == 0) {
+                                            score += ws2 + this.scoreSpace(y, x + tmp, board);
+                                        }
+                                        score += 100;
+                                    }
                                     else if (nbAlign3 == 4)
-                                        score += 1000 ;
+                                        score += (!this.checkArround(y, x, 1, dir, board) && isNoCapt3 == 4) ? Infinity : 1000;
                                     break;
                                 case 2:
+                                    score -= this.scoreSpace(y, x, board) 
                                     let nbAlign4 = 0;
                                     let isNoCapt4 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score -= this.scoreSpace(y, x + tmp, board) 
                                         if (board[y][x + tmp] == 2) {
                                             nbAlign4 += 1;
                                             if (!this.checkArround(y, x  + tmp, 2, dir, board) )
@@ -1533,13 +1639,24 @@ class IA {
                                             break;
                                     }
                                     if (nbAlign4 == 1) 
-                                        score -= 1;
+                                        score -= 1 + this.scoreSpace(y, x + tmp, board);
                                     else if (nbAlign4 == 2) 
-                                        score -= (10 + ((board[y][x + 4] == 0) ? bs : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? bs : 0)) ;
-                                    else if (nbAlign4 == 3)
-                                        score -= (100 + ((board[y][x + 4] == 0) ? bs2 : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? bs2 : 0)) ;
+                                        score -= (10 + ((board[y][x + 3] == 0) ? bs : 0) + ((x > 0 && board[y][x - 1] == 0 == true) ? bs : 0) + this.scoreSpace(y, x + tmp, board));
+                                    else if (nbAlign4 == 3){
+                                        if (x > 0 && board[x - 1][x] == 0){
+                                            if (board[x + 4][x] == 0 && isNoCapt4 == 4) {
+                                                score -= 10000;
+                                                break;
+                                            }
+                                            score -= (bs2 + this.scoreSpace(y, x + tmp, board));
+                                        }
+                                        else if (board[y][x + 4] == 0) {
+                                            score -= (bs2 + this.scoreSpace(y, x + tmp, board));
+                                        }
+                                        score -= 100;
+                                    }
                                     else if (nbAlign4 == 4)
-                                        score -= 1000;
+                                        score -= (!this.checkArround(y, x, 2, dir, board) && isNoCapt4 == 4) ? Infinity : 1000;
                                     break;
                             }
                         }
@@ -1550,9 +1667,11 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
+                                    score += this.scoreSpace(y, x, board) 
                                     let nbAlign5 = 0;
                                     let isNoCapt5 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score += this.scoreSpace(y - tmp, x + tmp, board) 
                                         if (board[y - tmp][x  + tmp] == 1) {
                                             nbAlign5 += 1;
                                             if (!this.checkArround(y - tmp, x  + tmp, 1, dir, board) )
@@ -1561,18 +1680,31 @@ class IA {
                                             break;
                                     }
                                     if (nbAlign5 == 1) 
-                                        score += 1;
+                                        score += 1 + this.scoreSpace(y - tmp, x + tmp, board);
                                     else if (nbAlign5 == 2) 
-                                        score += (10 + ((board[y - 4][x + 4] == 0) ? ws : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? ws : 0));
-                                    else if (nbAlign5 == 3)
-                                        score += (100 + ((board[y - 4][x + 4] == 0) ? ws2 : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? ws2 : 0));
+                                        score += (10 + ((board[y - 3][x + 3] == 0) ? ws : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? ws : 0) + this.scoreSpace(y - tmp, x + tmp, board));
+                                    else if (nbAlign5 == 3){
+                                        if (x > 0 && y < 18  && board[y + 1][x - 1] == 0){
+                                            if (board[y - 4][x + 4] == 0 && isNoCapt5 == 4) {
+                                                score += 10000;
+                                                break;
+                                            }
+                                            score += ws2 + this.scoreSpace(y - tmp, x + tmp, board);
+                                        }
+                                        else if (board[y - 4][x + 4] == 0) {
+                                            score += ws2 + this.scoreSpace(y - tmp, x + tmp, board);
+                                        }
+                                        score += 100;
+                                    }
                                     else if (nbAlign5 == 4)
-                                        score += 1000;
+                                        score += (!this.checkArround(y, x, 1, dir, board) && isNoCapt5 == 4) ? Infinity : 1000;
                                     break;
                                 case 2:
+                                    score -= this.scoreSpace(y, x, board) 
                                     let nbAlign6 = 0;
                                     let isNoCapt6 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score -= this.scoreSpace(y - tmp, x + tmp, board) 
                                         if (board[y - tmp][x + tmp] == 2) {
                                             nbAlign6 += 1;
                                             if (!this.checkArround(y - tmp, x  + tmp, 2, dir, board) )
@@ -1581,13 +1713,24 @@ class IA {
                                             break;
                                     }
                                     if (nbAlign6 == 1) 
-                                        score -= 1;
+                                        score -= 1  + this.scoreSpace(y - tmp, x + tmp, board);
                                     else if (nbAlign6 == 2) 
-                                        score -= (10 + ((board[y - 4][x + 4] == 0) ? bs : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? bs : 0));
-                                    else if (nbAlign6 == 3)
-                                        score -= (100 + ((board[y - 4][x + 4] == 0) ? bs2 : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? bs2 : 0));
+                                        score -= (10 + ((board[y - 3][x + 3] == 0) ? bs : 0) + ((x > 0 && y < 18  && board[y + 1][x - 1] == 0 == true) ? bs : 0) + this.scoreSpace(y - tmp, x + tmp, board));
+                                    else if (nbAlign6 == 3) {
+                                        if (x > 0 && y < 18  && board[y + 1][x - 1] == 0){
+                                            if (board[y - 4][x + 4] == 0 && isNoCapt6 == 4) {
+                                                score -= 10000;
+                                                break;
+                                            }
+                                            score -= (bs2 + this.scoreSpace(y - tmp, x + tmp, board));
+                                        }
+                                        else if (board[y - 4][x + 4] == 0) {
+                                            score -= (bs2 + this.scoreSpace(y - tmp, x + tmp, board));
+                                        }
+                                        score -= 100;
+                                    }
                                     else if (nbAlign6 == 4)
-                                        score -= 1000;
+                                        score -= (!this.checkArround(y, x, 2, dir, board) && isNoCapt6 == 4) ? Infinity : 1000;
                                     break;
                             }
                         }
@@ -1598,9 +1741,11 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
+                                    score += this.scoreSpace(y, x, board) 
                                     let nbAlign7 = 0;
                                     let isNoCapt7 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score += this.scoreSpace(y + tmp, x + tmp, board) 
                                         if (board[y + tmp][x  + tmp] == 1) {
                                             nbAlign7 += 1;
                                             if (!this.checkArround(y + tmp, x  + tmp, 1, dir, board) )
@@ -1609,18 +1754,31 @@ class IA {
                                             break;
                                     }
                                     if (nbAlign7 == 1) 
-                                        score += 1;
+                                        score += 1 + this.scoreSpace(y + tmp, x + tmp, board);
                                     else if (nbAlign7 == 2) 
-                                        score += (10 + ((board[y + 4][x + 4] == 0) ? ws : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? ws : 0));
-                                    else if (nbAlign7 == 3)
-                                        score += (100 + ((board[y + 4][x + 4] == 0) ? ws2 : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? ws2 : 0));
+                                        score += (10 + ((board[y + 3][x + 3] == 0) ? ws : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? ws : 0) + this.scoreSpace(y + tmp, x + tmp, board));
+                                    else if (nbAlign7 == 3) {
+                                        if (x > 0 && y > 0  && board[y - 1][x - 1] == 0){
+                                            if (board[y + 4][x + 4] == 0 && isNoCapt7 == 4) {
+                                                score += 10000;
+                                                break;
+                                            }
+                                            score += ws2 + this.scoreSpace(y + tmp, x + tmp, board);
+                                        }
+                                        else if (board[y + 4][x + 4] == 0) {
+                                            score += ws2 + this.scoreSpace(y + tmp, x + tmp, board);
+                                        }
+                                        score += 100;
+                                    }
                                     else if (nbAlign7 == 4)
-                                        score += 1000;
+                                        score += (!this.checkArround(y, x, 1, dir, board) && isNoCapt7 == 4) ? Infinity : 1000;
                                     break;
                                 case 2:
+                                    score -= this.scoreSpace(y, x, board) 
                                     let nbAlign8 = 0;
                                     let isNoCapt8 = 0;
                                     for (var tmp = 1; tmp <= 4; tmp++) {
+                                        score -= this.scoreSpace(y + tmp, x + tmp, board) 
                                         if (board[y + tmp][x + tmp] == 2) {
                                             nbAlign8 += 1;
                                             if (!this.checkArround(y + tmp, x  + tmp, 2, dir, board) )
@@ -1629,13 +1787,24 @@ class IA {
                                             break;
                                     }
                                     if (nbAlign8 == 1) 
-                                        score -= 1;
+                                        score -= 1 + this.scoreSpace(y + tmp, x + tmp, board);
                                     else if (nbAlign8 == 2) 
-                                        score -= (10 + ((board[y + 4][x + 4] == 0) ? bs : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? bs : 0));
-                                    else if (nbAlign8 == 3)
-                                        score -= (100 + ((board[y + 4][x + 4] == 0) ? bs2 : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? bs2 : 0));
+                                        score -= (10 + ((board[y + 3][x + 3] == 0) ? bs : 0) + ((x > 0 && y > 0  && board[y - 1][x - 1] == 0 == true) ? bs : 0) + this.scoreSpace(y + tmp, x + tmp, board));
+                                    else if (nbAlign8 == 3) {
+                                        if (x > 0 && y > 0  && board[y - 1][x - 1] == 0){
+                                            if (board[y + 4][x + 4] == 0 && isNoCapt8 == 4) {
+                                                score -= 10000;
+                                                break;
+                                            }
+                                            score -= (bs2 + this.scoreSpace(y + tmp, x + tmp, board));
+                                        }
+                                        else if (board[y + 4][x + 4] == 0) {
+                                            score -= (bs2 + this.scoreSpace(y + tmp, x + tmp, board)); 
+                                        }
+                                        score -= 100;
+                                    }
                                     else if (nbAlign8 == 4)
-                                        score -= 1000;
+                                        score -= (!this.checkArround(y, x, 2, dir, board) && isNoCapt8 == 4) ? Infinity : 1000;
                                     break;
                             }
                         }
@@ -1647,10 +1816,6 @@ class IA {
     }
     
     heuristicValue(board, player) {
-        /*if (this.checkWinner(board)) {
-            console.log('solution trouvée');
-            return Infinity;
-        }*/
         return this.heuristic(board)
     }
 }
