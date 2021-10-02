@@ -1,7 +1,7 @@
 import { stonesHeaderAnimation } from "./eventController.js";
 import { stoneClass } from "./stoneClass.js";
 import { getGomokuTools } from "./gomokuTools.js";
-import { setParsing } from "./parsingClass.js";
+import { setParsing, winnerParser } from "./parsingClass.js";
 import { displayEatenStoneNumber } from "./eventController.js";
 
 export function setGame(coordXY){
@@ -12,6 +12,9 @@ export function setGame(coordXY){
     if (gomokuTools.stonesArray[y][x].stat == 'empty') {
         if (setParsing(coordXY)) {
             gomokuTools.stonesArray[y][x].addStone(gomokuTools.activePlayer);
+            
+            if(winnerParser(coordXY))
+                console.log("WINNNNN");
             switchActivePlayer();
             stonesHeaderAnimation();
         }
@@ -34,9 +37,9 @@ export function eatingMachine(eatenStonesCoord)
     eatenStonesCoord.forEach(coord => {
         gomokuTools.stonesArray[coord[0]][coord[1]].removeStone();
         if (gomokuTools.activePlayer == 'white')
-        gomokuTools.eatenBlackStones += 1;
+            gomokuTools.eatenBlackStones += 1;
         else
-        gomokuTools.eatenWhiteStones += 1;   
+            gomokuTools.eatenWhiteStones += 1;   
     });
     displayEatenStoneNumber();
 }
