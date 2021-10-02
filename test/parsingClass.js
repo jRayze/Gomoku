@@ -1,39 +1,30 @@
 import { getGomokuTools } from "./gomokuTools.js";
-import { displayEatenStoneNumber } from "./eventController.js";
+import { alertDoubleFreeThree } from "./eventController.js";
+import { eatingMachine } from "./gameController.js";
 
 export function setParsing(coordXY){
     var gomokuTools = getGomokuTools();
     var x = coordXY[0];
     var y = coordXY[1];
 
-    var eatenStonesCoord = [];
-
-    if (gomokuTools.stonesArray[y][x].stat == 'empty') {
-
-        if (!freeThreeParse(coordXY))
+        if (!freeThreeParse(coordXY)){
+            alertDoubleFreeThree();
             return false;
-        eatenStonesCoord = verifAllCardinalPoint(coordXY);
-        eatenStonesCoord.forEach(coord => {
-            gomokuTools.stonesArray[coord[0]][coord[1]].removeStone();
-            gomokuTools.eatenBlackStones += 1;
-        });
-        displayEatenStoneNumber();
-        gomokuTools.stonesArray[y][x].addStone(gomokuTools.activePlayer);
-    }
+        }
+        eatingMachine(verifAllCardinalPoint(coordXY));
     return true;
 }
 
-
 function doubleFreeThree(direction, oppositeDirection){
-    if (direction[0] < 0)
+    if (direction[0] < 0 || oppositeDirection[0] < 0)
         return 0;
-        if (direction[0] == 1) {
-            if (direction[1] == 1)
-                if (direction[2] == 0 && oppositeDirection[0] == 0)
-                    return 1;
-            else if (direction[1] == 0)
-                if ((oppositeDirection[0] == 1 && oppositeDirection[1] == 0) || (direction[2] == 1 && direction[3] == 0 && oppositeDirection[0] == 0 ) || ( oppositeDirection[0] == 0 && oppositeDirection[1] == 1 && oppositeDirection[2] == 0))
-                    return 1;
+    if (direction[0] == 1) {
+        if (direction[1] == 1)
+            if (direction[2] == 0 && oppositeDirection[0] == 0)
+                return 1;
+        else if (direction[1] == 0)
+            if ((oppositeDirection[0] == 1 && oppositeDirection[1] == 0) || (direction[2] == 1 && direction[3] == 0 && oppositeDirection[0] == 0 ) || ( oppositeDirection[0] == 0 && oppositeDirection[1] == 1 && oppositeDirection[2] == 0))
+                return 1;
     }
     if (direction[0] == 0) {
         if (direction[1] == 1)
@@ -137,9 +128,151 @@ function verifAllCardinalPoint(coordXY){
 
     for (let i = 0; i < 8; i++){
             if (eatOrNot(coordXY, cardinalPoint[i])){
-            eatenStones.push([y + (1 * cardinalPoint[i][0]), x + (1 * cardinalPoint[i][1])]);
-            eatenStones.push([y + (2 * cardinalPoint[i][0]), x + (2 * cardinalPoint[i][1])]);
+                eatenStones.push([y + (1 * cardinalPoint[i][0]), x + (1 * cardinalPoint[i][1])]);
+                eatenStones.push([y + (2 * cardinalPoint[i][0]), x + (2 * cardinalPoint[i][1])]);
         }
    }
     return eatenStones;
 }
+
+
+function checkArround(y, x, p, direction, board) {
+        //console.log(board)
+        //direction = {vertical : 1, horizontal : 2, diagonale1 : 3, diagonale2: 4}
+        if (this.checkType(y, x, p, board) == 0) {
+              return true;
+        }
+        if (direction != 1) {
+            /*console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+"encore en bas il y a = "+matrix[y + 2][x])
+            console.log("en haut il y a = "+matrix[y - 1][x]+" en bas il y a = "+matrix[y + 1][x]+" en h + 2 il y a = "+matrix[y - 2][x])*/
+          if (this.checkType(y + 1, x, p, board) == 1 && ((this.checkType(y + 2, x, p, board) == 2 && this.checkType(y - 1, x, p, board) == 0) || (this.checkType(y + 2, x, p, board) == 0 && this.checkType(y - 1, x, p, board) == 2))) {
+            //   console.log("ca return vrai 1");
+              return true;
+          }
+          else if (this.checkType(y - 1, x, p, board) == 1  && ((this.checkType(y - 2, x, p, board) == 2 && this.checkType(y + 1, x, p, board) == 0) ||(this.checkType(y - 2, x, p, board) == 0 && this.checkType(y + 1, x, p, board) == 2))) {
+            // console.log("x = "+x+" et y = "+y);
+            // console.log("vrai 2 - 2");
+              return true;
+          }
+      }
+      if (direction != 2) {
+            /* console.log("y = " + y + " x = " + x);
+            console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])*/
+        if (this.checkType(y, x + 1, p, board) == 1 && ((this.checkType(y, x + 2, p, board) == 2 && this.checkType(y, x - 1, p, board) == 0) || (this.checkType(y, x + 2, p, board) == 0 && this.checkType(y, x - 1, p, board) == 2))) {
+             // console.log("a gauche il y a = " + matrix[y][x - 1] + " à droite il y a = " + matrix[y][x + 1] + "encore à droite il y a = " + matrix[y][x + 2])
+             // console.log("ca return vrai 3");
+              return true;
+            }
+        else if (this.checkType(y, x - 1, p, board) == 1 && ((this.checkType(y, x - 2, p, board) == 2 && this.checkType(y, x + 1, p, board) == 0) || (this.checkType(y, x - 2, p, board) == 0 && this.checkType(y, x + 1, p, board) == 2))) {
+           //   console.log("a gauche il y a = " + matrix[y][x - 1] + "encore à gauche il y a = " + matrix[y][x - 2] + " et à droite il y a = " + matrix[y][x + 1])
+              //console.log("ca return vrai 4");
+              return true;
+            }
+      }
+      if (direction != 3) {
+          if (this.checkType(y - 1, x + 1, p, board) == 1 && ((this.checkType(y - 2, x + 2, p, board) == 2 && this.checkType(y + 1, x - 1, p, board) == 0) || (this.checkType(y - 2, x + 2, p, board) == 0 && this.checkType(y + 1, x - 1, p, board) == 2))) {
+            //  console.log("ca return vrai 5");
+              return true;
+          }
+          else if (this.checkType(y + 1, x - 1, p, board) == 1 && ((this.checkType(y + 2, x - 2, p, board) == 2 && this.checkType(y - 1, x + 1, p, board) == 0) || (this.checkType(y + 2, x - 2, p, board) == 0 && this.checkType(y - 1, x + 1, p, board) == 2))) {
+            //  console.log("ca return vrai 6");
+              return true;
+          }
+      }
+      if (direction != 4) {
+          if (this.checkType(y - 1, x - 1, p, board) == 1 && ((this.checkType(y - 2, x - 2, p, board) == 2 && this.checkType(y + 1, x + 1, p, board) == 0) || (this.checkType(y - 2, x - 2, p, board) == 0 && this.checkType(y + 1, x + 1, p, board) == 2))) {
+            //  console.log("ca return vrai 7");
+              return true;
+          }
+          else if (this.checkType(y + 1, x + 1, p, board) == 1 && ((this.checkType(y + 2, x + 2, p, board) == 2 && this.checkType(y - 1, x - 1, p, board) == 0) || (this.checkType(y + 2, x + 2, p, board) == 0 && this.checkType(y - 1, x - 1, p, board) == 2))) {
+             // console.log("ca return vrai 8");
+              return true;
+          }
+      }
+      return false;
+  }
+
+  function checkWinner(board) {
+      for (var y = 0; y <= 18; y++) {
+          for (var x = 0; x <= 18; x++) {
+              for (var dir = 1; dir <= 4; dir++) {
+                  if (dir == 1) {
+                      if (y <= 14) {
+                          switch (board[y][x]) {
+                              case 0:
+                                  break;
+                              case 1:
+                                  if (board[y + 1][x] == 1 && board[y + 2 ][x] == 1 && board[y + 3][x] == 1 && board[y + 4][x] == 1)
+                                      if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y + 1, x, 1, dir, board) && !this.checkArround(y + 2, x, 1, dir, board) && !this.checkArround(y + 3, x, 1, dir, board) && !this.checkArround(y + 4, x, 1, dir, board))
+                                          return true;
+                                  break;
+                              case 2:
+                                  if (board[y + 1][x] == 2 && board[y + 2][x] == 2 && board[y + 3][x] == 2 && board[y + 4][x] == 2)
+                                      if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y + 1, x, 2, dir, board) && !this.checkArround(y + 2, x, 2, dir, board) && !this.checkArround(y + 3, x, 2, dir, board) && !this.checkArround(y + 4, x, 2, dir, board))
+                                          return true;
+                                  break;
+                          }
+                      }
+                  }
+                  if (dir == 2) {
+                      if (x <= 14) {
+                          switch (board[y][x]) {
+                              case 0:
+                                  break;
+                              case 1:   
+                                  if (board[y][x + 1] == 1 && board[y][x + 2] == 1 && board[y][x + 3] == 1 && board[y][x + 4] == 1){
+                                      if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y, x + 1, 1, dir, board) && !this.checkArround(y, x + 2, 1, dir, board) && !this.checkArround(y, x + 3, 1, dir, board) && !this.checkArround(y, x + 4, 1, dir, board))
+                                          return true;
+                                  }
+                                  break;
+                              case 2:
+                                  if (board[y][x + 1] == 2 && board[y][x + 2] == 2 && board[y][x + 3] == 2 && board[y][x + 4] == 2) {
+                                      if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y, x + 1, 2, dir, board) && !this.checkArround(y, x + 2, 2, dir, board) && !this.checkArround(y, x + 3, 2, dir, board) && !this.checkArround(y, x + 4, 2, dir, board)){
+                                          return true;
+                                      }
+                                  }
+                                  break;
+                          }
+                      }
+                  }
+                  if (dir == 3) {
+                      if (y >= 4 && x <= 14) {
+                          switch (board[y][x]) {
+                              case 0:
+                                  break;
+                              case 1:
+                                  if (board[y - 1][x + 1] == 1 && board[y - 2][x + 2] == 1 && board[y - 3][x + 3] == 1 && board[y - 3][x + 4] == 1)
+                                      if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y - 1, x + 1, 1, dir, board) && !this.checkArround(y - 2, x + 2, 1, dir, board) && !this.checkArround(y - 3, x + 3, 1, dir, board) && !this.checkArround(y - 4, x + 4, 1, dir, board))
+                                          return true;
+                                  break;
+                              case 2:
+                                  if (board[y - 1][x + 1] == 2 && board[y - 2][x + 2] == 2 && board[y - 3][x + 3] == 2 && board[y - 4][x + 4] == 2)
+                                      if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y - 1, x + 1, 2, dir, board) && !this.checkArround(y - 2, x + 2, 2, dir, board) && !this.checkArround(y - 3, x + 3, 2, dir, board) && !this.checkArround(y - 4, x + 4, 2, dir, board))
+                                          return true;
+                                  break;
+                          }
+                      }
+                  }
+                  if (dir == 4) {
+                      if (x <= 14 && y <= 14) {
+                          switch (board[y][x]) {
+                              case 0:
+                                  break;
+                              case 1:
+                                  if (board[y + 1][x + 1] == 1 && board[y + 2][x + 2] == 1 && board[y + 3][x + 3] == 1 && board[y + 3][x + 4] == 1)
+                                      if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y + 1, x + 1, 1, dir, board) && !this.checkArround(y + 2, x + 2, 1, dir, board) && !this.checkArround(y + 3, x + 3, 1, dir, board) && !this.checkArround(y + 4, x + 4, 1, dir, board))
+                                          return true;
+                                  break;
+                              case 2:
+                                  if (board[y + 1][x + 1] == 2 && board[y + 2][x + 2] == 2 && board[y + 3][x + 3] == 2 && board[y + 4][x + 4] == 2)
+                                      if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y + 1, x + 1, 2, dir, board) && !this.checkArround(y + 2, x + 2, 2, dir, board) && !this.checkArround(y + 3, x + 3, 2, dir, board) && !this.checkArround(y + 4, x + 4, 2, dir, board))
+                                          return true;
+                                  break;
+                          }
+                      }
+                  }
+              }
+          }
+      }
+      return false;
+  }

@@ -49,7 +49,7 @@ export function stonesHeaderAnimation(){
     $('.isSelected').css('animation', 'isSelected 2s ease-out infinite');
     }
     
-export function alertDoubleFree(){
+export function alertDoubleFreeThree(){
         $('#zone').prepend('<div class="alert alert-danger" role="alert">Double 3 libres : Coup interdit !</div>');
         setTimeout(function() {
             $('.alert').remove();
