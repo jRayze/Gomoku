@@ -1,7 +1,7 @@
 import { stonesHeaderAnimation } from "./eventController.js";
 import { stoneClass } from "./stoneClass.js";
 import { getGomokuTools } from "./gomokuTools.js";
-import { setParsing, winnerParser } from "./parsingClass.js";
+import { setParsing, winnerParser } from "./parsingController.js";
 import { displayEatenStoneNumber } from "./eventController.js";
 
 export function setGame(coordXY){
