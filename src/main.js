@@ -868,8 +868,8 @@ function drawCoordinates(y, x) {
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         console.log($('#col'+y+'-'+x+' .cercle').css('opacity'));
-        //result = ia.checkWinner(matrix)
-        result = checkWin(y, x, piece); //test();
+        result = ia.checkWinner(matrix)
+        //result = checkWin(y, x, piece); //test();
         player = !player;
 
         if (player) {
@@ -894,10 +894,10 @@ function drawCoordinates(y, x) {
 
 function getPosition(x , y) {
     drawCoordinates(x, y);
-    if (player && !result ) {
+    /*if (player && !result ) {
         let ia = new IA();
         ia.bestMove(matrix);
-    }
+    }*/
 
 }
 
@@ -1255,7 +1255,7 @@ class IA {
                     board[i][j] = 0
                     continue;    
                 }
-                score = this.minMaxAlphaBeta(board, 0, -Infinity, Infinity, false) 
+                score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, false) 
               //console.log(score);
               board[i][j] = 0;
               if (score > bestScore) {
@@ -1611,7 +1611,7 @@ class IA {
     heuristic(board, n) {
 
         let a = this.coefMenaceFailbe(n); // valeur menace moins importante
-        console.log(a);
+       // console.log(a);
         let valueP = 0;
         let valueQ = 0;
         let joueur = (player == true) ? 1 : 2;
@@ -1634,10 +1634,6 @@ class IA {
         valueQ += 2000 * q[n - 1][1];
         valueQ += 5020 * q[n - 1][2];
         valueQ += 1000000 * q[n][0];
-        /*console.log("p");
-        console.log(valueP);
-        console.log("q");
-        console.log(valueQ);*/
         return valueP - valueQ;
     }
 
@@ -1677,7 +1673,8 @@ class IA {
         else {
             while (i < taille) {
                 tmp = tmp + pas;
-                a[i + 2] = tmp;
+                if (i + 2 <= taille)
+                    a[i + 2] = tmp;
                 tmp = tmp + pas;
                 a[i + 1] = tmp;
                 i++;
