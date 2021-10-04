@@ -1618,18 +1618,18 @@ class IA {
         let opposite = (player == true) ? 2 : 1;
         let q = this.createTabP(board, opposite);
         let p = this.createTabP(board, joueur);
-        /*for (i = 1; i <= n-3; i++) {
-            valueP += (a[((2 * i) - 1) * p[i][1]] + a[(2 * i) * p[i][2]]);    
-            valueQ += (a[((2 * i) - 1) * q[i][1]] + a[(2 * i) * q[i][2]]);
-        }*/
+        for (i = 1; i <= n-3; i++) {
+            valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]);    
+            valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]);
+        }
       //  console.log(n);
-        //valueP += a[((2 * (n - 2)) - 1) * (p[n - 2][1])] ;
+        valueP += a[((2 * (n - 2)) - 1)] * p[n - 2][1] ;
         valueP += 100 * p[n - 2][2]; 
         valueP += 80 * p[n - 1][1];
         valueP += 250 * p[n - 1][2];
         valueP += 1000000 * p[n][0];
         
-        //valueQ += a[((2 * (n - 2)) - 1) * (q[n - 2][1])] ;
+        valueQ += a[((2 * (n - 2)) - 1)] * q[n - 2][1] ;
         valueQ += 1300 * q[n - 2][2]; 
         valueQ += 2000 * q[n - 1][1];
         valueQ += 5020 * q[n - 1][2];
@@ -1658,11 +1658,18 @@ class IA {
     }*/
 
     coefMenaceFailbe(n){
-        let a = new Array(2 * (n - 3) + 1).fill(0)
-        let taille = a.length;
+        //let a = new Array(2 * (n - 3) + 1).fill(0)
+        let a = {
+            1 : 0,
+            2 : 0,
+            3 : 0,
+            4 : 0,
+            5 : 0,
+        }
+        let taille = 5;
         let pas = 10 / taille;
         let tmp = pas;
-        let i = 0;
+        let i = 1;
         a[i] = tmp;
         if (n == 3) {
             return a;
