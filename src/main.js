@@ -868,8 +868,8 @@ function drawCoordinates(y, x) {
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         console.log($('#col'+y+'-'+x+' .cercle').css('opacity'));
-        result = ia.checkWinner(matrix)
-        //result = checkWin(y, x, piece); //test();
+        //result = ia.checkWinner(matrix)
+        result = checkWin(y, x, piece); //test();
         player = !player;
 
         if (player) {
@@ -1561,6 +1561,7 @@ class IA {
                                             miOuvert = true;
                                         }
                                         nb += (nb < 5) ? 1 : 0;
+                                        //nb++;
                                     } else { 
                                         if (board[y + (j * cardinalPoint[i][0])][x + (j * cardinalPoint[i][1])] == opposite || isSpace == true) {
                                             break;
@@ -1585,13 +1586,18 @@ class IA {
                                 else {
                                     if (isSpace == true)
                                         tabP[nb][1] += 1
-                                    else {
-                                       /* console.log(joueur);
-                                        console.log(tabP);
-                                        console.log(nb);*/
+                                    else
                                         tabP[nb][0] += 1;
-                                    }
                                 }
+                        } else {
+                            if (isSpace == true && miOuvert == false)
+                                tabP[nb][1] += 1
+                            else if (isSpace == true && miOuvert == true)
+                                tabP[nb][1] += 1
+                            else if (isSpace == false && miOuvert == false)
+                                tabP[nb][0] += 1
+                            else if (isSpace == false && miOuvert == true)
+                                tabP[nb][1] += 1
                         }
                     }
                 }
@@ -1605,6 +1611,7 @@ class IA {
     heuristic(board, n) {
 
         let a = this.coefMenaceFailbe(n); // valeur menace moins importante
+        console.log(a);
         let valueP = 0;
         let valueQ = 0;
         let joueur = (player == true) ? 1 : 2;
@@ -1651,8 +1658,9 @@ class IA {
     }*/
 
     coefMenaceFailbe(n){
-        let a = new Array(2 * (n - 3) + 1) 
-        let pas = 10 / a.length;
+        let a = new Array(2 * (n - 3) + 1).fill(0)
+        let taille = a.length;
+        let pas = 10 / taille;
         let tmp = pas;
         let i = 0;
         a[i] = tmp;
@@ -1660,7 +1668,7 @@ class IA {
             return a;
         }
         else {
-            while (i < a) {
+            while (i < taille) {
                 tmp = tmp + pas;
                 a[i + 2] = tmp;
                 tmp = tmp + pas;
