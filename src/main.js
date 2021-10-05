@@ -1255,8 +1255,8 @@ class IA {
                 for (let jj = j-2;jj<j+2;jj++) {
                     if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && board[ii][jj] != 0){
                         pieceAProximiteTrouvee = true;
-                        console.log(ii+' '+jj);
-                        console.log("pos i= "+i+"pos j = "+j);
+                       /* console.log(ii+' '+jj);
+                        console.log("pos i= "+i+"pos j = "+j);*/
                         break;
                     }
                 }
@@ -1267,13 +1267,16 @@ class IA {
                     board[i][j] = 0
                     continue;    
                 }
-                score = this.minMaxAlphaBeta(board, 0, -Infinity, Infinity, true) 
-                console.log(score);
+                score = this.minMaxAlphaBeta(board, 2, -Infinity, Infinity, true)
+                $('#col'+i+'-'+j+' .cercle').attr('data-content', score);
+                console.log("pos i= "+i+"pos j = "+j);
                 board[i][j] = 0;
                 if (score > bestScore) {
                     bestScore = score;
                     move = { i, j };
                 }
+                if (bestScore > 1000000)
+                    break;
             }
           }
         }
@@ -1449,6 +1452,11 @@ class IA {
         let gameOver = this.checkWinner(node)
         
         if (depth == 0 || gameOver == true) {
+            if (gameOver == true) {
+                console.log("victoire");
+                console.log(node);
+            }
+
             return this.heuristicValue(node);
         }
 
@@ -1462,8 +1470,6 @@ class IA {
                         for (let jj = j-2;jj<j+2;jj++) {
                             if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && node[ii][jj] != 0){
                                 pieceAProximiteTrouvee = true;
-                                console.log(ii+' '+jj);
-                                console.log("pos i= "+i+"pos j = "+j);
                                 break;
                             }
                         }
@@ -1497,8 +1503,8 @@ class IA {
                         for (let jj = j-2;jj<j+2;jj++) {
                             if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && node[ii][jj] != 0){
                                 pieceAProximiteTrouvee = true;
-                                console.log(ii+' '+jj);
-                                console.log("pos i= "+i+"pos j = "+j);
+                            //    console.log(ii+' '+jj);
+                              //  console.log("pos i= "+i+"pos j = "+j);
                                 break;
                             }
                         }
@@ -1553,11 +1559,9 @@ class IA {
     nbAlignPos(board, x, y) {
 
     }
-    //tableau p 
-    /*
-        p[1] = somme des
-    */
 
+
+    // Creation d'un tableau qui calcule 
     createTabP(board, joueur){
         //                    Y   X                             Y   X
         // Est        : 0  |  0   1          Nord-Ouest : 4  | -1  -1
@@ -1565,27 +1569,17 @@ class IA {
         // Nord       : 2  | -1   0          Nord-Est   : 6  | -1   1
         // Sud        : 3  |  1   0          Sud-Est    : 7  |  1   1
         let opposite = (joueur == 1) ? 2 : 1;
-       // console.log(joueur);
-        //var cardinalPoint = [[0,1],[0,-1],[-1,0],[1,0],[-1,-1],[1,-1],[-1,1],[1, 1]];
         var cardinalPoint = [[0,1],[1,0],[1,-1],[1, 1]];
-       /* var x = parseInt(coordXY[0], 10);
-        var y = parseInt(coordXY[1], 10);*/
 
-        //tabP
-        // premiere case = le nombre de pieces alingées
-        // deuxieme case = les types de menaces avec :
-        //      -> 0 = pieces sans trou
-        //      -> 1 = pieces mi ouvertes
-        //      -> 2 = pieces ouvertes
-        let tabP = {
-            1 : [0, 0, 0],
-            2 : [0, 0, 0],
-            3 : [0, 0, 0],
-            4 : [0, 0, 0],
-            5 : [0, 0, 0]
+        let tabP = {            //tabP
+            1 : [0, 0, 0],      // premiere case = le nombre de pieces alingées
+            2 : [0, 0, 0],      // deuxieme case = les types de menaces avec :
+            3 : [0, 0, 0],      //      -> 0 = pieces sans trou
+            4 : [0, 0, 0],      //      -> 1 = pieces mi ouvertes
+            5 : [0, 0, 0]       //      -> 2 = pieces ouvertes
         }
 
-        for (var y = 0; y <= 18; y++) {
+        for (var y = 0; y <= 18; y++) { // parcour 
             for (var x = 0; x <= 18; x++) {
                 if (board[y][x] == joueur) {
                    // console.log("coord["+x+"]["+y+"] il y a "+board[y][x]);
@@ -1614,6 +1608,8 @@ class IA {
                                 }
                             }
                         }
+                        if (nb == 5)
+                            console.log("coord["+y+"]["+x+"] il y a "+board[y][x]);
                         // if faut protéger pour pas lire les case en dehors de la map (y >= 0 && y <= 18) && (x >= 0 && x <= 18)
                         if (y + (-1 * cardinalPoint[i][0]) >= 0 && x + (-1 * cardinalPoint[i][1]) >= 0  
                             && y + (-1 * cardinalPoint[i][0]) <= 18 && x + (-1 * cardinalPoint[i][1]) <= 18) {
@@ -1645,7 +1641,7 @@ class IA {
                 }
             }
         }
-       // console.log(tabP);
+        console.log(tabP);
         return tabP;
     }
 
@@ -1660,8 +1656,8 @@ class IA {
         let opposite = (player == true) ? 2 : 1;
         let q = this.createTabP(board, opposite);
         let p = this.createTabP(board, joueur);
-        console.log(q);
-        console.log(p);
+      //  console.log(q);
+       // console.log(p);
         for (i = 1; i <= n-3; i++) {
             valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]);    
             valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]);
@@ -1678,7 +1674,7 @@ class IA {
         valueQ += 2000 * q[n - 1][1];
         valueQ += 5020 * q[n - 1][2];
         valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]);
-        console.log(valueP - valueQ);
+        //console.log(valueP - valueQ);
         return valueP - valueQ;
     }
 
