@@ -23,25 +23,74 @@ export function winnerParser(coordXY){
     //    1    ===   Sud         1   0  |  3    ===   Nord-est   -1   1
     //               Nord       -1   0  |             Sud-Ouest   1  -1
     var cardinalPoint = [[0,1],[1,0],[1,1],[-1,1]];
+    var gomokuTools = getGomokuTools();
     var x = parseInt(coordXY[0], 10);
     var y = parseInt(coordXY[1], 10);
     var validation = 0;
     for (let i = 0; i < 4; i++){
-        for (let j = 1; j < 5; j++){
+        for (var j = 1; j < 5; j++){
             validation += getStoneInfo(x + (j * cardinalPoint[i][1]) ,y + (j * cardinalPoint[i][0])) == 1 ? 1 : 0;
             validation += getStoneInfo(x + (j * (cardinalPoint[i][1] * -1 )) ,y + (j * (cardinalPoint[i][0] * -1 ))) == 1 ? 1 : 0;
         }
-    if (validation == 4)
-        return true;
+    if (validation == 4){
+        j = 0;
+        while (getStoneInfo(x + ((j - 1) * cardinalPoint[i][1]) ,y + ((j - 1) * cardinalPoint[i][0])) == 1)
+            j--;
+        gomokuTools.winnablePosition.push([[x + (j * cardinalPoint[i][1]),y + (j * cardinalPoint[i][0])], i]);
+        break;
+    }
     else
         validation = 0;
     }
-    return false;
+
+    // garder (x + (j * cardinalPoint[i][1]) ,y + (j * cardinalPoint[i][0]))
+    return (aTrueWinnerCantBeEaten() == false ? false : true);
+}
+
+function aTrueWinnerCantBeEaten(){
+    //                           Y   X                            X   Y
+    //    0    ===   Est         0   1  |  2    ===   Sud-est     1   1
+    //               Ouest       0  -1  |             Nord-Ouest -1  -1
+    //
+    //    1    ===   Sud         1   0  |  3    ===   Nord-est   -1   1
+    //               Nord       -1   0  |             Sud-Ouest   1  -1
+    var gomokuTools = getGomokuTools();
+    var cardinalPoint = [[0,1],[1,0],[1,1],[-1,1]];
+    var validation = [0,0,0,0];
+    gomokuTools.winnablePosition.forEach(element => {
+        for (let i = 0; i <= 4; i++){
+            for (let j = 0; j < 3; j++){
+                if(element[1] != j)
+                {
+                    validation[0] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (2 * (cardinalPoint[j][1] * -1))) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (2 * (cardinalPoint[j][0] * -1) )));
+                    validation[1] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (1 * (cardinalPoint[j][1] * -1))) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (1 * (cardinalPoint[j][0] * -1) )));
+                    validation[2] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (1 * cardinalPoint[j][1])) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (1 * cardinalPoint[j][0])));
+                    validation[3] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (2 * cardinalPoint[j][1])) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (2 * cardinalPoint[j][0])));
+                    if (yolo(validation))
+                        return false;
+                    validation = [0,0,0,0];
+                }
+            }
+        }
+    });
+    return true;
+}
+
+
+function yolo(v){
+if ((v[0] == -1 && v[1] == 1 && v[2] == 0) || 
+    (v[1] == 0 && v[2] == 1 && v[3] == -1) || 
+    (v[1] == -1 && v[2] == 1 && v[3] == 0) || 
+    (v[0] == 0 && v[1] == 1 && v[2] == -1)){
+        console.log("canEAT")
+        return true;
+    }
+return false;
 }
 
 function getStoneInfo(x, y) {
     var gomokuTools = getGomokuTools();
-
+//console.log("getstoneinfo  x " + x + " y " + y)
     if (verifBorderLimit(y) && verifBorderLimit(x)) {
         if (gomokuTools.stonesArray[y][x].stat == gomokuTools.activePlayer) {
             return 1;                      //ActivePLayer

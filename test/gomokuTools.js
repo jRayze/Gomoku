@@ -4,7 +4,7 @@ class gomokuTools {
         this.activePlayer = String;
         this.eatenBlackStones = Number;
         this.eatenWhiteStones = Number;
-        
+        this.winnablePosition = Array;
     }
 }
 

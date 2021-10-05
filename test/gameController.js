@@ -28,6 +28,7 @@ export function initGame(){
     gomokuTools.activePlayer = 'black';
     gomokuTools.eatenBlackStones = 0;
     gomokuTools.eatenWhiteStones = 0;
+    gomokuTools.winnablePosition = [];
 }
 
 export function eatingMachine(eatenStonesCoord)
@@ -49,7 +50,6 @@ function switchActivePlayer(){
     gomokuTools.activePlayer = (gomokuTools.activePlayer == 'black') ? 'white' : 'black';
 }
 
-//       A REFAIRE SI POSSIBLE ////////////////
 function createBoard() {
     $('#zone').html('<table id="board"></table>')
     for (var y = 0; y < 19; y++ ) {
@@ -60,7 +60,6 @@ function createBoard() {
     }
     $('td .cercle').css('opacity', '0');
 }
-//////////////////////////////////////////////
 
 function createStonesArray(){
     var stonesArray = [];
