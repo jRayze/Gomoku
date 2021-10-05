@@ -894,10 +894,10 @@ function drawCoordinates(y, x) {
 
 function getPosition(x , y) {
     drawCoordinates(x, y);
-    /*if (player && !result ) {
+    if (player && !result ) {
         let ia = new IA();
         ia.bestMove(matrix);
-    }*/
+    }
 
 }
 
