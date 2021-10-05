@@ -54,30 +54,40 @@ function aTrueWinnerCantBeEaten(){
     //
     //    1    ===   Sud         1   0  |  3    ===   Nord-est   -1   1
     //               Nord       -1   0  |             Sud-Ouest   1  -1
-    var gomokuTools = getGomokuTools();
+    var winnablePosition = getGomokuTools().winnablePosition;
+
     var cardinalPoint = [[0,1],[1,0],[1,1],[-1,1]];
     var validation = [0,0,0,0];
-    gomokuTools.winnablePosition.forEach(element => {
-        for (let i = 0; i <= 4; i++){
-            for (let j = 0; j < 3; j++){
-                if(element[1] != j)
-                {
-                    validation[0] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (2 * (cardinalPoint[j][1] * -1))) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (2 * (cardinalPoint[j][0] * -1) )));
-                    validation[1] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (1 * (cardinalPoint[j][1] * -1))) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (1 * (cardinalPoint[j][0] * -1) )));
-                    validation[2] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (1 * cardinalPoint[j][1])) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (1 * cardinalPoint[j][0])));
-                    validation[3] = getStoneInfo(((element[0][0] + (i * cardinalPoint[element[1]][1])) + (2 * cardinalPoint[j][1])) ,((element[0][1] + (i * cardinalPoint[element[1]][0])) + (2 * cardinalPoint[j][0])));
-                    if (yolo(validation))
-                        return false;
-                    validation = [0,0,0,0];
+    //check validité de gomokuTools.winnablePosition liste
+    if (winnablePosition.length > 0)
+    {
+        for (let k = 0; k < winnablePosition.length; k++){
+            for (let i = 0; i < 5; i++){
+                for (let j = 0; j < 4; j++){
+                    if(winnablePosition[k][1] != j)
+                    {
+                        validation[0] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (2 * (cardinalPoint[j][1] * -1))) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (2 * (cardinalPoint[j][0] * -1) )));
+                        validation[1] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (1 * (cardinalPoint[j][1] * -1))) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (1 * (cardinalPoint[j][0] * -1) )));
+                        validation[2] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (1 * cardinalPoint[j][1])) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (1 * cardinalPoint[j][0])));
+                        validation[3] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (2 * cardinalPoint[j][1])) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (2 * cardinalPoint[j][0])));
+                        if (canEat(validation))
+                        {
+                            console.log("YOLOOOCANEAT")
+                            return false;
+
+                        }
+                        validation = [0,0,0,0];
+                    }
                 }
             }
+        console.log(validation);
+        return true;
         }
-    });
-    return true;
+    }
+    return false;
 }
 
-
-function yolo(v){
+function canEat(v){
 if ((v[0] == -1 && v[1] == 1 && v[2] == 0) || 
     (v[1] == 0 && v[2] == 1 && v[3] == -1) || 
     (v[1] == -1 && v[2] == 1 && v[3] == 0) || 
