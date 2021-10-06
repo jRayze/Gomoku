@@ -928,6 +928,7 @@ function createBoard() {
         $('#board').append('<tr id="line'+y+'">')
         for (let x = 0; x < 19; x++ ) {
             $('#line'+y).append('<td id="col'+y+'-'+x+'"><div  onClick="getPosition('+y+','+x+')" class="cercle"></div></td>')
+            $('#col'+y+'-'+x+' .cercle').attr('data-content', "y{"+y+"},x{"+x+"}");
         }
     }
    $('td .cercle').css('opacity', '0');
@@ -960,7 +961,7 @@ function createBoard() {
 
 class IA {
     constructor() {
-
+        this.currentScore = 0;
     }
 
     captureIA(y, x, piece, iaTab) {
@@ -1251,12 +1252,14 @@ class IA {
         for (let i = 0; i <= 18; i++) {
           for (let j = 0; j <= 18; j++) {
             let pieceAProximiteTrouvee = false;
-            for (let ii = i-2;ii<i+2;ii++) {
-                for (let jj = j-2;jj<j+2;jj++) {
+            for (let ii = i - 2; ii <= i + 2 ;ii++) {
+                for (let jj = j - 2 ; jj <= j + 2;jj++) {
+                    if (i == 4 && j == 5)
+                        console.log("ii = "+ii+" && jj = "+jj);
                     if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && board[ii][jj] != 0){
                         pieceAProximiteTrouvee = true;
-                       /* console.log(ii+' '+jj);
-                        console.log("pos i= "+i+"pos j = "+j);*/
+                        console.log(ii+' '+jj);
+                        console.log("pos i= "+i+"pos j = "+j);
                         break;
                     }
                 }
@@ -1267,15 +1270,15 @@ class IA {
                     board[i][j] = 0
                     continue;    
                 }
-                score = this.minMaxAlphaBeta(board, 2, -Infinity, Infinity, true)
-                $('#col'+i+'-'+j+' .cercle').attr('data-content', score);
+                score = this.minMaxAlphaBeta(board, 0, -Infinity, Infinity, true)
+                $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
                 console.log("pos i= "+i+"pos j = "+j);
                 board[i][j] = 0;
                 if (score > bestScore) {
                     bestScore = score;
                     move = { i, j };
                 }
-                if (bestScore > 1000000)
+                if (bestScore > 1000000 )
                     break;
             }
           }
@@ -1286,6 +1289,7 @@ class IA {
         console.log("========");
         console.log(res / 1000);
         console.log(bestScore);
+        $('.time').html('Time : '+res/1000)
         console.log("========");
         drawCoordinates(move.i, move.j);
         $('.score').html("Score : "+score)
@@ -1466,8 +1470,8 @@ class IA {
             for (let i = 0; i <= 18; i++) {
                 for (let j = 0; j <= 18; j++) {
                     let pieceAProximiteTrouvee = false;
-                    for (let ii = i-2;ii<i+2;ii++) {
-                        for (let jj = j-2;jj<j+2;jj++) {
+                    for (let ii = i - 2; ii <= i + 2 ; ii++) {
+                        for (let jj = j - 2; jj <= j + 2; jj++) {
                             if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && node[ii][jj] != 0){
                                 pieceAProximiteTrouvee = true;
                                 break;
@@ -1499,8 +1503,8 @@ class IA {
             for (let i = 0; i <= 18; i++) {
                 for (let j = 0; j <= 18; j++) {
                     let pieceAProximiteTrouvee = false;
-                    for (let ii = i-2;ii<i+2;ii++) {
-                        for (let jj = j-2;jj<j+2;jj++) {
+                    for (let ii = i - 2; ii <= i + 2; ii++) {
+                        for (let jj = j - 2; jj <= j + 2; jj++) {
                             if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && node[ii][jj] != 0){
                                 pieceAProximiteTrouvee = true;
                             //    console.log(ii+' '+jj);
@@ -1587,7 +1591,7 @@ class IA {
                         let nb = 1;
                         let isSpace= false;
                         let miOuvert = false;
-                        for (let j = 1; j < 6; j++) {
+                        for (let j = 1; j < 5; j++) {
                             if (board[y][x] == joueur) {
                                 if (y + (j * cardinalPoint[i][0]) >= 0 && x + (j * cardinalPoint[i][1]) >= 0  
                                     && y + (j * cardinalPoint[i][0]) <= 18 && x + (j * cardinalPoint[i][1]) <= 18) {
@@ -1596,8 +1600,8 @@ class IA {
                                             isSpace = false;
                                             miOuvert = true;
                                         }
-                                        nb += (nb < 5) ? 1 : 0;
-                                        //nb++;
+                                        //nb += (nb < 5) ? 1 : 0;
+                                        nb++;
                                     } else { 
                                         if (board[y + (j * cardinalPoint[i][0])][x + (j * cardinalPoint[i][1])] == opposite || isSpace == true) {
                                             break;
