@@ -93,7 +93,7 @@ body {
     margin-right: 10px;
 }
 
-.cercle:hover:after{
+td .cercle:hover:after{
     content: attr(data-content);
     position: absolute;
     padding: 5px;
