@@ -24,8 +24,8 @@ export function winnerParser(coordXY){
     //               Nord       -1   0  |             Sud-Ouest   1  -1
     var cardinalPoint = [[0,1],[1,0],[1,1],[-1,1]];
     var gomokuTools = getGomokuTools();
-    var x = parseInt(coordXY[0], 10);
-    var y = parseInt(coordXY[1], 10);
+    var x = parseInt(coordXY[1], 10);
+    var y = parseInt(coordXY[0], 10);
     var validation = 0;
     for (let i = 0; i < 4; i++){
         for (var j = 1; j < 5; j++){
@@ -148,8 +148,8 @@ function freeThreeParse(coordXY){
     var direction = [];
     var oppositeDirection = [];
     var validation = 0;
-    var x = parseInt(coordXY[0], 10);
-    var y = parseInt(coordXY[1], 10);
+    var x = parseInt(coordXY[1], 10);
+    var y = parseInt(coordXY[0], 10);
 
     for (let j = 0; j < 4; j++){
         for (let i = 0; i < 4; i++){
@@ -203,8 +203,8 @@ function eatOrNot(coordXY, cardinalPoint){
 
     var cardPY = cardinalPoint[0];
     var cardPX = cardinalPoint[1];
-    var x = parseInt(coordXY[0], 10);
-    var y = parseInt(coordXY[1], 10);
+    var x = parseInt(coordXY[1], 10);
+    var y = parseInt(coordXY[0], 10);
 
     if (verifBorderLimit(y + (1 * cardPY)) && verifBorderLimit(x + (1 * cardPX)))
         if (gomokuTools.stonesArray[y + (1 * cardPY)][x + (1 * cardPX)].stat == oppositePlayer)
@@ -227,8 +227,8 @@ function verifAllCardinalPoint(coordXY){
 
     var cardinalPoint = [[0,1],[0,-1],[-1,0],[1,0],[-1,-1],[1,-1],[-1,1],[1, 1]];
     var eatenStones = [];
-    var x = parseInt(coordXY[0], 10);
-    var y = parseInt(coordXY[1], 10);
+    var x = parseInt(coordXY[1], 10);
+    var y = parseInt(coordXY[0], 10);
 
     for (let i = 0; i < 8; i++){
             if (eatOrNot(coordXY, cardinalPoint[i])){

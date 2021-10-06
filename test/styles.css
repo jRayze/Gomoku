@@ -96,6 +96,24 @@ td .cercle {
     height: 26px;
 }
 
+td .cercle:hover:after{
+    content: attr(data-content);
+    position: absolute;
+    padding: 5px;
+    margin: 22px;
+    width: 150px;
+    justify-content: center;
+    display: flex;
+    color: white;
+    background: rgb(73, 73, 73);
+    font-size: 14px;
+    opacity: 0.9;
+
+    z-index: 100;/*
+    display: block;*/
+}
+
+
 td[id$="-18"] {
     border-top: none ;
     border-right: none ;

@@ -6,8 +6,8 @@ import { displayEatenStoneNumber } from "./eventController.js";
 
 export function setGame(coordXY){
     var gomokuTools = getGomokuTools();
-    var x = coordXY[0];
-    var y = coordXY[1];
+    var x = coordXY[1];
+    var y = coordXY[0];
 
     if (gomokuTools.stonesArray[y][x].stat == 'empty') {
         if (setParsing(coordXY)) {
@@ -72,7 +72,8 @@ function createBoard() {
     for (var y = 0; y < 19; y++ ) {
         $('#board').append('<tr id="line'+y+'">')
         for (var x = 0; x < 19; x++ ) {
-            $('#line'+y).append('<td id="col'+y+'-'+x+'"><div id="cercle'+x+'-'+y+'" class="cercle"></div></td>')
+            $('#line'+y).append('<td id="col'+y+'-'+x+'"><div id="cercle'+y+'-'+x+'" class="cercle"></div></td>')
+            $('#col'+y+'-'+x+' .cercle').attr('data-content', "y{"+y+"},x{"+x+"}");
         }
     }
     $('td .cercle').css('opacity', '0');
@@ -86,7 +87,9 @@ function createStonesArray(){
     }
     for (var y = 0; y < 19; y++) {
         for (var x = 0; x < 19; x++ ) {
-            stonesArray[y][x] = new stoneClass(document.getElementById("cercle"+x+"-"+y));
+            stonesArray[y][x] = new stoneClass(document.getElementById("cercle"+y+"-"+x));
+            //$(stonesArray[y][x]).attr('data-content', "y{"+y+"},x{"+x+"}");
+            console.log($(stonesArray[y][x]));
         }
     }
     return (stonesArray); 
