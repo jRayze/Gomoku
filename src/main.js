@@ -2322,3 +2322,4 @@ class IA {
 //console.log(ia.id)
 //minMax(matrix, 2, true) my turn is true and opponant turn is false
 //maximizingPlayer bool => if depth is odd == true 
+
