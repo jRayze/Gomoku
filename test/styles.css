@@ -39,11 +39,6 @@ td {
     vertical-align: middle;
 }
 
-.display-1 {
-    animation : display-1 3s linear 1s slidein;
-    
-}
-
 .lead {
     font-size: 18px !important;
 }
@@ -93,6 +88,14 @@ body {
     margin-right: 10px;
 }
 
+td .cercle {
+    background-color: black;
+    margin-top: -33px;
+    margin-left: -13px;
+    width: 26px;
+    height: 26px;
+}
+
 td .cercle:hover:after{
     content: attr(data-content);
     position: absolute;
@@ -110,13 +113,6 @@ td .cercle:hover:after{
     display: block;*/
 }
 
-td .cercle {
-    background-color: black;
-    margin-top: -33px;
-    margin-left: -13px;
-    width: 26px;
-    height: 26px;
-}
 
 td[id$="-18"] {
     border-top: none ;
