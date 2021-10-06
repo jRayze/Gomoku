@@ -13,8 +13,10 @@ export function setGame(coordXY){
         if (setParsing(coordXY)) {
             gomokuTools.stonesArray[y][x].addStone(gomokuTools.activePlayer);
             
-            if(winnerParser(coordXY))
+            if(winnerParser(coordXY)){
                 console.log("WINNNNN");
+                resetGame();
+            }
             switchActivePlayer();
             stonesHeaderAnimation();
         }
@@ -31,6 +33,21 @@ export function initGame(){
     gomokuTools.winnablePosition = [];
 }
 
+function resetGame(){
+    let gomokuTools = getGomokuTools();
+
+    for (let i = 0; i < 19; i++){
+        for (let j = 0; j < 19; j++){
+            gomokuTools.stonesArray[i][j].removeStone();
+        }
+    }
+    gomokuTools.activePlayer = 'black';
+    gomokuTools.eatenBlackStones = 0;
+    gomokuTools.eatenWhiteStones = 0;
+    gomokuTools.winnablePosition = [];
+    displayEatenStoneNumber();
+    stonesHeaderAnimation();
+}
 export function eatingMachine(eatenStonesCoord)
 {
     var gomokuTools = getGomokuTools();

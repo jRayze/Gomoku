@@ -4,8 +4,8 @@ import { eatingMachine } from "./gameController.js";
 
 export function setParsing(coordXY){
     var gomokuTools = getGomokuTools();
-    var x = coordXY[0];
-    var y = coordXY[1];
+//    var x = coordXY[0];
+//    var y = coordXY[1];
 
         if (!freeThreeParse(coordXY)){
             alertDoubleFreeThree();
@@ -32,18 +32,18 @@ export function winnerParser(coordXY){
             validation += getStoneInfo(x + (j * cardinalPoint[i][1]) ,y + (j * cardinalPoint[i][0])) == 1 ? 1 : 0;
             validation += getStoneInfo(x + (j * (cardinalPoint[i][1] * -1 )) ,y + (j * (cardinalPoint[i][0] * -1 ))) == 1 ? 1 : 0;
         }
+// cas des 2 victoire sur 1 meme ligne a gerer
     if (validation == 4){
         j = 0;
         while (getStoneInfo(x + ((j - 1) * cardinalPoint[i][1]) ,y + ((j - 1) * cardinalPoint[i][0])) == 1)
             j--;
         gomokuTools.winnablePosition.push([[x + (j * cardinalPoint[i][1]),y + (j * cardinalPoint[i][0])], i]);
         break;
+////////////////////////////////////////////////
     }
     else
         validation = 0;
     }
-
-    // garder (x + (j * cardinalPoint[i][1]) ,y + (j * cardinalPoint[i][0]))
     return (aTrueWinnerCantBeEaten() == false ? false : true);
 }
 
@@ -55,39 +55,62 @@ function aTrueWinnerCantBeEaten(){
     //    1    ===   Sud         1   0  |  3    ===   Nord-est   -1   1
     //               Nord       -1   0  |             Sud-Ouest   1  -1
     var winnablePosition = getGomokuTools().winnablePosition;
-
     var cardinalPoint = [[0,1],[1,0],[1,1],[-1,1]];
     var validation = [0,0,0,0];
-    //check validité de gomokuTools.winnablePosition liste
+
+    winnablePositionRefresh(cardinalPoint)
+
     if (winnablePosition.length > 0)
     {
+        let invalideWinnablePos = false;
+        let countInvalideWinnablePos = 0;
         for (let k = 0; k < winnablePosition.length; k++){
             for (let i = 0; i < 5; i++){
                 for (let j = 0; j < 4; j++){
-                    if(winnablePosition[k][1] != j)
+                    if (winnablePosition[k][1] != j)
                     {
-                        validation[0] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (2 * (cardinalPoint[j][1] * -1))) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (2 * (cardinalPoint[j][0] * -1) )));
-                        validation[1] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (1 * (cardinalPoint[j][1] * -1))) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (1 * (cardinalPoint[j][0] * -1) )));
-                        validation[2] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (1 * cardinalPoint[j][1])) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (1 * cardinalPoint[j][0])));
-                        validation[3] = getStoneInfo(((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) + (2 * cardinalPoint[j][1])) ,((winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0])) + (2 * cardinalPoint[j][0])));
-                        if (canEat(validation))
-                        {
-                            console.log("YOLOOOCANEAT")
-                            return false;
-
-                        }
+                        let x = (winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1]));
+                        let y = (winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0]));
+                        let xPlusOneDirection = (1 * cardinalPoint[j][1]);
+                        let yPlusOneDirection = (1 * cardinalPoint[j][0]);
+                        let xPlusTwoDirection = (2 * cardinalPoint[j][1]);
+                        let yPlusTwoDirection = (2 * cardinalPoint[j][0]);
+                        validation[0] = getStoneInfo((x + (xPlusTwoDirection * -1)), (y + (yPlusTwoDirection * -1)));
+                        validation[1] = getStoneInfo((x + (xPlusOneDirection * -1)), (y + (yPlusOneDirection * -1)));
+                        validation[2] = getStoneInfo((x + xPlusOneDirection) ,(y + yPlusOneDirection));
+                        validation[3] = getStoneInfo((x + xPlusTwoDirection) ,(y + yPlusTwoDirection));
+                        if (canBeEaten(validation))
+                            invalideWinnablePos = true;
                         validation = [0,0,0,0];
                     }
                 }
             }
-        console.log(validation);
-        return true;
+            if (invalideWinnablePos == true){
+                invalideWinnablePos = false;
+                countInvalideWinnablePos += 1;
+            }
+            console.log(validation);
         }
+        if (countInvalideWinnablePos == winnablePosition.length)
+            return false
+        return true;
     }
     return false;
 }
 
-function canEat(v){
+function winnablePositionRefresh(cardinalPoint){
+    var winnablePosition = getGomokuTools().winnablePosition;
+    for (let k = 0; k < winnablePosition.length; k++){
+        for (let i = 0; i < 5; i++){
+            if (getStoneInfo(winnablePosition[k][0][0] , winnablePosition[k][0][1]) != 1){
+                winnablePosition.splice(k,1);
+                break;
+            }
+        }
+    }
+}
+
+function canBeEaten(v){
 if ((v[0] == -1 && v[1] == 1 && v[2] == 0) || 
     (v[1] == 0 && v[2] == 1 && v[3] == -1) || 
     (v[1] == -1 && v[2] == 1 && v[3] == 0) || 
@@ -178,6 +201,7 @@ function eatOrNot(coordXY, cardinalPoint){
     var oppositePlayer = (gomokuTools.activePlayer == "black") ? "white" : "black";
     var validation = 0;
     // cardinalPoint X and Y
+
     var cardPY = cardinalPoint[0];
     var cardPX = cardinalPoint[1];
     var x = parseInt(coordXY[0], 10);
