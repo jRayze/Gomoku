@@ -89,7 +89,6 @@ function aTrueWinnerCantBeEaten(){
                 invalideWinnablePos = false;
                 countInvalideWinnablePos += 1;
             }
-            console.log(validation);
         }
         if (countInvalideWinnablePos == winnablePosition.length)
             return false
