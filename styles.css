@@ -118,6 +118,21 @@ td .cercle {
     height: 26px;
 }
 
+.level{
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    max-width: 1000px;
+    height: auto;
+}
+
+.custom-control {
+    margin : auto;
+    height: auto;
+    width: auto;
+    display: flex;
+}
+
 td[id$="-18"] {
     border-top: none ;
     border-right: none ;

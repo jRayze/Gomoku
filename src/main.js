@@ -9,10 +9,23 @@ var result = false;
 var nbPionW = 0;
 var nbPionB = 0;
 var matrix = [];
+var level = 1;
 
 for (var i = 0; i < 19; i++) {
     matrix[i] = new Array(19);
     matrix[i].fill(0, 0, 19)
+}
+
+let tabPiecesPosee = []
+let emptyObj = {
+    value : 0,
+    align : [0, 0 ,0, 0], // nb piece dans l'alignement [x+, y+, (x+ y+), (y+ x-)]
+    isCapturable : false,
+}
+
+for (var i = 0; i < 19; i++) {
+    tabPiecesPosee[i] = new Array(19);
+    tabPiecesPosee[i].fill(emptyObj, 0, 19);
 }
 
 // *********** CAPTURE ************ //
@@ -1254,8 +1267,6 @@ class IA {
             let pieceAProximiteTrouvee = false;
             for (let ii = i - 2; ii <= i + 2 ;ii++) {
                 for (let jj = j - 2 ; jj <= j + 2;jj++) {
-                    if (i == 4 && j == 5)
-                        console.log("ii = "+ii+" && jj = "+jj);
                     if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && board[ii][jj] != 0){
                         pieceAProximiteTrouvee = true;
                         console.log(ii+' '+jj);
@@ -1270,7 +1281,7 @@ class IA {
                     board[i][j] = 0
                     continue;    
                 }
-                score = this.minMaxAlphaBeta(board, 0, -Infinity, Infinity, true)
+                score = this.minMaxAlphaBeta(board, level, -Infinity, Infinity, true)
                 $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
                 console.log("pos i= "+i+"pos j = "+j);
                 board[i][j] = 0;
@@ -1591,6 +1602,8 @@ class IA {
                         let nb = 1;
                         let isSpace= false;
                         let miOuvert = false;
+                        if (y + (-1 * cardinalPoint[i][0]) >= 0 && x + (-1 * cardinalPoint[i][1]) >= 0 && board[y + (-1 * cardinalPoint[i][0])][x + (-1 * cardinalPoint[i][1])] == joueur)
+                            continue;
                         for (let j = 1; j < 5; j++) {
                             if (board[y][x] == joueur) {
                                 if (y + (j * cardinalPoint[i][0]) >= 0 && x + (j * cardinalPoint[i][1]) >= 0  
@@ -1737,7 +1750,83 @@ class IA {
   
   // Usage!
 
-//console.log(ia.id)
-//minMax(matrix, 2, true) my turn is true and opponant turn is false
-//maximizingPlayer bool => if depth is odd == true 
+/*let tabPiecesPosee = []
+let emptyObj = {
+    value = 0,
+    align : [0, 0 ,0, 0], // nb piece dans l'alignement [x+, y+, (x+ y+), (y+ x-)]
+    isCapturable : false,
+}
 
+for (var i = 0; i < 19; i++) {
+    tabPiecesPosee[i] = new Array(19);
+    tabPiecesPosee[i].fill(emptyObj, 0, 19);
+}
+
+/*  enregistrer cass posé dans tableau de pieces
+
+
+    function look2caseAround(x, y) 
+
+        on parcourt le tableau de pieces (la premiere est celle que le joueur viens de poser)
+            on regarde 2 case autour de chaques pieces =>
+                si on trouve une case qui est déja dans le tableau de pieces =>
+                    verifier l'alignement des 2 pieces 
+                    si alignement est vrai =>
+                        ajouter 1 dans la case alignement correspondant de la piece actuelle et celle qui est alignée
+                        si elles sont capturables =>
+                            isCapturable devient vrai
+
+
+    function setCapture(x, y, dir)
+        
+        tabPiecePosee[x][y].value = 0
+        tabPiecePosee[x][y].align[dir] -= 1
+        tabPiecePosee[x][y].isCapturable = false
+
+        
+        
+
+*/
+/*function look2caseAround(x, y) {
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+        if if (tabPiecePosee[x - 2][y - 2].value != 0)
+    if (tabPiecePosee[x][y - 1].value != 0)
+        if (tabPiecePosee[x][y - 2].value != 0)
+
+    if (tabPiecePosee[x][y - 1].value != 0)
+    if (tabPiecePosee[x][y - 2].value != 0)
+
+    
+    if (tabPiecePosee[x - 1][y].value != 0)
+        if (tabPiecePosee[x - 2][y].value != 0)
+    if (tabPiecePosee[x + 1][y + 1].value != 0)
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+    
+   
+    
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+    if (tabPiecePosee[x][y - 1].value != 0)
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+    
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+    if (tabPiecePosee[x][y - 1].value != 0)
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+    if (tabPiecePosee[x - 1][y - 1].value != 0)
+   
+   
+    /* for (let i = x - 2; i <= x + 2; i++) {
+        for (let j = y - 2; j <= y + 2; j++) {
+            if (x == 0 && j == 0)
+                continue;
+            if (tabPiecePosee[i][j].value != 0) {
+                if (i == j)
+            } 
+        }
+    }*/
+/*}
+function pieceSee () {
+
+}
+*/
