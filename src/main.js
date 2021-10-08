@@ -19,7 +19,7 @@ for (var i = 0; i < 19; i++) {
 let tabPiecesPosee = []
 let emptyObj = {
     value : 0,
-    align : [0, 0 ,0, 0], // nb piece dans l'alignement [x+, y+, (x+ y+), (y+ x-)]
+  //  align : [0, 0 ,0, 0], // nb piece dans l'alignement [x+, y+, (x+ y+), (y+ x-)]
     isCapturable : false,
 }
 
@@ -27,6 +27,8 @@ for (var i = 0; i < 19; i++) {
     tabPiecesPosee[i] = new Array(19);
     tabPiecesPosee[i].fill(emptyObj, 0, 19);
 }
+
+let coupsJouee = [];
 
 // *********** CAPTURE ************ //
 
@@ -877,7 +879,11 @@ function drawCoordinates(y, x) {
         }
 
         matrix[y][x] = piece;
-        //console.log(matrix);
+        tabPiecesPosee[y][x].value = piece;
+        coupsJouee.unshift([y, x])
+        console.log(tabPiecesPosee[y][x].value);
+        console.log(matrix);
+        console.log(coupsJouee);
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         console.log($('#col'+y+'-'+x+' .cercle').css('opacity'));
@@ -915,12 +921,19 @@ function getPosition(x , y) {
 }
 
 function reset() {
-    newMatrix = []
+    let newMatrix = []
     for (var i = 0; i < 19; i++) {
         newMatrix[i] = new Array(19);
         newMatrix[i].fill(0, 0, 19)
     }
     matrix = newMatrix;
+    let newtabPiecesPosee = []
+    for (var i = 0; i < 19; i++) {
+        newtabPiecesPosee[i] = new Array(19);
+        newtabPiecesPosee[i].fill(emptyObj, 0, 19);
+    }
+    tabPiecesPosee = newtabPiecesPosee;
+    coupsJouee = [];
     nbPionW = 0;
     nbPionB = 0;
     player = false;
@@ -1258,52 +1271,55 @@ class IA {
 
 
     bestMove(board) {
+        let tabCoups = coupsJouee;
         let start = Date.now();
         let bestScore = -Infinity;
         let move;
         let score = 0;
-        for (let i = 0; i <= 18; i++) {
-          for (let j = 0; j <= 18; j++) {
-            let pieceAProximiteTrouvee = false;
-            for (let ii = i - 2; ii <= i + 2 ;ii++) {
-                for (let jj = j - 2 ; jj <= j + 2;jj++) {
-                    if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && board[ii][jj] != 0){
-                        pieceAProximiteTrouvee = true;
-                        console.log(ii+' '+jj);
-                        console.log("pos i= "+i+"pos j = "+j);
-                        break;
+        let nbCoups = tabCoups.length;
+        console.log("--------"+nbCoups);
+        //for (let i = 0; i <= 18; i++) {
+        //  for (let j = 0; j <= 18; j++) {
+        for (let cpt = 0; cpt < nbCoups; cpt++) {
+           // console.log(tabCoups[cpt]);
+            let c1 = tabCoups[cpt][0];
+            let c2 = tabCoups[cpt][1];
+            for (let i = c1 - 2; i <= c1 + 2 ; i++) {
+                for (let j = c2 - 2; j <= c2 + 2; j++) {
+                    if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
+                        /*console.log("pos coupY= "+c1+"coupX = "+c2);
+                        console.log("pos i= "+i+"pos j = "+j);*/
+                        if (board[i][j] == 0) {
+                            board[i][j] = 1;
+                            if (checkDoubleFree(i, j, 1)) {
+                                board[i][j] = 0
+                                continue;    
+                            }
+                            tabCoups.unshift([i, j]);
+                            score = this.minMaxAlphaBeta(board, 0, -Infinity, Infinity, true, tabCoups)
+                            //$('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
+                            console.log("pos i= "+i+"pos j = "+j);
+                            board[i][j] = 0;
+                            tabCoups.shift();
+                            if (score > bestScore) {
+                                bestScore = score;
+                                move = { i, j };
+                            }
+                            if (bestScore > 1000000 )
+                                break;
+                        }
                     }
                 }
             }  
-            if (pieceAProximiteTrouvee && board[i][j] == 0) {
-                board[i][j] = 1;
-                if (checkDoubleFree(i, j, 1)) {
-                    board[i][j] = 0
-                    continue;    
-                }
-                score = this.minMaxAlphaBeta(board, level, -Infinity, Infinity, true)
-                $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
-                console.log("pos i= "+i+"pos j = "+j);
-                board[i][j] = 0;
-                if (score > bestScore) {
-                    bestScore = score;
-                    move = { i, j };
-                }
-                if (bestScore > 1000000 )
-                    break;
-            }
-          }
+          //}
         }
+        console.log(tabCoups);
         console.log(move)
         let end = Date.now();
         let res = end - start;
-        console.log("========");
-        console.log(res / 1000);
-        console.log(bestScore);
         $('.time').html('Time : '+res/1000)
-        console.log("========");
         drawCoordinates(move.i, move.j);
-        $('.score').html("Score : "+score)
+        $('.score').html("Score : "+bestScore)
     }
     
     checkType(y, x, p, board) {
@@ -1462,81 +1478,78 @@ class IA {
     }
 
 
-    minMaxAlphaBeta(node, depth, alpha, beta, maximizingPlayer) {
+    minMaxAlphaBeta(node, depth, alpha, beta, maximizingPlayer, coups) {
 
         let gameOver = this.checkWinner(node)
-        
+        let nbCoups = coups.length;
         if (depth == 0 || gameOver == true) {
             if (gameOver == true) {
                 console.log("victoire");
-                console.log(node);
+             //   console.log(node);
             }
-
+            console.log("test");
             return this.heuristicValue(node);
         }
 
         if (maximizingPlayer) {
-            //console.log("maximise");
+            console.log("maximise");
             let maxEval = -Infinity
-            for (let i = 0; i <= 18; i++) {
-                for (let j = 0; j <= 18; j++) {
-                    let pieceAProximiteTrouvee = false;
-                    for (let ii = i - 2; ii <= i + 2 ; ii++) {
-                        for (let jj = j - 2; jj <= j + 2; jj++) {
-                            if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && node[ii][jj] != 0){
-                                pieceAProximiteTrouvee = true;
-                                break;
+            for (let cpt = 0; cpt < nbCoups; cpt++) {
+                let c1 = coups[cpt][0];
+                let c2 = coups[cpt][1];
+                console.log("test2");
+                for (let i = c1 - 2; i <= c1 + 2 ;i++) {
+                    for (let j = c2 - 2 ; j <= c2 + 2;j++) {
+                        if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
+                            if (node[i][j] == 0) {
+                                node[i][j] = 1
+                                if (checkDoubleFree(i, j, 1)) {
+                                    node[i][j] = 0
+                                    continue;    
+                                }
+                                coups.unshift([i, j])
+                                let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, false, coups);
+                                node[i][j] = 0
+                                coups.shift();
+                                maxEval = Math.max(maxEval, score);
+                                if (maxEval >= beta) {
+                                    return maxEval;
+                                }
+                                alpha = Math.max(alpha, maxEval)
                             }
                         }
-                    }
-                    if (pieceAProximiteTrouvee && node[i][j] == 0) {
-                        node[i][j] = 1
-                        if (checkDoubleFree(i, j, 1)) {
-                            node[i][j] = 0
-                            continue;    
-                        }
-                        let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, false);
-                        node[i][j] = 0
-                        maxEval = Math.max(maxEval, score);
-                        if (maxEval >= beta) {
-                            return maxEval;
-                        }
-                        alpha = Math.max(alpha, maxEval)
                     }
                 }
             }
             return maxEval
         }
         else {
-            // console.log("minimise");
+            console.log("minimise");
             //console.log(node);
             let minEval = Infinity
-            for (let i = 0; i <= 18; i++) {
-                for (let j = 0; j <= 18; j++) {
-                    let pieceAProximiteTrouvee = false;
-                    for (let ii = i - 2; ii <= i + 2; ii++) {
-                        for (let jj = j - 2; jj <= j + 2; jj++) {
-                            if (ii>=0 && ii<=18 && jj>=0 && jj<=18 && node[ii][jj] != 0){
-                                pieceAProximiteTrouvee = true;
-                            //    console.log(ii+' '+jj);
-                              //  console.log("pos i= "+i+"pos j = "+j);
-                                break;
+            for (let cpt = 0; cpt < nbCoups; cpt++) {
+                let c1 = coups[cpt][0];
+                let c2 = coups[cpt][1];
+                for (let i = c1 - 2; i <= c1 + 2 ;i++) {
+                    for (let j = c2 - 2 ; j <= c2 + 2;j++) {
+                        if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
+                            if (node[i][j] == 0) {
+                                node[i][j] = 1
+                                if (checkDoubleFree(i, j, 2)) {
+                                    node[i][j] = 0
+                                    continue;
+                                }
+                                coups.unshift([i, j])
+                                let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, true, coups);
+                                node[i][j] = 0
+                                coups.shift();
+                                minEval = Math.min(minEval, score);
+                                if (alpha >= minEval) {
+                                    return minEval
+                                }
+                                beta = Math.min(beta, minEval)
                             }
                         }
-                    }
-                    if (pieceAProximiteTrouvee && node[i][j] == 0) {
-                        node[i][j] = 1
-                        if (checkDoubleFree(i, j, 2)) {
-                            node[i][j] = 0
-                            continue;
-                        }
-                        let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, true);
-                        node[i][j] = 0
-                        minEval = Math.min(minEval, score);
-                        if (alpha >= minEval) {
-                            return minEval
-                        }
-                        beta = Math.min(beta, minEval)
                     }
                 }
             }
@@ -1625,8 +1638,8 @@ class IA {
                                 }
                             }
                         }
-                        if (nb == 5)
-                            console.log("coord["+y+"]["+x+"] il y a "+board[y][x]);
+                        //if (nb == 5)
+                          //  console.log("coord["+y+"]["+x+"] il y a "+board[y][x]);
                         // if faut protéger pour pas lire les case en dehors de la map (y >= 0 && y <= 18) && (x >= 0 && x <= 18)
                         if (y + (-1 * cardinalPoint[i][0]) >= 0 && x + (-1 * cardinalPoint[i][1]) >= 0  
                             && y + (-1 * cardinalPoint[i][0]) <= 18 && x + (-1 * cardinalPoint[i][1]) <= 18) {
@@ -1658,7 +1671,7 @@ class IA {
                 }
             }
         }
-        console.log(tabP);
+       // console.log(tabP);
         return tabP;
     }
 
@@ -1753,7 +1766,7 @@ class IA {
 /*let tabPiecesPosee = []
 let emptyObj = {
     value = 0,
-    align : [0, 0 ,0, 0], // nb piece dans l'alignement [x+, y+, (x+ y+), (y+ x-)]
+   // align : [0, 0 ,0, 0], // nb piece dans l'alignement [x+, y+, (x+ y+), (y+ x-)]
     isCapturable : false,
 }
 
