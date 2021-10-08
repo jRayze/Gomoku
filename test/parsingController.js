@@ -4,8 +4,6 @@ import { eatingMachine } from "./gameController.js";
 
 export function setParsing(coordXY){
     var gomokuTools = getGomokuTools();
-//    var x = coordXY[0];
-//    var y = coordXY[1];
 
         if (!freeThreeParse(coordXY)){
             alertDoubleFreeThree();
@@ -35,8 +33,12 @@ export function winnerParser(coordXY){
 // cas des 2 victoire sur 1 meme ligne a gerer
     if (validation == 4){
         j = 0;
-        while (getStoneInfo(x + ((j - 1) * cardinalPoint[i][1]) ,y + ((j - 1) * cardinalPoint[i][0])) == 1)
+        let yolo = 0;  // Patch temporaire pr les cas les plus con
+        while (getStoneInfo(x + ((j - 1) * cardinalPoint[i][1]) ,y + ((j - 1) * cardinalPoint[i][0])) == 1 && yolo < 4)
+        {
             j--;
+            yolo++;
+        }
         gomokuTools.winnablePosition.push([[x + (j * cardinalPoint[i][1]),y + (j * cardinalPoint[i][0])], i]);
         break;
 ////////////////////////////////////////////////
@@ -100,8 +102,9 @@ function aTrueWinnerCantBeEaten(){
 function winnablePositionRefresh(cardinalPoint){
     var winnablePosition = getGomokuTools().winnablePosition;
     for (let k = 0; k < winnablePosition.length; k++){
+        var winnablePositionColor = getStoneInfo(winnablePosition[k][0][0],winnablePosition[k][0][1]);
         for (let i = 0; i < 5; i++){
-            if (getStoneInfo(winnablePosition[k][0][0] , winnablePosition[k][0][1]) != 1){
+            if (getStoneInfo((winnablePosition[k][0][0] + (i * cardinalPoint[winnablePosition[k][1]][1])) , (winnablePosition[k][0][1] + (i * cardinalPoint[winnablePosition[k][1]][0]))) != winnablePositionColor){
                 winnablePosition.splice(k,1);
                 break;
             }
@@ -122,7 +125,6 @@ return false;
 
 function getStoneInfo(x, y) {
     var gomokuTools = getGomokuTools();
-//console.log("getstoneinfo  x " + x + " y " + y)
     if (verifBorderLimit(y) && verifBorderLimit(x)) {
         if (gomokuTools.stonesArray[y][x].stat == gomokuTools.activePlayer) {
             return 1;                      //ActivePLayer
@@ -200,7 +202,6 @@ function eatOrNot(coordXY, cardinalPoint){
     var oppositePlayer = (gomokuTools.activePlayer == "black") ? "white" : "black";
     var validation = 0;
     // cardinalPoint X and Y
-
     var cardPY = cardinalPoint[0];
     var cardPX = cardinalPoint[1];
     var x = parseInt(coordXY[1], 10);

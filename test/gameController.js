@@ -86,11 +86,8 @@ function createStonesArray(){
         stonesArray[i] = new Array(19);
     }
     for (var y = 0; y < 19; y++) {
-        for (var x = 0; x < 19; x++ ) {
+        for (var x = 0; x < 19; x++ )
             stonesArray[y][x] = new stoneClass(document.getElementById("cercle"+y+"-"+x));
-            //$(stonesArray[y][x]).attr('data-content', "y{"+y+"},x{"+x+"}");
-            console.log($(stonesArray[y][x]));
-        }
     }
     return (stonesArray); 
 }
