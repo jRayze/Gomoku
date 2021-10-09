@@ -1487,17 +1487,17 @@ class IA {
                 console.log("victoire");
              //   console.log(node);
             }
-            console.log("test");
-            return this.heuristicValue(node);
+          // console.log("test");
+            return this.heuristicValue(node, coups, nbCoups);
         }
 
         if (maximizingPlayer) {
-            console.log("maximise");
+         //   console.log("maximise");
             let maxEval = -Infinity
             for (let cpt = 0; cpt < nbCoups; cpt++) {
                 let c1 = coups[cpt][0];
                 let c2 = coups[cpt][1];
-                console.log("test2");
+               // console.log("test2");
                 for (let i = c1 - 2; i <= c1 + 2 ;i++) {
                     for (let j = c2 - 2 ; j <= c2 + 2;j++) {
                         if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
@@ -1524,7 +1524,7 @@ class IA {
             return maxEval
         }
         else {
-            console.log("minimise");
+          //  console.log("minimise");
             //console.log(node);
             let minEval = Infinity
             for (let cpt = 0; cpt < nbCoups; cpt++) {
@@ -1590,7 +1590,7 @@ class IA {
 
 
     // Creation d'un tableau qui calcule 
-    createTabP(board, joueur){
+    createTabP(board, joueur, moves, nbmoves){
         //                    Y   X                             Y   X
         // Est        : 0  |  0   1          Nord-Ouest : 4  | -1  -1
         // Ouest      : 1  |  0  -1          Sud-Ouest  : 5  |  1  -1
@@ -1606,22 +1606,23 @@ class IA {
             4 : [0, 0, 0],      //      -> 1 = pieces mi ouvertes
             5 : [0, 0, 0]       //      -> 2 = pieces ouvertes
         }
-
-        for (var y = 0; y <= 18; y++) { // parcour 
-            for (var x = 0; x <= 18; x++) {
-                if (board[y][x] == joueur) {
+        
+        //for (var y = 0; y <= 18; y++) { // parcour 
+           // for (var x = 0; x <= 18; x++) {
+            for (let cpt = 0; cpt < nbmoves; cpt++) {
+                if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
                    // console.log("coord["+x+"]["+y+"] il y a "+board[y][x]);
                     for (let i = 0; i < 4; i++) {
                         let nb = 1;
                         let isSpace= false;
                         let miOuvert = false;
-                        if (y + (-1 * cardinalPoint[i][0]) >= 0 && x + (-1 * cardinalPoint[i][1]) >= 0 && board[y + (-1 * cardinalPoint[i][0])][x + (-1 * cardinalPoint[i][1])] == joueur)
+                        if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
                             continue;
                         for (let j = 1; j < 5; j++) {
-                            if (board[y][x] == joueur) {
-                                if (y + (j * cardinalPoint[i][0]) >= 0 && x + (j * cardinalPoint[i][1]) >= 0  
-                                    && y + (j * cardinalPoint[i][0]) <= 18 && x + (j * cardinalPoint[i][1]) <= 18) {
-                                    if (board[y + (j * cardinalPoint[i][0])][x + (j * cardinalPoint[i][1])] == joueur) {
+                            if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
+                                if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
+                                    && moves[cpt][0] + (j * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (j * cardinalPoint[i][1]) <= 18) {
+                                    if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == joueur) {
                                         if (isSpace == true) {
                                             isSpace = false;
                                             miOuvert = true;
@@ -1629,7 +1630,7 @@ class IA {
                                         //nb += (nb < 5) ? 1 : 0;
                                         nb++;
                                     } else { 
-                                        if (board[y + (j * cardinalPoint[i][0])][x + (j * cardinalPoint[i][1])] == opposite || isSpace == true) {
+                                        if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite || isSpace == true) {
                                             break;
                                         } else {
                                             isSpace = true;
@@ -1641,9 +1642,9 @@ class IA {
                         //if (nb == 5)
                           //  console.log("coord["+y+"]["+x+"] il y a "+board[y][x]);
                         // if faut protéger pour pas lire les case en dehors de la map (y >= 0 && y <= 18) && (x >= 0 && x <= 18)
-                        if (y + (-1 * cardinalPoint[i][0]) >= 0 && x + (-1 * cardinalPoint[i][1]) >= 0  
-                            && y + (-1 * cardinalPoint[i][0]) <= 18 && x + (-1 * cardinalPoint[i][1]) <= 18) {
-                                if (board[y + (-1 * cardinalPoint[i][0])][x + (-1 * cardinalPoint[i][1])] == 0) {
+                        if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0  
+                            && moves[cpt][0] + (-1 * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) <= 18) {
+                                if (board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == 0) {
                                     if (isSpace == true && miOuvert == false)
                                         tabP[nb][2] += 1
                                     else if (isSpace == true && miOuvert == true)
@@ -1670,13 +1671,13 @@ class IA {
                     }
                 }
             }
-        }
-       // console.log(tabP);
+       // }
+        console.log(tabP);
         return tabP;
     }
 
 
-    heuristic(board, n) {
+    heuristic(board, n, moves, nbmoves) {
 
         let a = this.coefMenaceFailbe(n); // valeur menace moins importante
        // console.log(a);
@@ -1684,8 +1685,10 @@ class IA {
         let valueQ = 0;
         let joueur = (player == true) ? 1 : 2;
         let opposite = (player == true) ? 2 : 1;
-        let q = this.createTabP(board, opposite);
-        let p = this.createTabP(board, joueur);
+        //console.log("noirs");
+        let q = this.createTabP(board, opposite, moves, nbmoves);
+        //console.log("blanc");
+        let p = this.createTabP(board, joueur, moves, nbmoves);
       //  console.log(q);
        // console.log(p);
         for (i = 1; i <= n-3; i++) {
@@ -1693,7 +1696,7 @@ class IA {
             valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]);
         }
       //  console.log(n);
-        valueP += a[((2 * (n - 2)) - 1)] * p[n - 2][1] ;
+        valueP += a[((2 * (n - 2)) - 1)] * p[n - 2][1] ; //
         valueP += 100 * p[n - 2][2]; 
         valueP += 80 * p[n - 1][1];
         valueP += 250 * p[n - 1][2];
@@ -1704,7 +1707,9 @@ class IA {
         valueQ += 2000 * q[n - 1][1];
         valueQ += 5020 * q[n - 1][2];
         valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]);
-        //console.log(valueP - valueQ);
+       /* console.log("valeur q = "+valueQ);
+        console.log("valeur p = "+valueP);
+        console.log(valueP - valueQ);*/
         return valueP - valueQ;
     }
 
@@ -1754,8 +1759,8 @@ class IA {
         }
     }
     
-    heuristicValue(board) {
-        return this.heuristic(board , 5)
+    heuristicValue(board, moves, nbmoves) {
+        return this.heuristic(board , 5, moves, nbmoves)
     }
 }
 
