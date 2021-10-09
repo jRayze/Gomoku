@@ -1278,17 +1278,12 @@ class IA {
         let score = 0;
         let nbCoups = tabCoups.length;
         console.log("--------"+nbCoups);
-        //for (let i = 0; i <= 18; i++) {
-        //  for (let j = 0; j <= 18; j++) {
         for (let cpt = 0; cpt < nbCoups; cpt++) {
-           // console.log(tabCoups[cpt]);
             let c1 = tabCoups[cpt][0];
             let c2 = tabCoups[cpt][1];
             for (let i = c1 - 2; i <= c1 + 2 ; i++) {
                 for (let j = c2 - 2; j <= c2 + 2; j++) {
                     if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
-                        /*console.log("pos coupY= "+c1+"coupX = "+c2);
-                        console.log("pos i= "+i+"pos j = "+j);*/
                         if (board[i][j] == 0) {
                             board[i][j] = 1;
                             if (checkDoubleFree(i, j, 1)) {
@@ -1296,9 +1291,10 @@ class IA {
                                 continue;    
                             }
                             tabCoups.unshift([i, j]);
-                            score = this.minMaxAlphaBeta(board, 0, -Infinity, Infinity, true, tabCoups)
-                            //$('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
+                            score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, false, tabCoups)
+                            $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
                             console.log("pos i= "+i+"pos j = "+j);
+                            console.log("score = "+score);
                             board[i][j] = 0;
                             tabCoups.shift();
                             if (score > bestScore) {
@@ -1441,7 +1437,7 @@ class IA {
                                 case 0:
                                     break;
                                 case 1:
-                                    if (board[y - 1][x + 1] == 1 && board[y - 2][x + 2] == 1 && board[y - 3][x + 3] == 1 && board[y - 3][x + 4] == 1)
+                                    if (board[y - 1][x + 1] == 1 && board[y - 2][x + 2] == 1 && board[y - 3][x + 3] == 1 && board[y - 4][x + 4] == 1)
                                         if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y - 1, x + 1, 1, dir, board) && !this.checkArround(y - 2, x + 2, 1, dir, board) && !this.checkArround(y - 3, x + 3, 1, dir, board) && !this.checkArround(y - 4, x + 4, 1, dir, board))
                                             return true;
                                     break;
@@ -1484,11 +1480,11 @@ class IA {
         let nbCoups = coups.length;
         if (depth == 0 || gameOver == true) {
             if (gameOver == true) {
-                console.log("victoire");
+                console.log("victoire "+ (maximizingPlayer ? "blanc": "noir"))
              //   console.log(node);
             }
           // console.log("test");
-            return this.heuristicValue(node, coups, nbCoups);
+            return this.heuristicValue(node, coups, nbCoups) + depth;
         }
 
         if (maximizingPlayer) {
@@ -1557,38 +1553,13 @@ class IA {
         }
     }
 
-    scoreSpace(y, x, board) {
-        let score = 0
-        if (y >= 0 && x >= 0 && y <= 18 && x <= 18) {
-            if (y >= 1  && board[y - 1][x] == 0)
-                score += 0.0125;
-            if (x >= 1 && board[y][x - 1] == 0) 
-                score += 0.0125;
-            if (y <= 17 && board[y + 1][x] == 0)
-                score += 0.0125;
-            if (x <= 17 && board[y][x + 1] == 0)
-                score += 0.0125;
-            if (y <= 17 && x >= 1 && board[y + 1][x - 1] == 0)
-                score += 0.0125;
-            if (y <= 17 && x <= 17 && board[y + 1][x + 1] == 0)
-                score += 0.0125;
-            if (y >= 1 && x >= 1 && board[y - 1][x - 1] == 0)
-                score += 0.0125;
-            if (y >= 1 && x <= 17 && board[y - 1][x + 1] == 0)
-                score += 0.0125;
-        }
-        return score;
-    }
-    
-    menaceATrou(board, x, y) {
+    menaceATrou(board, x, y , joueur) {
 
     }
 
-    nbAlignPos(board, x, y) {
+    nbAlignPos(board, x, y , joueur) {
 
     }
-
-
     // Creation d'un tableau qui calcule 
     createTabP(board, joueur, moves, nbmoves){
         //                    Y   X                             Y   X
@@ -1616,8 +1587,8 @@ class IA {
                         let nb = 1;
                         let isSpace= false;
                         let miOuvert = false;
-                        if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
-                            continue;
+                        /*if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
+                            continue;*/
                         for (let j = 1; j < 5; j++) {
                             if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
                                 if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
@@ -1630,7 +1601,7 @@ class IA {
                                         //nb += (nb < 5) ? 1 : 0;
                                         nb++;
                                     } else { 
-                                        if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite || isSpace == true) {
+                                        if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite) {
                                             break;
                                         } else {
                                             isSpace = true;
@@ -1639,16 +1610,17 @@ class IA {
                                 }
                             }
                         }
-                        //if (nb == 5)
-                          //  console.log("coord["+y+"]["+x+"] il y a "+board[y][x]);
-                        // if faut protéger pour pas lire les case en dehors de la map (y >= 0 && y <= 18) && (x >= 0 && x <= 18)
                         if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0  
                             && moves[cpt][0] + (-1 * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) <= 18) {
                                 if (board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == 0) {
                                     if (isSpace == true && miOuvert == false)
                                         tabP[nb][2] += 1
-                                    else if (isSpace == true && miOuvert == true)
-                                        tabP[nb][1] += 1
+                                    else if (isSpace == true && miOuvert == true){
+                                        if (nb == 3)
+                                            tabP[nb][2] += 1;
+                                        else 
+                                            tabP[nb][1] += 1
+                                    }
                                     else if (isSpace == false)
                                         tabP[nb][1] += 1
                                 }
@@ -1672,7 +1644,7 @@ class IA {
                 }
             }
        // }
-        console.log(tabP);
+        //console.log(tabP);
         return tabP;
     }
 
@@ -1689,8 +1661,8 @@ class IA {
         let q = this.createTabP(board, opposite, moves, nbmoves);
         //console.log("blanc");
         let p = this.createTabP(board, joueur, moves, nbmoves);
-      //  console.log(q);
-       // console.log(p);
+       //console.log(q);
+        //console.log(p);
         for (i = 1; i <= n-3; i++) {
             valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]);    
             valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]);
@@ -1707,9 +1679,10 @@ class IA {
         valueQ += 2000 * q[n - 1][1];
         valueQ += 5020 * q[n - 1][2];
         valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]);
-       /* console.log("valeur q = "+valueQ);
+        /*console.log("valeur q = "+valueQ);
         console.log("valeur p = "+valueP);
         console.log(valueP - valueQ);*/
+        //console.log(board);
         return valueP - valueQ;
     }
 
