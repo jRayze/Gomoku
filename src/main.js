@@ -1616,7 +1616,7 @@ class IA {
                                     if (isSpace == true && miOuvert == false)
                                         tabP[nb][2] += 1
                                     else if (isSpace == true && miOuvert == true){
-                                        if (nb == 3)
+                                        if (nb == 3 || nb == 4) // on est censé desactiver le if else, 
                                             tabP[nb][2] += 1;
                                         else 
                                             tabP[nb][1] += 1
