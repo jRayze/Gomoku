@@ -1277,35 +1277,37 @@ class IA {
         let move;
         let score = 0;
         let nbCoups = tabCoups.length;
-        console.log("--------"+nbCoups);
+       // console.log("--------"+nbCoups);
         for (let cpt = 0; cpt < nbCoups; cpt++) {
             let c1 = tabCoups[cpt][0];
             let c2 = tabCoups[cpt][1];
-            for (let i = c1 - 2; i <= c1 + 2 ; i++) {
-                for (let j = c2 - 2; j <= c2 + 2; j++) {
+            for (let i = c1 - 1; i <= c1 + 1 ; i++) {
+                for (let j = c2 - 1; j <= c2 + 1; j++) {
                     if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                         if (board[i][j] == 0) {
                             board[i][j] = 1;
                             if (checkDoubleFree(i, j, 1)) {
                                 board[i][j] = 0
-                                continue;    
+                                continue;
                             }
                             tabCoups.unshift([i, j]);
-                            score = this.minMaxAlphaBeta(board, 1, -Infinity, Infinity, false, tabCoups)
+                            score = this.minMaxAlphaBeta(board, 2, -Infinity, Infinity, false, tabCoups)
                             $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
-                            console.log("pos i= "+i+"pos j = "+j);
-                            console.log("score = "+score);
+                          //  console.log("pos i= "+i+"pos j = "+j);
+                           // console.log("score = "+score);
                             board[i][j] = 0;
                             tabCoups.shift();
                             if (score > bestScore) {
                                 bestScore = score;
                                 move = { i, j };
                             }
-                            if (bestScore > 1000000 )
+                            if (bestScore > 900000 )
                                 break;
                         }
                     }
                 }
+                if (bestScore > 900000 )
+                    break;
             }  
           //}
         }
@@ -1400,12 +1402,12 @@ class IA {
                                 case 1:
                                     if (board[y + 1][x] == 1 && board[y + 2][x] == 1 && board[y + 3][x] == 1 && board[y + 4][x] == 1)
                                         if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y + 1, x, 1, dir, board) && !this.checkArround(y + 2, x, 1, dir, board) && !this.checkArround(y + 3, x, 1, dir, board) && !this.checkArround(y + 4, x, 1, dir, board))
-                                            return true;
+                                            return 1;
                                     break;
                                 case 2:
                                     if (board[y + 1][x] == 2 && board[y + 2][x] == 2 && board[y + 3][x] == 2 && board[y + 4][x] == 2)
                                         if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y + 1, x, 2, dir, board) && !this.checkArround(y + 2, x, 2, dir, board) && !this.checkArround(y + 3, x, 2, dir, board) && !this.checkArround(y + 4, x, 2, dir, board))
-                                            return true;
+                                            return 2;
                                     break;
                             }
                         }
@@ -1418,13 +1420,13 @@ class IA {
                                 case 1:   
                                     if (board[y][x + 1] == 1 && board[y][x + 2] == 1 && board[y][x + 3] == 1 && board[y][x + 4] == 1){
                                         if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y, x + 1, 1, dir, board) && !this.checkArround(y, x + 2, 1, dir, board) && !this.checkArround(y, x + 3, 1, dir, board) && !this.checkArround(y, x + 4, 1, dir, board))
-                                            return true;
+                                            return 1;
                                     }
                                     break;
                                 case 2:
                                     if (board[y][x + 1] == 2 && board[y][x + 2] == 2 && board[y][x + 3] == 2 && board[y][x + 4] == 2) {
                                         if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y, x + 1, 2, dir, board) && !this.checkArround(y, x + 2, 2, dir, board) && !this.checkArround(y, x + 3, 2, dir, board) && !this.checkArround(y, x + 4, 2, dir, board)){
-                                            return true;
+                                            return 2;
                                         }
                                     }
                                     break;
@@ -1439,12 +1441,12 @@ class IA {
                                 case 1:
                                     if (board[y - 1][x + 1] == 1 && board[y - 2][x + 2] == 1 && board[y - 3][x + 3] == 1 && board[y - 4][x + 4] == 1)
                                         if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y - 1, x + 1, 1, dir, board) && !this.checkArround(y - 2, x + 2, 1, dir, board) && !this.checkArround(y - 3, x + 3, 1, dir, board) && !this.checkArround(y - 4, x + 4, 1, dir, board))
-                                            return true;
+                                            return 1;
                                     break;
                                 case 2:
                                     if (board[y - 1][x + 1] == 2 && board[y - 2][x + 2] == 2 && board[y - 3][x + 3] == 2 && board[y - 4][x + 4] == 2)
                                         if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y - 1, x + 1, 2, dir, board) && !this.checkArround(y - 2, x + 2, 2, dir, board) && !this.checkArround(y - 3, x + 3, 2, dir, board) && !this.checkArround(y - 4, x + 4, 2, dir, board))
-                                            return true;
+                                            return 2;
                                     break;
                             }
                         }
@@ -1457,12 +1459,12 @@ class IA {
                                 case 1:
                                     if (board[y + 1][x + 1] == 1 && board[y + 2][x + 2] == 1 && board[y + 3][x + 3] == 1 && board[y + 3][x + 4] == 1)
                                         if (!this.checkArround(y, x, 1, dir, board) && !this.checkArround(y + 1, x + 1, 1, dir, board) && !this.checkArround(y + 2, x + 2, 1, dir, board) && !this.checkArround(y + 3, x + 3, 1, dir, board) && !this.checkArround(y + 4, x + 4, 1, dir, board))
-                                            return true;
+                                            return 1;
                                     break;
                                 case 2:
                                     if (board[y + 1][x + 1] == 2 && board[y + 2][x + 2] == 2 && board[y + 3][x + 3] == 2 && board[y + 4][x + 4] == 2)
                                         if (!this.checkArround(y, x, 2, dir, board) && !this.checkArround(y + 1, x + 1, 2, dir, board) && !this.checkArround(y + 2, x + 2, 2, dir, board) && !this.checkArround(y + 3, x + 3, 2, dir, board) && !this.checkArround(y + 4, x + 4, 2, dir, board))
-                                            return true;
+                                            return 2;
                                     break;
                             }
                         }
@@ -1470,7 +1472,7 @@ class IA {
                 }
             }
         }
-        return false;
+        return 0;
     }
 
 
@@ -1478,13 +1480,11 @@ class IA {
 
         let gameOver = this.checkWinner(node)
         let nbCoups = coups.length;
-        if (depth == 0 || gameOver == true) {
-            if (gameOver == true) {
-                console.log("victoire "+ (maximizingPlayer ? "blanc": "noir"))
-             //   console.log(node);
+        if (depth == 0 || gameOver != 0) {
+            if (gameOver != 0) {
+                console.log("victoire "+ (gameOver == 1 ? "blanc": "noir"))
             }
-          // console.log("test");
-            return this.heuristicValue(node, coups, nbCoups) + depth;
+            return this.heuristicValue(node, coups, nbCoups);
         }
 
         if (maximizingPlayer) {
@@ -1494,8 +1494,8 @@ class IA {
                 let c1 = coups[cpt][0];
                 let c2 = coups[cpt][1];
                // console.log("test2");
-                for (let i = c1 - 2; i <= c1 + 2 ;i++) {
-                    for (let j = c2 - 2 ; j <= c2 + 2;j++) {
+                for (let i = c1 - 1; i <= c1 + 1 ;i++) {
+                    for (let j = c2 - 1 ; j <= c2 + 1;j++) {
                         if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                             if (node[i][j] == 0) {
                                 node[i][j] = 1
@@ -1526,11 +1526,11 @@ class IA {
             for (let cpt = 0; cpt < nbCoups; cpt++) {
                 let c1 = coups[cpt][0];
                 let c2 = coups[cpt][1];
-                for (let i = c1 - 2; i <= c1 + 2 ;i++) {
-                    for (let j = c2 - 2 ; j <= c2 + 2;j++) {
+                for (let i = c1 - 1; i <= c1 + 1 ;i++) {
+                    for (let j = c2 - 1 ; j <= c2 + 1;j++) {
                         if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                             if (node[i][j] == 0) {
-                                node[i][j] = 1
+                                node[i][j] = 2
                                 if (checkDoubleFree(i, j, 2)) {
                                     node[i][j] = 0
                                     continue;
@@ -1587,8 +1587,8 @@ class IA {
                         let nb = 1;
                         let isSpace= false;
                         let miOuvert = false;
-                        /*if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
-                            continue;*/
+                        if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
+                            continue;
                         for (let j = 1; j < 5; j++) {
                             if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
                                 if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
@@ -1616,9 +1616,9 @@ class IA {
                                     if (isSpace == true && miOuvert == false)
                                         tabP[nb][2] += 1
                                     else if (isSpace == true && miOuvert == true){
-                                        if (nb == 3 || nb == 4) // on est censé desactiver le if else, 
+                                        /*if (nb == 3 || nb == 4) // on est censé desactiver le if else, 
                                             tabP[nb][2] += 1;
-                                        else 
+                                        else */
                                             tabP[nb][1] += 1
                                     }
                                     else if (isSpace == false)
@@ -1736,7 +1736,6 @@ class IA {
         return this.heuristic(board , 5, moves, nbmoves)
     }
 }
-
 
   
   // Usage!
