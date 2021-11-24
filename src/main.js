@@ -30,6 +30,38 @@ for (var i = 0; i < 19; i++) {
 
 let coupsJouee = [];
 
+function coefMenaceFailbe(n){
+    //let a = new Array(2 * (n - 3) + 1).fill(0)
+    let a = {
+        1 : 0,
+        2 : 0,
+        3 : 0,
+        4 : 0,
+        5 : 0,
+    }
+    let taille = 5;
+    let pas = 10 / taille;
+    let tmp = pas;
+    let i = 1;
+    a[i] = tmp;
+    if (n == 3) {
+        return a;
+    }
+    else {
+        while (i < taille) {
+            tmp = tmp + pas;
+            if (i + 2 <= taille)
+                a[i + 2] = tmp;
+            tmp = tmp + pas;
+            a[i + 1] = tmp;
+            i++;
+        }
+        return a;
+    }
+}
+
+let a = coefMenaceFailbe(5);
+
 // *********** CAPTURE ************ //
 
 function capture(y, x, piece) {
@@ -1217,58 +1249,178 @@ class IA {
 
     isCapturable(board, y, x, piece) {
         let p1 = 1;
-		let p2 = 0;
-		if (piece == 0) {
-			p1 = 0;
+		let p2 = 2;
+        let tabCaptures = [];
+		if (piece == 2) {
+			p1 = 2;
 			p2 = 1;
 		}
         // ------------------------------------------------x
         if (x - 2 >= 0 && x + 1 <= 18){
-			if ((board[y][x - 1] == p1 && board[y][x - 2] == p2 && board[y][x + 1] == -1) ||
-				(board[y][x - 1] == p1 && board[y][ x + 1] == p2 && board[y][x - 2] == -1))
-				return true;
+			if ((board[y][x - 1] == p1 && board[y][x - 2] == p2 && board[y][x + 1] == 0) 
+                || (board[y][x - 1] == p1 && board[y][x + 1] == p2 && board[y][x - 2] == 0))
+                tabCaptures.push({x : x - 1, y : y});
 		}
 		if (x + 2 <= 18 && x - 1 >= 0){
-			if ((board[y][x + 1] == p1 && board[y][x + 2] == p2 && board[y][x - 1] == -1) ||
-				(board[y][x + 1] == p1 && board[y][x - 1] == p2 && board[y][x + 2] == -1))
-				return true;
+			if ((board[y][x + 1] == p1 && board[y][x + 2] == p2 && board[y][x - 1] == 0) 
+                || (board[y][x + 1] == p1 && board[y][x - 1] == p2 && board[y][x + 2] == 0))
+				tabCaptures.push({x : x + 1, y : y});
 		}
 		// ------------------------------------------------y
 		if (y - 2 >= 0 && y + 1 <= 18){
-			if ((board[y - 1][x] == p1 && board[y - 2][x] == p2 && board[y + 1][x] == -1) ||
-				(board[y - 1][x] == p1 && board[y + 1][x] == p2 && board[y - 2][x] == -1))
-				return true;
+			if ((board[y - 1][x] == p1 && board[y - 2][x] == p2 && board[y + 1][x] == 0) 
+                || (board[y - 1][x] == p1 && board[y + 1][x] == p2 && board[y - 2][x] == 0))
+				tabCaptures.push({x : x, y : y - 1});
 		}
 		if (y + 2 <= 18 && y - 1 >= 0){
-			if ((board[y + 1][x] == p1 && board[y + 2][x] == p2 && board[y - 1][x] == -1) ||
-				(board[y + 1][x] == p1 && board[y - 1][x] == p2 && board[y + 2][x] == -1))
-				return true;
+			if ((board[y + 1][x] == p1 && board[y + 2][x] == p2 && board[y - 1][x] == 0) ||
+				(board[y + 1][x] == p1 && board[y - 1][x] == p2 && board[y + 2][x] == 0))
+				tabCaptures.push({x : x, y : y + 1});
 		}
 		// ------------------------------------------------yx
 		if (y - 2 >= 0 && x - 2 >= 0 && y + 1 <= 18 && x + 1 <= 18){
-			if ((board[y - 1][x - 1] == p1 && board[y - 2][x - 2] == p2 && board[y + 1][x + 1] == -1) ||
-				(board[y - 1][x - 1] == p1 && board[y + 1][x + 1] == p2 && board[y - 2][x - 2] == -1))
-				return true;
+			if ((board[y - 1][x - 1] == p1 && board[y - 2][x - 2] == p2 && board[y + 1][x + 1] == 0) ||
+				(board[y - 1][x - 1] == p1 && board[y + 1][x + 1] == p2 && board[y - 2][x - 2] == 0))
+				tabCaptures.push({x : x - 1, y : y - 1});
 		}
 		if (y + 2 <= 18 && x + 2 <= 18 && y - 1 >= 0 && x - 1 >= 0){
-			if ((board[y + 1][x + 1] == p1 && board[y + 2][x + 2] == p2 && board[y - 1][x - 1] == -1) ||
-				(board[y + 1][x + 1] == p1 && board[y - 1][x - 1] == p2 && board[y + 2][x + 2] == -1))
-				return true;
+			if ((board[y + 1][x + 1] == p1 && board[y + 2][x + 2] == p2 && board[y - 1][x - 1] == 0) ||
+				(board[y + 1][x + 1] == p1 && board[y - 1][x - 1] == p2 && board[y + 2][x + 2] == 0))
+				tabCaptures.push({x : x + 1, y : y + 1});
 		}
 		// ------------------------------------------------xy
 		if (y - 2 >= 0 && x + 2 <= 18 && y + 1 <= 18 && x - 1 >= 0){
-			if ((board[y - 1][x + 1] == p1 && board[y - 2][x + 2] == p2 && board[y + 1][x - 1] == -1) ||
-				(board[y - 1][x + 1] == p1 && board[y + 1][x - 1] == p2 && board[y - 2][x + 2] == -1))
-				return true;
+			if ((board[y - 1][x + 1] == p1 && board[y - 2][x + 2] == p2 && board[y + 1][x - 1] == 0) ||
+				(board[y - 1][x + 1] == p1 && board[y + 1][x - 1] == p2 && board[y - 2][x + 2] == 0))
+				tabCaptures.push({x : x + 1, y : y - 1});
 		}
 		if (y + 2 <= 18 && x - 2 >= 0 && y - 1 >= 0 && x + 1 <= 18){
-			if ((board[y + 1][x - 1] == p1 && board[y + 2][x - 2] == p2 && board[y - 1][x + 1] == -1) ||
-				(board[y + 1][x - 1] == p1 && board[y - 1][x + 1] == p2 && board[y + 2][x - 2] == -1))
-				return true;
+			if ((board[y + 1][x - 1] == p1 && board[y + 2][x - 2] == p2 && board[y - 1][x + 1] == 0) ||
+				(board[y + 1][x - 1] == p1 && board[y - 1][x + 1] == p2 && board[y + 2][x - 2] == 0))
+				tabCaptures.push({x : x - 1, y : y + 1});
 		}
-		return false;
+		return tabCaptures;
     }
 
+
+    createPriorityList(board, joueur, moves, nbmoves){
+        //                    Y   X                             Y   X
+        // Est        : 0  |  0   1          Sud-Est    : 2  |  1   1
+        // Sud        : 1  |  1   0          Sud-Ouest  : 3  |  1  -1
+        //let originalPlayer = joueur;
+        //let opposite = (joueur == 1) ? 2 : 1;
+        let state = false;
+        var cardinalPoint = [[0,1],[1,0],[1,-1],[1, 1]];
+        let tabP = {            //tabP
+            1 : [],      // premiere case = le nombre de pieces alingées
+            2 : [],      // deuxieme case = les types de menaces avec :
+            3 : [],      //      -> 0 = pieces sans trou
+            4 : [],      //      -> 1 = pieces mi ouvertes
+            5 : []       //      -> 2 = pieces ouvertes
+        }
+        let tabT = {            //tabP
+            1 : [],      // premiere case = le nombre de pieces alingées
+            2 : [],      // deuxieme case = les types de menaces avec :
+            3 : [],      //      -> 0 = pieces sans trou
+            4 : [],      //      -> 1 = pieces mi ouvertes
+            5 : []       //      -> 2 = pieces ouvertes
+        }
+        let tabT2 = {            //tabP
+            1 : [],      // premiere case = le nombre de pieces alingées
+            2 : [],      // deuxieme case = les types de menaces avec :
+            3 : [],      //      -> 0 = pieces sans trou
+            4 : [],      //      -> 1 = pieces mi ouvertes
+            5 : []       //      -> 2 = pieces ouvertes
+        }
+        for (let cpt = 0; cpt < nbmoves; cpt++) {
+            if (board[moves[cpt][0]][moves[cpt][1]] != 0) {
+                let joueur = board[moves[cpt][0]][moves[cpt][1]]
+                let opposite = (joueur == 1) ? 2 : 1;
+                for (let i = 0; i < 4; i++) {
+                    let nb = 1;
+                    let isSpace= false;
+                    let miOuvert = false;
+                    if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
+                        continue;
+                    tabT[5].push(moves[cpt][0] + ', '+ moves[cpt][1])
+                    for (let j = 1; j < 5; j++) {
+                        let nbSpace = 0;
+                        if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
+                            if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
+                                && moves[cpt][0] + (j * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (j * cardinalPoint[i][1]) <= 18) {
+                                console.log('check board');
+                                console.log(board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])]);
+                                if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == joueur) {
+                                    if (isSpace == true) {
+                                        isSpace = false;
+                                        miOuvert = true;
+                                    }
+                                    nb++;
+                                    console.log((moves[cpt][0] + (j * cardinalPoint[i][0])) + ', '+ (moves[cpt][1] + (j * cardinalPoint[i][1])))
+                                    tabT[5 - nb].push((moves[cpt][0] + (j * cardinalPoint[i][0])) + ', '+ (moves[cpt][1] + (j * cardinalPoint[i][1])))
+                                    console.log("nb = "+nb);
+                                    console.log(tabT[nb]);
+                                } else {
+                                    console.log('nb = '+nb);
+                                    nbSpace +=1
+                                    if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite) {
+                                        break;
+                                    } else { 
+                                        isSpace = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (nb <= 2 && state == false){
+                        console.log('ligne de 1 ou 2');
+                        console.log(tabT); 
+                        //tabP[nb].push(moves[cpt][0] + ',' + moves[cpt][1])
+                        tabP = tabT
+                    }
+                    else if (nb >= 3) {
+                        console.log('ligne de 3 ou plus existante');
+                        if (state == false) {   
+                            state = true
+                            tabP = tabT
+                        }
+                        console.log(tabP);
+                    }
+                }
+            }
+        }
+        console.log(tabP);
+        let listeCoup = new Array();
+        for(let x = 0; x < tabP[5].length; x++) {
+            if (!listeCoup.includes(tabP[5][x]))
+                listeCoup.push(tabP[5][x])
+        }
+        for(let x = 0; x < tabP[4].length; x++) {
+            if (!listeCoup.includes(tabP[4][x]))
+                listeCoup.push(tabP[4][x])
+        }
+        for(let x = 0; x < tabP[3].length; x++) {
+            if (!listeCoup.includes(tabP[3][x]))
+                listeCoup.push(tabP[3][x])
+        }
+        for(let x = 0; x < tabP[2].length; x++) {
+            if (!listeCoup.includes(tabP[2][x]))
+                listeCoup.push(tabP[2][x])
+        }
+        for(let x = 0; x < tabP[1].length; x++) {
+            if (!listeCoup.includes(tabP[1][x]))
+                listeCoup.push(tabP[1][x])
+        }
+        console.log(listeCoup);
+        /* setuo liste */
+        let liste = []
+        for (let x = 0; x < listeCoup.length; x++) {
+            let nb = listeCoup[x].split(',');
+            liste.push([parseInt(nb[0]), parseInt([nb[1]])])
+        }
+        //return {p : tabP, q : tabQ} ;
+        return liste;
+    }
 
     bestMove(board) {
         let tabCoups = coupsJouee;
@@ -1277,7 +1429,26 @@ class IA {
         let move;
         let score = 0;
         let nbCoups = tabCoups.length;
-       // console.log("--------"+nbCoups);
+
+        /* test priority queue */
+        let listeCoups = this.createPriorityList(board, 2, tabCoups, nbCoups);
+        //let newlisteCoups = [];
+        console.log(tabCoups);
+        console.log(listeCoups);
+        tabCoups = listeCoups
+        nbCoups = tabCoups.length;
+        /*console.log(listeCoups[3].length);
+        if (listeCoups[3].length != 0 || listeCoups[4].length != 0 || listeCoups[5].length != 0 ) {
+            newlisteCoups.push(listeCoups[5]);
+            newlisteCoups.push(listeCoups[4]);
+            newlisteCoups.push(listeCoups[3]);
+            console.log("------------ tabcoups ------------");
+            console.log(tabCoups);
+            console.log("------------ test ajout coup prioritaires ------------");
+            console.log((newlisteCoups));
+            console.log("------------ fin test ajout coup prioritaires ------------");
+        }*/
+        /************* ********/
         for (let cpt = 0; cpt < nbCoups; cpt++) {
             let c1 = tabCoups[cpt][0];
             let c2 = tabCoups[cpt][1];
@@ -1291,7 +1462,8 @@ class IA {
                                 continue;
                             }
                             tabCoups.unshift([i, j]);
-                            score = this.minMaxAlphaBeta(board, 2, -Infinity, Infinity, false, tabCoups)
+                            //score = this.alphaBeta(board, 1, -Infinity, Infinity, tabCoups)
+                            score = this.minMaxAlphaBeta(board, 1, -900000, 900000, false, tabCoups);
                             $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
                           //  console.log("pos i= "+i+"pos j = "+j);
                            // console.log("score = "+score);
@@ -1301,15 +1473,11 @@ class IA {
                                 bestScore = score;
                                 move = { i, j };
                             }
-                            if (bestScore > 900000 )
-                                break;
                         }
                     }
                 }
-                if (bestScore > 900000 )
-                    break;
-            }  
-          //}
+
+            }
         }
         console.log(tabCoups);
         console.log(move)
@@ -1475,16 +1643,15 @@ class IA {
         return 0;
     }
 
-
     minMaxAlphaBeta(node, depth, alpha, beta, maximizingPlayer, coups) {
 
         let gameOver = this.checkWinner(node)
         let nbCoups = coups.length;
         if (depth == 0 || gameOver != 0) {
-            if (gameOver != 0) {
+           /* if (gameOver != 0) {
                 console.log("victoire "+ (gameOver == 1 ? "blanc": "noir"))
-            }
-            return this.heuristicValue(node, coups, nbCoups);
+            }*/
+            return this.heuristicValue(node, coups, nbCoups) * (1 + depth);
         }
 
         if (maximizingPlayer) {
@@ -1503,7 +1670,7 @@ class IA {
                                     node[i][j] = 0
                                     continue;    
                                 }
-                                coups.unshift([i, j])
+                                coups.unshift([i, j]) // [ [i, j],  ...coups],
                                 let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, false, coups);
                                 node[i][j] = 0
                                 coups.shift();
@@ -1514,7 +1681,11 @@ class IA {
                                 alpha = Math.max(alpha, maxEval)
                             }
                         }
+                        if (maxEval > 900000 )
+                            break;
                     }
+                    if (maxEval > 900000 )
+                        break;
                 }
             }
             return maxEval
@@ -1546,30 +1717,25 @@ class IA {
                                 beta = Math.min(beta, minEval)
                             }
                         }
+                        if (minEval < -900000 )
+                            break;
                     }
+                    if (minEval < -900000 )
+                        break;
                 }
             }
             return minEval
         }
     }
 
-    menaceATrou(board, x, y , joueur) {
-
-    }
-
-    nbAlignPos(board, x, y , joueur) {
-
-    }
     // Creation d'un tableau qui calcule 
     createTabP(board, joueur, moves, nbmoves){
         //                    Y   X                             Y   X
-        // Est        : 0  |  0   1          Nord-Ouest : 4  | -1  -1
-        // Ouest      : 1  |  0  -1          Sud-Ouest  : 5  |  1  -1
-        // Nord       : 2  | -1   0          Nord-Est   : 6  | -1   1
-        // Sud        : 3  |  1   0          Sud-Est    : 7  |  1   1
+        // Est        : 0  |  0   1          Sud-Est    : 2  |  1   1
+        // Sud        : 1  |  1   0          Sud-Ouest  : 3  |  1  -1
+        let originalPlayer = joueur;
         let opposite = (joueur == 1) ? 2 : 1;
         var cardinalPoint = [[0,1],[1,0],[1,-1],[1, 1]];
-
         let tabP = {            //tabP
             1 : [0, 0, 0],      // premiere case = le nombre de pieces alingées
             2 : [0, 0, 0],      // deuxieme case = les types de menaces avec :
@@ -1577,92 +1743,111 @@ class IA {
             4 : [0, 0, 0],      //      -> 1 = pieces mi ouvertes
             5 : [0, 0, 0]       //      -> 2 = pieces ouvertes
         }
+        let tabQ = { 1 : [0, 0, 0], 2 : [0, 0, 0], 3 : [0, 0, 0], 4 : [0, 0, 0], 5 : [0, 0, 0] }
         
-        //for (var y = 0; y <= 18; y++) { // parcour 
-           // for (var x = 0; x <= 18; x++) {
-            for (let cpt = 0; cpt < nbmoves; cpt++) {
-                if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
-                   // console.log("coord["+x+"]["+y+"] il y a "+board[y][x]);
-                    for (let i = 0; i < 4; i++) {
-                        let nb = 1;
-                        let isSpace= false;
-                        let miOuvert = false;
-                        if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
-                            continue;
-                        for (let j = 1; j < 5; j++) {
-                            if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
-                                if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
-                                    && moves[cpt][0] + (j * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (j * cardinalPoint[i][1]) <= 18) {
-                                    if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == joueur) {
-                                        if (isSpace == true) {
-                                            isSpace = false;
-                                            miOuvert = true;
-                                        }
-                                        //nb += (nb < 5) ? 1 : 0;
-                                        nb++;
-                                    } else { 
-                                        if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite) {
-                                            break;
-                                        } else {
-                                            isSpace = true;
-                                        }
+        for (let cpt = 0; cpt < nbmoves; cpt++) {
+            if (board[moves[cpt][0]][moves[cpt][1]] != 0) {
+                joueur = board[moves[cpt][0]][moves[cpt][1]]
+                opposite = (joueur == 1) ? 2 : 1;
+                // console.log("coord["+x+"]["+y+"] il y a "+board[y][x]);
+                for (let i = 0; i < 4; i++) {
+                    let nb = 1;
+                    let isSpace= false;
+                    let miOuvert = false;
+                    if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
+                        continue;
+                    for (let j = 1; j < 5; j++) {
+                        if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
+                            if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
+                                && moves[cpt][0] + (j * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (j * cardinalPoint[i][1]) <= 18) {
+                                if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == joueur) {
+                                    if (isSpace == true) {
+                                        isSpace = false;
+                                        miOuvert = true;
+                                    }
+                                    nb++;
+                                } else { 
+                                    if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite) {
+                                        break;
+                                    } else {
+                                        isSpace = true;
                                     }
                                 }
                             }
                         }
-                        if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0  
-                            && moves[cpt][0] + (-1 * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) <= 18) {
-                                if (board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == 0) {
-                                    if (isSpace == true && miOuvert == false)
+                    }
+                    if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0  
+                        && moves[cpt][0] + (-1 * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) <= 18) {
+                            if (board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == 0) {
+                                if (isSpace == true && miOuvert == false)
+                                    if (joueur == originalPlayer)
                                         tabP[nb][2] += 1
-                                    else if (isSpace == true && miOuvert == true){
-                                        /*if (nb == 3 || nb == 4) // on est censé desactiver le if else, 
-                                            tabP[nb][2] += 1;
-                                        else */
-                                            tabP[nb][1] += 1
-                                    }
-                                    else if (isSpace == false)
+                                    else 
+                                        tabQ[nb][2] += 1
+                                else if (isSpace == true && miOuvert == true){
+                                    if (joueur == originalPlayer)
                                         tabP[nb][1] += 1
+                                    else 
+                                        tabQ[nb][1] += 1
                                 }
-                                else {
-                                    if (isSpace == true)
+                                else if (isSpace == false) {
+                                    if (joueur == originalPlayer)
                                         tabP[nb][1] += 1
-                                    else
+                                    else 
+                                        tabQ[nb][1] += 1
+                                }
+                            }
+                            else {
+                                if (isSpace == true)
+                                    if (joueur == originalPlayer)
+                                        tabP[nb][1] += 1
+                                    else 
+                                        tabQ[nb][1] += 1
+                                else
+                                    if (joueur == originalPlayer)
                                         tabP[nb][0] += 1;
-                                }
-                        } else {
-                            if (isSpace == true && miOuvert == false)
+                                    else
+                                        tabQ[nb][0] += 1;
+                            }
+                    } else {
+                        if (isSpace == true && miOuvert == false)
+                            if (joueur == originalPlayer)
                                 tabP[nb][1] += 1
-                            else if (isSpace == true && miOuvert == true)
+                            else
+                                tabQ[nb][1] += 1
+                        else if (isSpace == true && miOuvert == true)
+                            if (joueur == originalPlayer)
                                 tabP[nb][1] += 1
-                            else if (isSpace == false && miOuvert == false)
+                            else 
+                                tabQ[nb][1] += 1
+                        else if (isSpace == false && miOuvert == false)
+                            if (joueur == originalPlayer)
                                 tabP[nb][0] += 1
-                            else if (isSpace == false && miOuvert == true)
+                            else
+                                tabQ[nb][0] += 1
+                        else if (isSpace == false && miOuvert == true)
+                            if (joueur == originalPlayer)
                                 tabP[nb][1] += 1
-                        }
+                            else
+                                tabQ[nb][1] += 1
                     }
                 }
             }
-       // }
-        //console.log(tabP);
-        return tabP;
+        }
+        return {p : tabP, q : tabQ} ;
     }
 
 
     heuristic(board, n, moves, nbmoves) {
 
-        let a = this.coefMenaceFailbe(n); // valeur menace moins importante
-       // console.log(a);
+        // valeur menace moins importante
+        // console.log(a);
         let valueP = 0;
         let valueQ = 0;
         let joueur = (player == true) ? 1 : 2;
-        let opposite = (player == true) ? 2 : 1;
-        //console.log("noirs");
-        let q = this.createTabP(board, opposite, moves, nbmoves);
-        //console.log("blanc");
-        let p = this.createTabP(board, joueur, moves, nbmoves);
-       //console.log(q);
-        //console.log(p);
+        let res = this.createTabP(board, joueur, moves, nbmoves);
+        let q = res.q;
+        let p = res.p;
         for (i = 1; i <= n-3; i++) {
             valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]);    
             valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]);
@@ -1679,144 +1864,10 @@ class IA {
         valueQ += 2000 * q[n - 1][1];
         valueQ += 5020 * q[n - 1][2];
         valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]);
-        /*console.log("valeur q = "+valueQ);
-        console.log("valeur p = "+valueP);
-        console.log(valueP - valueQ);*/
-        //console.log(board);
         return valueP - valueQ;
-    }
-
-    /*categMenace(a, n) {
-        if (a == n -1 && this.menaceATrou(board) == true) {
-            return 0;
-        }
-        else {
-            if (this.nbAlignPos() == n)
-                return 0;
-            else {
-                if (this.nbAlignPos() < n)
-                    return -1;
-                else
-                    return 1;
-            }
-        }
-    }*/
-
-    coefMenaceFailbe(n){
-        //let a = new Array(2 * (n - 3) + 1).fill(0)
-        let a = {
-            1 : 0,
-            2 : 0,
-            3 : 0,
-            4 : 0,
-            5 : 0,
-        }
-        let taille = 5;
-        let pas = 10 / taille;
-        let tmp = pas;
-        let i = 1;
-        a[i] = tmp;
-        if (n == 3) {
-            return a;
-        }
-        else {
-            while (i < taille) {
-                tmp = tmp + pas;
-                if (i + 2 <= taille)
-                    a[i + 2] = tmp;
-                tmp = tmp + pas;
-                a[i + 1] = tmp;
-                i++;
-            }
-            return a;
-        }
     }
     
     heuristicValue(board, moves, nbmoves) {
         return this.heuristic(board , 5, moves, nbmoves)
     }
 }
-
-  
-  // Usage!
-
-/*let tabPiecesPosee = []
-let emptyObj = {
-    value = 0,
-   // align : [0, 0 ,0, 0], // nb piece dans l'alignement [x+, y+, (x+ y+), (y+ x-)]
-    isCapturable : false,
-}
-
-for (var i = 0; i < 19; i++) {
-    tabPiecesPosee[i] = new Array(19);
-    tabPiecesPosee[i].fill(emptyObj, 0, 19);
-}
-
-/*  enregistrer cass posé dans tableau de pieces
-
-
-    function look2caseAround(x, y) 
-
-        on parcourt le tableau de pieces (la premiere est celle que le joueur viens de poser)
-            on regarde 2 case autour de chaques pieces =>
-                si on trouve une case qui est déja dans le tableau de pieces =>
-                    verifier l'alignement des 2 pieces 
-                    si alignement est vrai =>
-                        ajouter 1 dans la case alignement correspondant de la piece actuelle et celle qui est alignée
-                        si elles sont capturables =>
-                            isCapturable devient vrai
-
-
-    function setCapture(x, y, dir)
-        
-        tabPiecePosee[x][y].value = 0
-        tabPiecePosee[x][y].align[dir] -= 1
-        tabPiecePosee[x][y].isCapturable = false
-
-        
-        
-
-*/
-/*function look2caseAround(x, y) {
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-        if if (tabPiecePosee[x - 2][y - 2].value != 0)
-    if (tabPiecePosee[x][y - 1].value != 0)
-        if (tabPiecePosee[x][y - 2].value != 0)
-
-    if (tabPiecePosee[x][y - 1].value != 0)
-    if (tabPiecePosee[x][y - 2].value != 0)
-
-    
-    if (tabPiecePosee[x - 1][y].value != 0)
-        if (tabPiecePosee[x - 2][y].value != 0)
-    if (tabPiecePosee[x + 1][y + 1].value != 0)
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-    
-   
-    
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-    if (tabPiecePosee[x][y - 1].value != 0)
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-    
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-    if (tabPiecePosee[x][y - 1].value != 0)
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-    if (tabPiecePosee[x - 1][y - 1].value != 0)
-   
-   
-    /* for (let i = x - 2; i <= x + 2; i++) {
-        for (let j = y - 2; j <= y + 2; j++) {
-            if (x == 0 && j == 0)
-                continue;
-            if (tabPiecePosee[i][j].value != 0) {
-                if (i == j)
-            } 
-        }
-    }*/
-/*}
-function pieceSee () {
-
-}
-*/
