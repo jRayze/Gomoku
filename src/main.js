@@ -1303,7 +1303,7 @@ class IA {
     }
 
 
-    createPriorityList(board, joueur, moves, nbmoves){
+    createPriorityList(board, moves, nbmoves){
         //                    Y   X                             Y   X
         // Est        : 0  |  0   1          Sud-Est    : 2  |  1   1
         // Sud        : 1  |  1   0          Sud-Ouest  : 3  |  1  -1
@@ -1311,29 +1311,26 @@ class IA {
         //let opposite = (joueur == 1) ? 2 : 1;
         let state = false;
         var cardinalPoint = [[0,1],[1,0],[1,-1],[1, 1]];
-        let tabP = {            //tabP
+        /*let tabP = {            //tabP
             1 : [],      // premiere case = le nombre de pieces alingées
             2 : [],      // deuxieme case = les types de menaces avec :
             3 : [],      //      -> 0 = pieces sans trou
             4 : [],      //      -> 1 = pieces mi ouvertes
             5 : []       //      -> 2 = pieces ouvertes
-        }
-        let tabT = {            //tabP
+        }*/
+        let tabP = [];
+
+        /*let tabT2 = {            //tabP
             1 : [],      // premiere case = le nombre de pieces alingées
             2 : [],      // deuxieme case = les types de menaces avec :
             3 : [],      //      -> 0 = pieces sans trou
             4 : [],      //      -> 1 = pieces mi ouvertes
             5 : []       //      -> 2 = pieces ouvertes
-        }
-        let tabT2 = {            //tabP
-            1 : [],      // premiere case = le nombre de pieces alingées
-            2 : [],      // deuxieme case = les types de menaces avec :
-            3 : [],      //      -> 0 = pieces sans trou
-            4 : [],      //      -> 1 = pieces mi ouvertes
-            5 : []       //      -> 2 = pieces ouvertes
-        }
+        }*/
+        let tabT2 = [];
         for (let cpt = 0; cpt < nbmoves; cpt++) {
             if (board[moves[cpt][0]][moves[cpt][1]] != 0) {
+                let tabT = []
                 let joueur = board[moves[cpt][0]][moves[cpt][1]]
                 let opposite = (joueur == 1) ? 2 : 1;
                 for (let i = 0; i < 4; i++) {
@@ -1342,86 +1339,64 @@ class IA {
                     let miOuvert = false;
                     if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
                         continue;
-                    tabT[5].push(moves[cpt][0] + ', '+ moves[cpt][1])
+                    tabT.push(moves[cpt][0] + ', '+ moves[cpt][1])
                     for (let j = 1; j < 5; j++) {
                         let nbSpace = 0;
-                        if (board[moves[cpt][0]][moves[cpt][1]] == joueur) {
-                            if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
-                                && moves[cpt][0] + (j * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (j * cardinalPoint[i][1]) <= 18) {
-                                console.log('check board');
-                                console.log(board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])]);
-                                if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == joueur) {
-                                    if (isSpace == true) {
-                                        isSpace = false;
-                                        miOuvert = true;
-                                    }
-                                    nb++;
-                                    console.log((moves[cpt][0] + (j * cardinalPoint[i][0])) + ', '+ (moves[cpt][1] + (j * cardinalPoint[i][1])))
-                                    tabT[5 - nb].push((moves[cpt][0] + (j * cardinalPoint[i][0])) + ', '+ (moves[cpt][1] + (j * cardinalPoint[i][1])))
-                                    console.log("nb = "+nb);
-                                    console.log(tabT[nb]);
-                                } else {
-                                    console.log('nb = '+nb);
-                                    nbSpace +=1
-                                    if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite) {
-                                        break;
-                                    } else { 
-                                        isSpace = true;
-                                    }
+                        if (moves[cpt][0] + (j * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (j * cardinalPoint[i][1]) >= 0  
+                            && moves[cpt][0] + (j * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (j * cardinalPoint[i][1]) <= 18) {
+                            if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == joueur) {
+                                if (isSpace == true) {
+                                    isSpace = false;
+                                    miOuvert = true;
+                                }
+                                tabT.push((moves[cpt][0] + (j * cardinalPoint[i][0])) + ', ' + (moves[cpt][1] + (j * cardinalPoint[i][1])))
+                                nb++;
+                            } else {
+                                nbSpace +=1
+                                if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite) {
+                                    break;
+                                } else { 
+                                    isSpace = true;
                                 }
                             }
                         }
                     }
-                    if (nb <= 2 && state == false){
-                        console.log('ligne de 1 ou 2');
-                        console.log(tabT); 
-                        //tabP[nb].push(moves[cpt][0] + ',' + moves[cpt][1])
-                        tabP = tabT
-                    }
-                    else if (nb >= 3) {
-                        console.log('ligne de 3 ou plus existante');
-                        if (state == false) {   
-                            state = true
-                            tabP = tabT
+                    if (nb >= 3) {
+                        if (state == false) {
+                            state = true;
                         }
-                        console.log(tabP);
+                        for(let x =0; x < tabT.length; x++) {
+                            tabP.push(tabT[x]);
+                        }
+                    }
+                    if (nb <= 2) {
+                        if (state == false) {
+                            for(let x =0; x < tabT.length; x++) {
+                                tabT2.push(tabT[x]);
+                            }
+                        }
                     }
                 }
             }
         }
-        console.log(tabP);
+        if (state == false)
+            tabP = tabT2;
+       // console.log(tabP);
         let listeCoup = new Array();
-        for(let x = 0; x < tabP[5].length; x++) {
-            if (!listeCoup.includes(tabP[5][x]))
-                listeCoup.push(tabP[5][x])
+        for (let x = 0; x < tabP.length; x++) {
+            if (!listeCoup.includes(tabP[x]))
+                listeCoup.push(tabP[x])
         }
-        for(let x = 0; x < tabP[4].length; x++) {
-            if (!listeCoup.includes(tabP[4][x]))
-                listeCoup.push(tabP[4][x])
-        }
-        for(let x = 0; x < tabP[3].length; x++) {
-            if (!listeCoup.includes(tabP[3][x]))
-                listeCoup.push(tabP[3][x])
-        }
-        for(let x = 0; x < tabP[2].length; x++) {
-            if (!listeCoup.includes(tabP[2][x]))
-                listeCoup.push(tabP[2][x])
-        }
-        for(let x = 0; x < tabP[1].length; x++) {
-            if (!listeCoup.includes(tabP[1][x]))
-                listeCoup.push(tabP[1][x])
-        }
-        console.log(listeCoup);
-        /* setuo liste */
+        //console.log(listeCoup);
+        /* setup liste */
         let liste = []
         for (let x = 0; x < listeCoup.length; x++) {
             let nb = listeCoup[x].split(',');
             liste.push([parseInt(nb[0]), parseInt([nb[1]])])
         }
-        //return {p : tabP, q : tabQ} ;
         return liste;
     }
-
+    // 0.7 : 4.20 : 28.86
     bestMove(board) {
         let tabCoups = coupsJouee;
         let start = Date.now();
@@ -1431,25 +1406,14 @@ class IA {
         let nbCoups = tabCoups.length;
 
         /* test priority queue */
-        let listeCoups = this.createPriorityList(board, 2, tabCoups, nbCoups);
-        //let newlisteCoups = [];
-        console.log(tabCoups);
+        let listeCoups = this.createPriorityList(board, tabCoups, nbCoups);
+        //console.log(tabCoups);
         console.log(listeCoups);
         tabCoups = listeCoups
         nbCoups = tabCoups.length;
-        /*console.log(listeCoups[3].length);
-        if (listeCoups[3].length != 0 || listeCoups[4].length != 0 || listeCoups[5].length != 0 ) {
-            newlisteCoups.push(listeCoups[5]);
-            newlisteCoups.push(listeCoups[4]);
-            newlisteCoups.push(listeCoups[3]);
-            console.log("------------ tabcoups ------------");
-            console.log(tabCoups);
-            console.log("------------ test ajout coup prioritaires ------------");
-            console.log((newlisteCoups));
-            console.log("------------ fin test ajout coup prioritaires ------------");
-        }*/
-        /************* ********/
+
         for (let cpt = 0; cpt < nbCoups; cpt++) {
+            
             let c1 = tabCoups[cpt][0];
             let c2 = tabCoups[cpt][1];
             for (let i = c1 - 1; i <= c1 + 1 ; i++) {
@@ -1463,7 +1427,7 @@ class IA {
                             }
                             tabCoups.unshift([i, j]);
                             //score = this.alphaBeta(board, 1, -Infinity, Infinity, tabCoups)
-                            score = this.minMaxAlphaBeta(board, 1, -900000, 900000, false, tabCoups);
+                            score = this.minMaxAlphaBeta(board, 4, -900000, 900000, false, tabCoups);
                             $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
                           //  console.log("pos i= "+i+"pos j = "+j);
                            // console.log("score = "+score);
@@ -1473,10 +1437,13 @@ class IA {
                                 bestScore = score;
                                 move = { i, j };
                             }
+                            if (coupsJouee == 1)
+                                break;
                         }
                     }
                 }
-
+                if (coupsJouee == 1)
+                    break;
             }
         }
         console.log(tabCoups);
@@ -1653,6 +1620,10 @@ class IA {
             }*/
             return this.heuristicValue(node, coups, nbCoups) * (1 + depth);
         }
+
+        let listeCoups = this.createPriorityList(node, coups, nbCoups);
+        coups = listeCoups
+        nbCoups = coups.length;
 
         if (maximizingPlayer) {
          //   console.log("maximise");
