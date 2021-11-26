@@ -90,127 +90,23 @@
         <div id="zone" style="padding-left: 94px"></div>
 
         <div class="level">
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio0"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio0"
-                    >Level 0</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio1"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio1"
-                    >Level 1</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio2"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio2"
-                    >Level 2</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio3"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio3"
-                    >Level 3</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio4"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio4"
-                    >Level 4</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio5"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio5"
-                    >Level 5</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio6"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio6"
-                    >Level 6</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio7"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio7"
-                    >Level 7</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio8"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio8"
-                    >Level 8</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio9"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio9"
-                    >Level 9</label
-                >
-            </div>
-            <div class="custom-control custom-radio">
-                <input
-                    type="radio"
-                    id="customRadio10"
-                    name="customRadio"
-                    class="custom-control-input"
-                />
-                <label class="custom-control-label" for="customRadio10"
-                    >Level 10</label
-                >
-            </div>
+            <form>
+                <label for="framework">Select a Level</label>
+                <select id="framework">
+                    <option value="1">Level 0</option>
+                    <option value="2">Level 1</option>
+                    <option value="3">Level 2</option>
+                    <option value="4">Level 3</option>
+                    <option value="1">Level 4</option>
+                    <option value="2">Level 5</option>
+                    <option value="3">Level 6</option>
+                    <option value="4">Level 7</option>
+                    <option value="1">Level 8</option>
+                    <option value="2">Level 9</option>
+                    <option value="3">Level 10</option>
+                </select>
+                <button id="btn">Valider</button>
+            </form>
         </div>
 
         <button
@@ -280,4 +176,15 @@
             </button>
         </div>
     </body>
+    <script>
+        var level = 1;
+        const btn = document.querySelector('#btn');
+        const sb = document.querySelector('#framework')
+        btn.onclick = (event) => {
+            event.preventDefault();
+            // show the selected index
+            level = sb.selectedIndex;
+            console.log(level);
+        };
+    </script>
 </html>

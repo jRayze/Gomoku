@@ -9,7 +9,7 @@ var result = false;
 var nbPionW = 0;
 var nbPionB = 0;
 var matrix = [];
-var level = 1;
+
 
 for (var i = 0; i < 19; i++) {
     matrix[i] = new Array(19);
@@ -1307,26 +1307,9 @@ class IA {
         //                    Y   X                             Y   X
         // Est        : 0  |  0   1          Sud-Est    : 2  |  1   1
         // Sud        : 1  |  1   0          Sud-Ouest  : 3  |  1  -1
-        //let originalPlayer = joueur;
-        //let opposite = (joueur == 1) ? 2 : 1;
         let state = false;
         var cardinalPoint = [[0,1],[1,0],[1,-1],[1, 1]];
-        /*let tabP = {            //tabP
-            1 : [],      // premiere case = le nombre de pieces alingées
-            2 : [],      // deuxieme case = les types de menaces avec :
-            3 : [],      //      -> 0 = pieces sans trou
-            4 : [],      //      -> 1 = pieces mi ouvertes
-            5 : []       //      -> 2 = pieces ouvertes
-        }*/
         let tabP = [];
-
-        /*let tabT2 = {            //tabP
-            1 : [],      // premiere case = le nombre de pieces alingées
-            2 : [],      // deuxieme case = les types de menaces avec :
-            3 : [],      //      -> 0 = pieces sans trou
-            4 : [],      //      -> 1 = pieces mi ouvertes
-            5 : []       //      -> 2 = pieces ouvertes
-        }*/
         let tabT2 = [];
         for (let cpt = 0; cpt < nbmoves; cpt++) {
             if (board[moves[cpt][0]][moves[cpt][1]] != 0) {
@@ -1356,6 +1339,9 @@ class IA {
                                 if (board[moves[cpt][0] + (j * cardinalPoint[i][0])][moves[cpt][1] + (j * cardinalPoint[i][1])] == opposite) {
                                     break;
                                 } else { 
+                                    if (isSpace == true){
+                                        break;
+                                    }
                                     isSpace = true;
                                 }
                             }
@@ -1396,8 +1382,62 @@ class IA {
         }
         return liste;
     }
+
+    captured(board, x, y) {
+        let player = board[x][y]
+        let opposite = (player == 1) ? 2 : 1;
+        let listDeled = []
+        if (x <= 15 && board[x + 1][y] == opposite && board[x + 2][y] == opposite && board[x + 3][y] == player) {
+            listDeled.push([[x + 1][y]]);
+            listDeled.push([[x + 2][y]]);
+        }
+        if (y <= 15 && board[x][y + 1] == opposite && board[x][y + 2] == opposite && board[x][y + 3] == player) {
+            listDeled.push([[x][y + 1]]);
+            listDeled.push([[x][y + 2]]);
+        }
+        if (x >= 3 && board[x - 1][y] == opposite && board[x - 2][y] == opposite && board[x - 3][y] == player) {
+            listDeled.push([[x - 1][y]]);
+            listDeled.push([[x - 2][y]]);
+        }
+        if (y >= 3 && board[x][y - 1] == opposite && board[x][y - 2] == opposite && board[x][y - 3] == player) {
+            listDeled.push([[x][y - 1]]);
+            listDeled.push([[x][y - 2]]);
+        }
+        if (x <= 15 && y <= 15 && board[x + 1][y + 1] == opposite && board[x + 2][y + 2] == opposite && board[x + 3][y + 3] == player) {
+            listDeled.push([[x + 1][y + 1]]);
+            listDeled.push([[x + 2][y + 2]]);
+        }
+        if (x <= 15 && y >= 3 && board[x + 1][y - 1] == opposite && board[x + 2][y - 1] == opposite && board[x + 3][y - 3] == player) {
+            listDeled.push([[x + 1][y - 1]]);
+            listDeled.push([[x + 2][y - 2]]);
+        }
+        if (x >= 3 && y <= 15 && board[x - 1][y + 1] == opposite && board[x - 2][y + 2] == opposite && board[x - 3][y + 3] == player) {
+            listDeled.push([[x - 1][y + 1]]);
+            listDeled.push([[x - 2][y + 2]]);
+        }
+        if (x >= 3 && y >= 3 && board[x - 1][y - 1] == opposite && board[x - 2][y - 2] == opposite && board[x - 3][y - 3] == player) {
+            listDeled.push([[x - 1][y - 1]]);
+            listDeled.push([[x - 2][y - 2]]);
+        }
+        return listDeled;
+    }
+
+    makeNewList(list, listCaptures) {
+        let newList = [];
+        for (let x = 0; x < list.length; x++) {
+            for(let y = 0; y < listCaptures; y++) {
+                if (list[x][0] == listCaptures[y][0] && list[x][1] == listCaptures[y][1])
+                    continue;
+                else {
+                    newList.push(list[x]);
+                }
+            }
+        }
+        return newList
+    }
     // 0.7 : 4.20 : 28.86
     bestMove(board) {
+        console.log('level = '+ level);
         let tabCoups = coupsJouee;
         let start = Date.now();
         let bestScore = -Infinity;
@@ -1406,11 +1446,13 @@ class IA {
         let nbCoups = tabCoups.length;
 
         /* test priority queue */
-        let listeCoups = this.createPriorityList(board, tabCoups, nbCoups);
-        //console.log(tabCoups);
-        console.log(listeCoups);
-        tabCoups = listeCoups
-        nbCoups = tabCoups.length;
+        if (nbCoups > 3) {
+            let listeCoups = this.createPriorityList(board, tabCoups, nbCoups);
+            //console.log(tabCoups);
+            console.log(listeCoups);
+            tabCoups = listeCoups
+            nbCoups = tabCoups.length;
+        }
 
         for (let cpt = 0; cpt < nbCoups; cpt++) {
             
@@ -1421,18 +1463,24 @@ class IA {
                     if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                         if (board[i][j] == 0) {
                             board[i][j] = 1;
+                            let listMoveCaptured = this.captured(board, i, j);
+                            let realTab = [];
+                            if (listMoveCaptured.length != 0) {
+                                realTab = tabCoups;
+                                tabCoups = this.makeNewList(tabCoups, listMoveCaptured);
+                            }
                             if (checkDoubleFree(i, j, 1)) {
                                 board[i][j] = 0
                                 continue;
                             }
                             tabCoups.unshift([i, j]);
-                            //score = this.alphaBeta(board, 1, -Infinity, Infinity, tabCoups)
-                            score = this.minMaxAlphaBeta(board, 4, -900000, 900000, false, tabCoups);
+                            score = this.minMaxAlphaBeta(board, level, -Infinity, Infinity, false, tabCoups);
                             $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
-                          //  console.log("pos i= "+i+"pos j = "+j);
-                           // console.log("score = "+score);
                             board[i][j] = 0;
-                            tabCoups.shift();
+                            if (realTab.length > 0)
+                                tabCoups = realTab;
+                            else 
+                                tabCoups.shift();
                             if (score > bestScore) {
                                 bestScore = score;
                                 move = { i, j };
@@ -1620,10 +1668,11 @@ class IA {
             }*/
             return this.heuristicValue(node, coups, nbCoups) * (1 + depth);
         }
-
-        let listeCoups = this.createPriorityList(node, coups, nbCoups);
-        coups = listeCoups
-        nbCoups = coups.length;
+        /*if (nbCoups > 3) {
+            let listeCoups = this.createPriorityList(node, coups, nbCoups);
+            coups = listeCoups
+            nbCoups = coups.length;
+        }*/
 
         if (maximizingPlayer) {
          //   console.log("maximise");
@@ -1637,6 +1686,12 @@ class IA {
                         if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                             if (node[i][j] == 0) {
                                 node[i][j] = 1
+                                let listMoveCaptured = this.captured(node, i, j);
+                                let realTab = [];
+                                if (listMoveCaptured.length != 0) {
+                                    realTab = coups;
+                                    coups = this.makeNewList(coups, listMoveCaptured);
+                                }
                                 if (checkDoubleFree(i, j, 1)) {
                                     node[i][j] = 0
                                     continue;    
@@ -1644,7 +1699,10 @@ class IA {
                                 coups.unshift([i, j]) // [ [i, j],  ...coups],
                                 let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, false, coups);
                                 node[i][j] = 0
-                                coups.shift();
+                                if (realTab.length > 0)
+                                coups = realTab;
+                                else 
+                                    coups.shift();
                                 maxEval = Math.max(maxEval, score);
                                 if (maxEval >= beta) {
                                     return maxEval;
@@ -1666,6 +1724,16 @@ class IA {
             //console.log(node);
             let minEval = Infinity
             for (let cpt = 0; cpt < nbCoups; cpt++) {
+                try {
+                    console.log('nbCoups = ' + nbCoups);
+                    console.log(coups);
+                    console.log(coups[cpt]);
+                    console.log(coups[cpt][0]);
+                  } catch (error) {
+                    console.error(error);
+                    // expected output: ReferenceError: nonExistentFunction is not defined
+                    // Note - error messages will vary depending on browser
+                  }
                 let c1 = coups[cpt][0];
                 let c2 = coups[cpt][1];
                 for (let i = c1 - 1; i <= c1 + 1 ;i++) {
@@ -1673,6 +1741,12 @@ class IA {
                         if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                             if (node[i][j] == 0) {
                                 node[i][j] = 2
+                                let listMoveCaptured = this.captured(node, i, j);
+                                let realTab = [];
+                                if (listMoveCaptured.length != 0) {
+                                    realTab = coups;
+                                    coups = this.makeNewList(coups, listMoveCaptured);
+                                }
                                 if (checkDoubleFree(i, j, 2)) {
                                     node[i][j] = 0
                                     continue;
@@ -1680,7 +1754,13 @@ class IA {
                                 coups.unshift([i, j])
                                 let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, true, coups);
                                 node[i][j] = 0
-                                coups.shift();
+                                if (realTab.length > 0) {
+                                    coups = realTab;
+                                    console.log("realTab : ");
+                                    console.log(coups);
+                                }
+                                else 
+                                    coups.shift();
                                 minEval = Math.min(minEval, score);
                                 if (alpha >= minEval) {
                                     return minEval
