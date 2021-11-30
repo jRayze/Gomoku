@@ -1383,43 +1383,51 @@ class IA {
         return liste;
     }
 
-    captured(board, x, y) {
-        let player = board[x][y]
+    captured(plateau, x, y) {
+        let player = plateau[x][y]
         let opposite = (player == 1) ? 2 : 1;
-        let listDeled = []
-        if (x <= 15 && board[x + 1][y] == opposite && board[x + 2][y] == opposite && board[x + 3][y] == player) {
-            listDeled.push([[x + 1][y]]);
-            listDeled.push([[x + 2][y]]);
+        let newList = false;
+        if (x <= 15 && plateau[x + 1][y] == opposite && plateau[x + 2][y] == opposite && plateau[x + 3][y] == player) {
+            newList = true;
+            plateau[x + 1][y] = 0;
+            plateau[x + 2][y] = 0;
         }
-        if (y <= 15 && board[x][y + 1] == opposite && board[x][y + 2] == opposite && board[x][y + 3] == player) {
-            listDeled.push([[x][y + 1]]);
-            listDeled.push([[x][y + 2]]);
+        if (y <= 15 && plateau[x][y + 1] == opposite && plateau[x][y + 2] == opposite && plateau[x][y + 3] == player) {
+            newList = true;
+            plateau[x][y + 1] = 0;
+            plateau[x][y + 2] = 0;
         }
-        if (x >= 3 && board[x - 1][y] == opposite && board[x - 2][y] == opposite && board[x - 3][y] == player) {
-            listDeled.push([[x - 1][y]]);
-            listDeled.push([[x - 2][y]]);
+        if (x >= 3 && plateau[x - 1][y] == opposite && plateau[x - 2][y] == opposite && plateau[x - 3][y] == player) {
+            newList = true;
+            plateau[x - 1][y] = 0;
+            plateau[x - 2][y] = 0;
         }
-        if (y >= 3 && board[x][y - 1] == opposite && board[x][y - 2] == opposite && board[x][y - 3] == player) {
-            listDeled.push([[x][y - 1]]);
-            listDeled.push([[x][y - 2]]);
+        if (y >= 3 && plateau[x][y - 1] == opposite && plateau[x][y - 2] == opposite && plateau[x][y - 3] == player) {
+            newList = true;
+            plateau[x][y - 1] = 0;
+            plateau[x][y - 2] = 0;
         }
-        if (x <= 15 && y <= 15 && board[x + 1][y + 1] == opposite && board[x + 2][y + 2] == opposite && board[x + 3][y + 3] == player) {
-            listDeled.push([[x + 1][y + 1]]);
-            listDeled.push([[x + 2][y + 2]]);
+        if (x <= 15 && y <= 15 && plateau[x + 1][y + 1] == opposite && plateau[x + 2][y + 2] == opposite && plateau[x + 3][y + 3] == player) {
+            newList = true;
+            plateau[x + 1][y + 1] = 0;
+            plateau[x + 2][y + 2] = 0;
         }
-        if (x <= 15 && y >= 3 && board[x + 1][y - 1] == opposite && board[x + 2][y - 1] == opposite && board[x + 3][y - 3] == player) {
-            listDeled.push([[x + 1][y - 1]]);
-            listDeled.push([[x + 2][y - 2]]);
+        if (x <= 15 && y >= 3 && plateau[x + 1][y - 1] == opposite && plateau[x + 2][y - 1] == opposite && plateau[x + 3][y - 3] == player) {
+            newList = true;
+            plateau[x + 1][y - 1] = 0;
+            plateau[x + 2][y - 2] = 0;
         }
-        if (x >= 3 && y <= 15 && board[x - 1][y + 1] == opposite && board[x - 2][y + 2] == opposite && board[x - 3][y + 3] == player) {
-            listDeled.push([[x - 1][y + 1]]);
-            listDeled.push([[x - 2][y + 2]]);
+        if (x >= 3 && y <= 15 && plateau[x - 1][y + 1] == opposite && plateau[x - 2][y + 2] == opposite && plateau[x - 3][y + 3] == player) {
+            newList = true;
+            plateau[x - 1][y + 1] = 0;
+            plateau[x - 2][y + 2] = 0;
         }
-        if (x >= 3 && y >= 3 && board[x - 1][y - 1] == opposite && board[x - 2][y - 2] == opposite && board[x - 3][y - 3] == player) {
-            listDeled.push([[x - 1][y - 1]]);
-            listDeled.push([[x - 2][y - 2]]);
+        if (x >= 3 && y >= 3 && plateau[x - 1][y - 1] == opposite && plateau[x - 2][y - 2] == opposite && plateau[x - 3][y - 3] == player) {
+            newList = true;
+            plateau[x - 1][y - 1] = 0;
+            plateau[x - 2][y - 2] = 0;
         }
-        return listDeled;
+        return newList;
     }
 
     makeNewList(list, listCaptures) {
@@ -1436,6 +1444,7 @@ class IA {
         return newList
     }
     // 0.7 : 4.20 : 28.86
+
     bestMove(board) {
         console.log('level = '+ level);
         let tabCoups = coupsJouee;
@@ -1446,14 +1455,15 @@ class IA {
         let nbCoups = tabCoups.length;
 
         /* test priority queue */
-        if (nbCoups > 3) {
+        console.log('-------------------------------------------------------------------');
+       /* if (nbCoups > 3) {
             let listeCoups = this.createPriorityList(board, tabCoups, nbCoups);
             //console.log(tabCoups);
             console.log(listeCoups);
             tabCoups = listeCoups
             nbCoups = tabCoups.length;
-        }
-
+        }*/
+        console.log(board);
         for (let cpt = 0; cpt < nbCoups; cpt++) {
             
             let c1 = tabCoups[cpt][0];
@@ -1462,25 +1472,31 @@ class IA {
                 for (let j = c2 - 1; j <= c2 + 1; j++) {
                     if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                         if (board[i][j] == 0) {
-                            board[i][j] = 1;
-                            let listMoveCaptured = this.captured(board, i, j);
-                            let realTab = [];
-                            if (listMoveCaptured.length != 0) {
-                                realTab = tabCoups;
-                                tabCoups = this.makeNewList(tabCoups, listMoveCaptured);
+                            let copyB = [];
+                            for (let a = 0; a < board.length; a++) {
+                                copyB[a] = []
+                                for(let b = 0; b < board[a].length; b++) {
+                                    copyB[a][b] = board[a][b];
+                                }
                             }
+                            copyB[i][j] = 1;
                             if (checkDoubleFree(i, j, 1)) {
-                                board[i][j] = 0
+                                copyB[i][j] = 0
                                 continue;
                             }
-                            tabCoups.unshift([i, j]);
-                            score = this.minMaxAlphaBeta(board, level, -Infinity, Infinity, false, tabCoups);
+                            let fakeList = []
+                            let listMoveCaptured = this.captured(copyB, i, j);
+                            if (listMoveCaptured) {
+                                for(let x; x < tabCoups.length; x++) {
+                                    if (copyB[tabCoups[x][0]][tabCoups[x][1]] != 0)
+                                        fakeList.push(tabCoups[x]);
+                                }
+                            }else
+                                fakeList = [...tabCoups]
+                            fakeList.unshift([i, j]);
+                            score = this.minMaxAlphaBeta(copyB, level, -Infinity, Infinity, false, fakeList);
                             $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
-                            board[i][j] = 0;
-                            if (realTab.length > 0)
-                                tabCoups = realTab;
-                            else 
-                                tabCoups.shift();
+                            //copyB[i][j] = 0;
                             if (score > bestScore) {
                                 bestScore = score;
                                 move = { i, j };
@@ -1488,6 +1504,7 @@ class IA {
                             if (coupsJouee == 1)
                                 break;
                         }
+                        console.log(board);
                     }
                 }
                 if (coupsJouee == 1)
@@ -1659,7 +1676,6 @@ class IA {
     }
 
     minMaxAlphaBeta(node, depth, alpha, beta, maximizingPlayer, coups) {
-
         let gameOver = this.checkWinner(node)
         let nbCoups = coups.length;
         if (depth == 0 || gameOver != 0) {
@@ -1671,38 +1687,47 @@ class IA {
         /*if (nbCoups > 3) {
             let listeCoups = this.createPriorityList(node, coups, nbCoups);
             coups = listeCoups
-            nbCoups = coups.length;
+            nbCoups = coups.length; 
         }*/
-
+        /*console.log('les coups');
+        console.log(coups);*/
         if (maximizingPlayer) {
-         //   console.log("maximise");
             let maxEval = -Infinity
             for (let cpt = 0; cpt < nbCoups; cpt++) {
                 let c1 = coups[cpt][0];
                 let c2 = coups[cpt][1];
-               // console.log("test2");
                 for (let i = c1 - 1; i <= c1 + 1 ;i++) {
                     for (let j = c2 - 1 ; j <= c2 + 1;j++) {
                         if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                             if (node[i][j] == 0) {
-                                node[i][j] = 1
-                                let listMoveCaptured = this.captured(node, i, j);
-                                let realTab = [];
-                                if (listMoveCaptured.length != 0) {
-                                    realTab = coups;
-                                    coups = this.makeNewList(coups, listMoveCaptured);
+                                let copy = [];
+                                for (let a = 0; a < node.length; a++) {
+                                    copy[a] = []
+                                    for(let b = 0; b < node[a].length; b++) {
+                                        copy[a][b] = node[a][b];
+                                    }
                                 }
+                                copy[i][j] = 1
                                 if (checkDoubleFree(i, j, 1)) {
-                                    node[i][j] = 0
+                                    copy[i][j] = 0
                                     continue;    
                                 }
-                                coups.unshift([i, j]) // [ [i, j],  ...coups],
-                                let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, false, coups);
-                                node[i][j] = 0
-                                if (realTab.length > 0)
-                                coups = realTab;
-                                else 
-                                    coups.shift();
+                                let fakeList = []
+                                let listMoveCaptured = this.captured(copy, i, j);
+                                if (listMoveCaptured) {
+                                    for(let x; x < coups.length; x++) {
+                                        if (copy[coups[x][0]][coups[x][1]] != 0)
+                                            fakeList.push(coups[x]);
+                                    }
+                                }
+                                else {
+                                    fakeList = [...coups]
+                                }
+                                fakeList.unshift([i, j]);
+                                let score = this.minMaxAlphaBeta(copy, depth -1, alpha, beta, false, fakeList);
+                                //coups.shift();
+                               /* console.log('-----------coups-----------');                    
+                                console.log(coups);**/
                                 maxEval = Math.max(maxEval, score);
                                 if (maxEval >= beta) {
                                     return maxEval;
@@ -1720,47 +1745,43 @@ class IA {
             return maxEval
         }
         else {
-          //  console.log("minimise");
-            //console.log(node);
             let minEval = Infinity
             for (let cpt = 0; cpt < nbCoups; cpt++) {
-                try {
-                    console.log('nbCoups = ' + nbCoups);
-                    console.log(coups);
-                    console.log(coups[cpt]);
-                    console.log(coups[cpt][0]);
-                  } catch (error) {
-                    console.error(error);
-                    // expected output: ReferenceError: nonExistentFunction is not defined
-                    // Note - error messages will vary depending on browser
-                  }
+                /*console.log('nbCoups = ' + nbCoups);
+                console.log(coups);
+                console.log(coups[cpt]);*/
                 let c1 = coups[cpt][0];
                 let c2 = coups[cpt][1];
                 for (let i = c1 - 1; i <= c1 + 1 ;i++) {
                     for (let j = c2 - 1 ; j <= c2 + 1;j++) {
                         if (i >=0 && i <= 18 && j >=0 && j <=18 && (i != c1 | j != c2)){
                             if (node[i][j] == 0) {
-                                node[i][j] = 2
-                                let listMoveCaptured = this.captured(node, i, j);
-                                let realTab = [];
-                                if (listMoveCaptured.length != 0) {
-                                    realTab = coups;
-                                    coups = this.makeNewList(coups, listMoveCaptured);
+                                let copy = [];
+                                for (let a = 0; a < node.length; a++) {
+                                    copy[a] = []
+                                    for(let b = 0; b < node[a].length; b++) {
+                                        copy[a][b] = node[a][b];
+                                    }
                                 }
+                                copy[i][j] = 2
                                 if (checkDoubleFree(i, j, 2)) {
-                                    node[i][j] = 0
+                                    copy[i][j] = 0
                                     continue;
                                 }
-                                coups.unshift([i, j])
-                                let score = this.minMaxAlphaBeta(node, depth -1, alpha, beta, true, coups);
-                                node[i][j] = 0
-                                if (realTab.length > 0) {
-                                    coups = realTab;
-                                    console.log("realTab : ");
-                                    console.log(coups);
+                                let fakeList = []
+                                let listMoveCaptured = this.captured(copy, i, j);
+                                if (listMoveCaptured) {
+                                    for(let x; x < coups.length; x++) {
+                                        if (copy[coups[x][0]][coups[x][1]] != 0)
+                                            fakeList.push(coups[x]);
+                                    }
+                                }  else {
+                                    fakeList = [...coups]
                                 }
-                                else 
-                                    coups.shift();
+                                fakeList.unshift([i, j]);
+                                let score = this.minMaxAlphaBeta(copy, depth -1, alpha, beta, true, fakeList);
+                               /* console.log('-----------coups-----------');                    
+                                console.log(coups);*/
                                 minEval = Math.min(minEval, score);
                                 if (alpha >= minEval) {
                                     return minEval
