@@ -1412,7 +1412,7 @@ class IA {
             plateau[x + 1][y + 1] = 0;
             plateau[x + 2][y + 2] = 0;
         }
-        if (x <= 15 && y >= 3 && plateau[x + 1][y - 1] == opposite && plateau[x + 2][y - 1] == opposite && plateau[x + 3][y - 3] == player) {
+        if (x <= 15 && y >= 3 && plateau[x + 1][y - 1] == opposite && plateau[x + 2][y - 2] == opposite && plateau[x + 3][y - 3] == player) {
             newList = true;
             plateau[x + 1][y - 1] = 0;
             plateau[x + 2][y - 2] = 0;
@@ -1456,7 +1456,7 @@ class IA {
 
         /* test priority queue */
         console.log('-------------------------------------------------------------------');
-       /* if (nbCoups > 3) {
+        /*if (nbCoups > 3) {
             let listeCoups = this.createPriorityList(board, tabCoups, nbCoups);
             //console.log(tabCoups);
             console.log(listeCoups);
@@ -1491,20 +1491,28 @@ class IA {
                                     if (copyB[tabCoups[x][0]][tabCoups[x][1]] != 0)
                                         fakeList.push(tabCoups[x]);
                                 }
-                            }else
-                                fakeList = [...tabCoups]
+                            }else {
+                                for (let a = 0; a < tabCoups.length; a++) {
+                                    fakeList[a] = []
+                                    for(let b = 0; b < tabCoups[a].length; b++) {
+                                        fakeList[a][b] = tabCoups[a][b];
+                                    }
+                                }
+                            }
                             fakeList.unshift([i, j]);
                             score = this.minMaxAlphaBeta(copyB, level, -Infinity, Infinity, false, fakeList);
                             $('#col'+i+'-'+j+' .cercle').attr('data-content', "y{"+i+"},x{"+j+"}= "+score);
                             //copyB[i][j] = 0;
+                            //console.log('coups : '+ c1 +', ' + c2);
+                            //console.log('score = '+score);
                             if (score > bestScore) {
                                 bestScore = score;
                                 move = { i, j };
                             }
                             if (coupsJouee == 1)
                                 break;
+                            //console.log(copyB);
                         }
-                        console.log(board);
                     }
                 }
                 if (coupsJouee == 1)
@@ -1721,7 +1729,12 @@ class IA {
                                     }
                                 }
                                 else {
-                                    fakeList = [...coups]
+                                    for (let a = 0; a < coups.length; a++) {
+                                        fakeList[a] = []
+                                        for(let b = 0; b < coups[a].length; b++) {
+                                            fakeList[a][b] = coups[a][b];
+                                        }
+                                    }
                                 }
                                 fakeList.unshift([i, j]);
                                 let score = this.minMaxAlphaBeta(copy, depth -1, alpha, beta, false, fakeList);
@@ -1776,7 +1789,12 @@ class IA {
                                             fakeList.push(coups[x]);
                                     }
                                 }  else {
-                                    fakeList = [...coups]
+                                    for (let a = 0; a < coups.length; a++) {
+                                        fakeList[a] = []
+                                        for(let b = 0; b < coups[a].length; b++) {
+                                            fakeList[a][b] = coups[a][b];
+                                        }
+                                    }
                                 }
                                 fakeList.unshift([i, j]);
                                 let score = this.minMaxAlphaBeta(copy, depth -1, alpha, beta, true, fakeList);
@@ -1809,13 +1827,13 @@ class IA {
         let opposite = (joueur == 1) ? 2 : 1;
         var cardinalPoint = [[0,1],[1,0],[1,-1],[1, 1]];
         let tabP = {            //tabP
-            1 : [0, 0, 0],      // premiere case = le nombre de pieces alingées
-            2 : [0, 0, 0],      // deuxieme case = les types de menaces avec :
-            3 : [0, 0, 0],      //      -> 0 = pieces sans trou
-            4 : [0, 0, 0],      //      -> 1 = pieces mi ouvertes
-            5 : [0, 0, 0]       //      -> 2 = pieces ouvertes
+            1 : [0, 0, 0, 0],      // premiere case = le nombre de pieces alingées
+            2 : [0, 0, 0, 0],      // deuxieme case = les types de menaces avec :
+            3 : [0, 0, 0, 0],      //      -> 0 = pieces sans trou
+            4 : [0, 0, 0, 0],      //      -> 1 = pieces mi ouvertes
+            5 : [0, 0, 0, 0]       //      -> 2 = pieces ouvertes
         }
-        let tabQ = { 1 : [0, 0, 0], 2 : [0, 0, 0], 3 : [0, 0, 0], 4 : [0, 0, 0], 5 : [0, 0, 0] }
+        let tabQ = { 1 : [0, 0, 0, 0], 2 : [0, 0, 0, 0], 3 : [0, 0, 0, 0], 4 : [0, 0, 0, 0], 5 : [0, 0, 0, 0] }
         
         for (let cpt = 0; cpt < nbmoves; cpt++) {
             if (board[moves[cpt][0]][moves[cpt][1]] != 0) {
@@ -1826,6 +1844,7 @@ class IA {
                     let nb = 1;
                     let isSpace= false;
                     let miOuvert = false;
+                    let nbPieceCapturable = 0;
                     if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0 && board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == joueur)
                         continue;
                     for (let j = 1; j < 5; j++) {
@@ -1845,8 +1864,64 @@ class IA {
                                         isSpace = true;
                                     }
                                 }
+                                switch(i) {
+                                    case 0 : 
+                                        if ((cpt[0] <= 16 && cpt[0] >= 1 && board[cpt[0] + 1][cpt[1]] == joueur && board[cpt[0] + 2][cpt[1]] == opposite && board[cpt[0] - 1][cpt[1]] == 0 ) 
+                                            || (cpt[0] >= 2 && cpt[0] <= 17 && board[cpt[0] - 1][cpt[1]] == joueur && board[cpt[0] - 2][cpt[1]] == opposite && board[cpt[0] + 1][cpt[1]] == 0))
+                                            nbPieceCapturable++;
+                                        break;
+                                    case 1 :
+                                        if ((cpt[1] <= 16 && cpt[1] >= 1 && board[cpt[0]][cpt[1] + 1] == joueur && board[cpt[0]][cpt[1] + 2] == opposite && board[cpt[0]][cpt[1] - 1] == 0 ) 
+                                            || (cpt[1] >= 2 && cpt[1] <= 17 && board[cpt[0]][cpt[1] - 1] == joueur && board[cpt[0]][cpt[1] - 2] == opposite && board[cpt[0]][cpt[1] + 1] == 0))
+                                            nbPieceCapturable++;
+                                        break;
+                                    case 2 :
+                                        if ((cpt[0] >=2 && cpt[0] <= 17 && cpt[1] <= 16 && cpt[1] >= 1 && cpt[1] >= 1 && board[cpt[0] - 1][cpt[1] + 1] == joueur && board[cpt[0] - 2][cpt[1] + 2] == opposite && board[cpt[0] + 1][cpt[1] - 1] == 0 ) 
+                                            || (cpt[0] >=1 && cpt[0] <= 16 && cpt[1] >= 2 && cpt[1] <= 17 && cpt[1] >= 1 && board[cpt[0] + 1][cpt[1] - 1] == joueur && board[cpt[0] + 2][cpt[1] - 2] == opposite && board[cpt[0] - 1][cpt[1] + 1] == 0))
+                                            nbPieceCapturable++;
+                                        break;
+                                    case 3 :
+                                        if ((cpt[0] >=1 && cpt[0] <= 16 && cpt[1] >= 1 && cpt[1] <= 16 && board[cpt[0] + 1][cpt[1] + 1] == joueur && board[cpt[0] + 2][cpt[1] + 2] == opposite && board[cpt[0] - 1][cpt[1] - 1] == 0 ) 
+                                            || (cpt[0] >=2 && cpt[0] <= 17 && cpt[1] >= 2 && cpt[1] <= 17 && board[cpt[0] - 1][cpt[1] - 1] == joueur && board[cpt[0] - 2][cpt[1] - 2] == opposite && board[cpt[0] + 1][cpt[1] + 1] == 0))
+                                            nbPieceCapturable++;
+                                        break;                            
+                                    default :
+                                        console.log("On passe pas ici");
+                                }
                             }
                         }
+                    }
+                    if (nbPieceCapturable > 0) {
+                        if (nbPieceCapturable == 1)
+                            if (joueur == originalPlayer)
+                                tabP[nb][3] = 0.99;
+                            else
+                                tabQ[nb][3] = 0.99;
+                        if (nbPieceCapturable == 2)
+                            if (joueur == originalPlayer)
+                                tabP[nb][3] = 0.98;
+                            else
+                                tabQ[nb][3] = 0.98;
+                        if (nbPieceCapturable == 3)
+                            if (joueur == originalPlayer)
+                                tabP[nb][3] = 0.96;
+                            else
+                                tabQ[nb][3] = 0.96;
+                        if (nbPieceCapturable == 4)
+                            if (joueur == originalPlayer)
+                                tabP[nb][3] = 0.93;
+                            else
+                                tabQ[nb][3] = 0.93;
+                        if (nbPieceCapturable == 5)
+                            if (joueur == originalPlayer)
+                                tabP[nb][3] = 0.90;
+                            else
+                                tabQ[nb][3] = 0.90;
+                    } else {
+                        if (joueur == originalPlayer)
+                            tabP[nb][3] = 1;
+                        else
+                            tabQ[nb][3] = 1;
                     }
                     if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0  
                         && moves[cpt][0] + (-1 * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) <= 18) {
@@ -1921,21 +1996,21 @@ class IA {
         let q = res.q;
         let p = res.p;
         for (i = 1; i <= n-3; i++) {
-            valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]);    
-            valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]);
+            valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]) * p[i][3];    
+            valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]) * q[i][3];
         }
       //  console.log(n);
-        valueP += a[((2 * (n - 2)) - 1)] * p[n - 2][1] ; //
-        valueP += 100 * p[n - 2][2]; 
-        valueP += 80 * p[n - 1][1];
-        valueP += 250 * p[n - 1][2];
-        valueP += 1000000 * (p[n][0] + p[n][1] + p[n][2]);
+        valueP += a[((2 * (n - 2)) - 1)] * p[n - 2][1] * p[n - 2][3]; //
+        valueP += 100 * p[n - 2][2] * p[n - 2][2]; 
+        valueP += 80 * p[n - 1][1] * p[n - 1][1];
+        valueP += 250 * p[n - 1][2] * p[n - 1][2];
+        valueP += 1000000 * (p[n][0] + p[n][1] + p[n][2]) * p[n][3];
         
-        valueQ += a[((2 * (n - 2)) - 1)] * q[n - 2][1] ;
-        valueQ += 1300 * q[n - 2][2]; 
-        valueQ += 2000 * q[n - 1][1];
-        valueQ += 5020 * q[n - 1][2];
-        valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]);
+        valueQ += a[((2 * (n - 2)) - 1)] * q[n - 2][1] * q[n - 2][3];
+        valueQ += 1300 * q[n - 2][2] * q[n - 2][2]; 
+        valueQ += 2000 * q[n - 1][1] * q[n - 1][1];
+        valueQ += 5020 * q[n - 1][2] * q[n - 1][2];
+        valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]) * q[n][3];
         return valueP - valueQ;
     }
     
