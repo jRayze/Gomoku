@@ -919,7 +919,7 @@ function drawCoordinates(y, x) {
         capture(y, x, piece);
         drawMatrice(y, x, piece);
         console.log($('#col'+y+'-'+x+' .cercle').css('opacity'));
-        result = ia.checkWinner(matrix)
+        result = ia.checkWinner(matrix, coupsJouee)
         //result = checkWin(y, x, piece); //test();
         player = !player;
 
@@ -1022,230 +1022,6 @@ class IA {
         this.currentScore = 0;
     }
 
-    captureIA(y, x, piece, iaTab) {
-        let isOk = false;
-        let counter = (piece == 2) ? 1 : 2;
-        let nbCxp = 0;
-        let nbCxm = 0;
-        let nbCyp = 0;
-        let nbCym = 0;
-        let nbCD1p = 0;
-        let nbCD1m = 0;
-        let nbCD2p = 0;
-        let nbCD2m = 0;
-        //x+
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((x + mv) <= 18 && iaTab[y][x + mv]) {
-                if (mv < 3) {
-                    if (iaTab[y][x + mv] == counter) {
-                        nbCxp++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y][x + mv] == piece) {
-                    isOk = true;
-                }
-            }
-        }
-        if (isOk == true) {
-            if (nbCxp == 2) {
-                iaTab[y][x + 1] = 0;
-                iaTab[y][x + 2] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCxp = 0;
-        }
-        //x-
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((x - mv) >= 0 && iaTab[y][x - mv]) {
-                if (mv < 3) {
-                    if (iaTab[y][x - mv] == counter) {
-                        nbCxm++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y][x - mv] == piece) {
-                    isOk = true;
-                }
-            }
-    
-        }
-    
-        if (isOk == true) {
-            if (nbCxm == 2) {
-                iaTab[y][x - 1] = 0;
-                iaTab[y][x - 2] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCxm = 0;
-        }
-    
-        //y+
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((y + mv) <= 18 && iaTab[y + mv][x]) {
-                if (mv < 3) {
-                    if (iaTab[y + mv][x] == counter) {
-                        nbCyp++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y + mv][x] == piece) {
-                    isOk = true;
-                }
-            }
-    
-        }
-    
-        if (isOk == true) {
-            if (nbCyp == 2) {
-                iaTab[y + 1][x] = 0;
-                iaTab[y + 2][x] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCyp = 0;
-        }
-    
-    
-        //y-
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((y - mv) >= 0 && iaTab[y - mv][x]) {
-                if (mv < 3) {
-                    if (iaTab[y - mv][x] == counter) {
-                        nbCym++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y - mv][x] == piece) {
-                    isOk = true;
-                }
-            }
-    
-        }
-    
-        if (isOk == true) {
-            if (nbCym == 2) {
-                iaTab[y - 1][x] = 0;
-                iaTab[y - 2][x] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCym = 0;
-        }
-    
-        // -+
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((y - mv) >= 0 && (x + mv) <= 18 && iaTab[y - mv][x + mv]) {
-                if (mv < 3) {
-                    if (iaTab[y - mv][x + mv] == counter) {
-                        nbCD1p++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y - mv][x + mv] == piece) {
-                    isOk = true;
-                }
-            }
-    
-        }
-    
-        if (isOk == true) {
-            if (nbCD1p == 2) {
-                iaTab[y - 1][x + 1] = 0;
-                iaTab[y - 2][x + 2] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCD1p = 0;
-        }
-    
-        //+-
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((y + mv) <= 18 && (x - mv) >= 0 && iaTab[y + mv][x - mv]) {
-                if (mv < 3) {
-                    if (iaTab[y + mv][x - mv] == counter) {
-                        nbCD1m++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y + mv][x - mv] == piece) {
-                    isOk = true;
-                }
-            }
-    
-        }
-    
-        if (isOk == true) {
-            if (nbCD1m == 2) {
-                iaTab[y + 1][x - 1] = 0;
-                iaTab[y + 2][x - 2] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCD1m = 0;
-        }
-        // --
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((y - mv) >= 0 && (x - mv) >= 0 && iaTab[y - mv][x - mv]) {
-                if (mv < 3) {
-                    if (iaTab[y - mv][x - mv] == counter) {
-                        nbCD2p++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y - mv][x - mv] == piece) {
-                    isOk = true;
-                }
-            }
-    
-        }
-    
-        if (isOk == true) {
-            if (nbCD2p == 2) {
-                iaTab[y - 1][x - 1] = 0;
-                iaTab[y - 2][x - 2] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCD2p = 0;
-        }
-    
-        //++
-        for (let mv = 1; mv <= 3; mv++) {
-            if ((y + mv) <= 18 && (x + mv) <= 18 && iaTab[y + mv][x + mv]) {
-                if (mv < 3) {
-                    if (iaTab[y + mv][x + mv] == counter) {
-                        nbCD2m++;
-                    }
-                }
-                else if (mv == 3 && iaTab[y + mv][x + mv] == piece) {
-                    isOk = true;
-                }
-            }
-    
-        }
-        if (isOk == true) {
-            if (nbCD2m == 2) {
-                iaTab[y + 1][x + 1] = 0;
-                iaTab[y + 2][x + 2] = 0;
-            }
-            isOk = false;
-        }
-        else {
-            nbCD2m = 0;
-        }
-        if (nbCxp == 2 || nbCxm == 2 || nbCyp == 2 || nbCym == 2 || nbCD1p == 2 || nbCD1m == 2 || nbCD2p == 2 || nbCD2m == 2) {
-            if (piece == 1) {
-                nbPionB += 2;
-            }
-            if (piece == 2) {
-                nbPionW += 2;
-            }
-            return true;
-        }
-    }
 
     isCapturable(board, y, x, piece) {
         let p1 = 1;
@@ -1598,7 +1374,7 @@ class IA {
     }
 
 
-    checkWinner(board) {
+   /* checkWinner(board) {
         for (var y = 0; y <= 18; y++) {
             for (var x = 0; x <= 18; x++) {
                 for (var dir = 1; dir <= 4; dir++) {
@@ -1681,16 +1457,65 @@ class IA {
             }
         }
         return 0;
+    }*/
+
+    checkWinner(node, lm) {
+        let nbMove =  lm.length;
+        var cardinalPoint = [[0,1],[1,0],[1,-1],[1, 1]];
+        for(let nbm = 0; nbm < nbMove; nbm++) {
+            if (node[lm[nbm][0]][lm[nbm][1]] != 0) {
+                let joueur = node[lm[nbm][0]][lm[nbm][1]]
+                let opposite = (joueur == 1) ? 2 : 1;
+                for (let i = 0; i < 4; i++) {
+                    let nb = 1;
+                    let nbPieceCapturable = 0;
+                    for (let j = 1; j < 5; j++) {
+                        if (node[lm[nbm][0]][lm[nbm][1]] == joueur) {
+                            if (lm[nbm][0] + (j * cardinalPoint[i][0]) >= 0 && lm[nbm][1] + (j * cardinalPoint[i][1]) >= 0  
+                                && lm[nbm][0] + (j * cardinalPoint[i][0]) <= 18 && lm[nbm][1] + (j * cardinalPoint[i][1]) <= 18) {
+                                if (node[lm[nbm][0] + (j * cardinalPoint[i][0])][lm[nbm][1] + (j * cardinalPoint[i][1])] == joueur) {
+                                    nb++;
+                                } else { 
+                                    break;
+                                }
+                                if (i != 1)
+                                    if ((nbm[0] <= 16 && nbm[0] >= 1 && node[nbm[0] + 1][nbm[1]] == joueur && node[nbm[0] + 2][nbm[1]] == opposite && node[nbm[0] - 1][nbm[1]] == 0 ) 
+                                        || (nbm[0] >= 2 && nbm[0] <= 17 && node[nbm[0] - 1][nbm[1]] == joueur && node[nbm[0] - 2][nbm[1]] == opposite && node[nbm[0] + 1][nbm[1]] == 0))
+                                        nbPieceCapturable++;
+                                if (i != 0)
+                                    if ((nbm[1] <= 16 && nbm[1] >= 1 && node[nbm[0]][nbm[1] + 1] == joueur && node[nbm[0]][nbm[1] + 2] == opposite && node[nbm[0]][nbm[1] - 1] == 0 ) 
+                                        || (nbm[1] >= 2 && nbm[1] <= 17 && node[nbm[0]][nbm[1] - 1] == joueur && node[nbm[0]][nbm[1] - 2] == opposite && node[nbm[0]][nbm[1] + 1] == 0))
+                                        nbPieceCapturable++;
+                                if (i != 3)
+                                    if ((nbm[0] >=2 && nbm[0] <= 17 && nbm[1] <= 16 && nbm[1] >= 1 && nbm[1] >= 1 && node[nbm[0] - 1][nbm[1] + 1] == joueur && node[nbm[0] - 2][nbm[1] + 2] == opposite && node[nbm[0] + 1][nbm[1] - 1] == 0 ) 
+                                        || (nbm[0] >=1 && nbm[0] <= 16 && nbm[1] >= 2 && nbm[1] <= 17 && nbm[1] >= 1 && node[nbm[0] + 1][nbm[1] - 1] == joueur && node[nbm[0] + 2][nbm[1] - 2] == opposite && node[nbm[0] - 1][nbm[1] + 1] == 0))
+                                        nbPieceCapturable++;
+                                if (i != 2)
+                                    if ((nbm[0] >=1 && nbm[0] <= 16 && nbm[1] >= 1 && nbm[1] <= 16 && node[nbm[0] + 1][nbm[1] + 1] == joueur && node[nbm[0] + 2][nbm[1] + 2] == opposite && node[nbm[0] - 1][nbm[1] - 1] == 0 ) 
+                                        || (nbm[0] >=2 && nbm[0] <= 17 && nbm[1] >= 2 && nbm[1] <= 17 && node[nbm[0] - 1][nbm[1] - 1] == joueur && node[nbm[0] - 2][nbm[1] - 2] == opposite && node[nbm[0] + 1][nbm[1] + 1] == 0))
+                                        nbPieceCapturable++;
+
+                            }
+                        }
+                    }
+                    if (nb == 5 && nbPieceCapturable == 0) {
+                        return 1;
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     minMaxAlphaBeta(node, depth, alpha, beta, maximizingPlayer, coups) {
-        let gameOver = this.checkWinner(node)
+        let gameOver = this.checkWinner(node, coups)
         let nbCoups = coups.length;
         if (depth == 0 || gameOver != 0) {
+            //console.log('winner');
            /* if (gameOver != 0) {
                 console.log("victoire "+ (gameOver == 1 ? "blanc": "noir"))
             }*/
-            return this.heuristicValue(node, coups, nbCoups) * (1 + depth);
+            return this.heuristicValue(node, coups, nbCoups) ;
         }
         /*if (nbCoups > 3) {
             let listeCoups = this.createPriorityList(node, coups, nbCoups);
@@ -1864,65 +1689,29 @@ class IA {
                                         isSpace = true;
                                     }
                                 }
-                                switch(i) {
-                                    case 0 : 
-                                        if ((cpt[0] <= 16 && cpt[0] >= 1 && board[cpt[0] + 1][cpt[1]] == joueur && board[cpt[0] + 2][cpt[1]] == opposite && board[cpt[0] - 1][cpt[1]] == 0 ) 
-                                            || (cpt[0] >= 2 && cpt[0] <= 17 && board[cpt[0] - 1][cpt[1]] == joueur && board[cpt[0] - 2][cpt[1]] == opposite && board[cpt[0] + 1][cpt[1]] == 0))
-                                            nbPieceCapturable++;
-                                        break;
-                                    case 1 :
-                                        if ((cpt[1] <= 16 && cpt[1] >= 1 && board[cpt[0]][cpt[1] + 1] == joueur && board[cpt[0]][cpt[1] + 2] == opposite && board[cpt[0]][cpt[1] - 1] == 0 ) 
-                                            || (cpt[1] >= 2 && cpt[1] <= 17 && board[cpt[0]][cpt[1] - 1] == joueur && board[cpt[0]][cpt[1] - 2] == opposite && board[cpt[0]][cpt[1] + 1] == 0))
-                                            nbPieceCapturable++;
-                                        break;
-                                    case 2 :
-                                        if ((cpt[0] >=2 && cpt[0] <= 17 && cpt[1] <= 16 && cpt[1] >= 1 && cpt[1] >= 1 && board[cpt[0] - 1][cpt[1] + 1] == joueur && board[cpt[0] - 2][cpt[1] + 2] == opposite && board[cpt[0] + 1][cpt[1] - 1] == 0 ) 
-                                            || (cpt[0] >=1 && cpt[0] <= 16 && cpt[1] >= 2 && cpt[1] <= 17 && cpt[1] >= 1 && board[cpt[0] + 1][cpt[1] - 1] == joueur && board[cpt[0] + 2][cpt[1] - 2] == opposite && board[cpt[0] - 1][cpt[1] + 1] == 0))
-                                            nbPieceCapturable++;
-                                        break;
-                                    case 3 :
-                                        if ((cpt[0] >=1 && cpt[0] <= 16 && cpt[1] >= 1 && cpt[1] <= 16 && board[cpt[0] + 1][cpt[1] + 1] == joueur && board[cpt[0] + 2][cpt[1] + 2] == opposite && board[cpt[0] - 1][cpt[1] - 1] == 0 ) 
-                                            || (cpt[0] >=2 && cpt[0] <= 17 && cpt[1] >= 2 && cpt[1] <= 17 && board[cpt[0] - 1][cpt[1] - 1] == joueur && board[cpt[0] - 2][cpt[1] - 2] == opposite && board[cpt[0] + 1][cpt[1] + 1] == 0))
-                                            nbPieceCapturable++;
-                                        break;                            
-                                    default :
-                                        console.log("On passe pas ici");
-                                }
+                                if (i != 1)
+                                    if ((cpt[0] <= 16 && cpt[0] >= 1 && board[cpt[0] + 1][cpt[1]] == joueur && board[cpt[0] + 2][cpt[1]] == opposite && board[cpt[0] - 1][cpt[1]] == 0 ) 
+                                        || (cpt[0] >= 2 && cpt[0] <= 17 && board[cpt[0] - 1][cpt[1]] == joueur && board[cpt[0] - 2][cpt[1]] == opposite && board[cpt[0] + 1][cpt[1]] == 0))
+                                        nbPieceCapturable++;
+                                if (i != 0)
+                                    if ((cpt[1] <= 16 && cpt[1] >= 1 && board[cpt[0]][cpt[1] + 1] == joueur && board[cpt[0]][cpt[1] + 2] == opposite && board[cpt[0]][cpt[1] - 1] == 0 ) 
+                                        || (cpt[1] >= 2 && cpt[1] <= 17 && board[cpt[0]][cpt[1] - 1] == joueur && board[cpt[0]][cpt[1] - 2] == opposite && board[cpt[0]][cpt[1] + 1] == 0))
+                                        nbPieceCapturable++;
+                                if (i != 3)
+                                    if ((cpt[0] >=2 && cpt[0] <= 17 && cpt[1] <= 16 && cpt[1] >= 1 && cpt[1] >= 1 && board[cpt[0] - 1][cpt[1] + 1] == joueur && board[cpt[0] - 2][cpt[1] + 2] == opposite && board[cpt[0] + 1][cpt[1] - 1] == 0 ) 
+                                        || (cpt[0] >=1 && cpt[0] <= 16 && cpt[1] >= 2 && cpt[1] <= 17 && cpt[1] >= 1 && board[cpt[0] + 1][cpt[1] - 1] == joueur && board[cpt[0] + 2][cpt[1] - 2] == opposite && board[cpt[0] - 1][cpt[1] + 1] == 0))
+                                        nbPieceCapturable++;
+                                if (i != 2)
+                                    if ((cpt[0] >=1 && cpt[0] <= 16 && cpt[1] >= 1 && cpt[1] <= 16 && board[cpt[0] + 1][cpt[1] + 1] == joueur && board[cpt[0] + 2][cpt[1] + 2] == opposite && board[cpt[0] - 1][cpt[1] - 1] == 0 ) 
+                                        || (cpt[0] >=2 && cpt[0] <= 17 && cpt[1] >= 2 && cpt[1] <= 17 && board[cpt[0] - 1][cpt[1] - 1] == joueur && board[cpt[0] - 2][cpt[1] - 2] == opposite && board[cpt[0] + 1][cpt[1] + 1] == 0))
+                                        nbPieceCapturable++;
                             }
                         }
                     }
-                    if (nbPieceCapturable > 0) {
-                        if (nbPieceCapturable == 1)
-                            if (joueur == originalPlayer)
-                                tabP[nb][3] = 0.99;
-                            else
-                                tabQ[nb][3] = 0.99;
-                        if (nbPieceCapturable == 2)
-                            if (joueur == originalPlayer)
-                                tabP[nb][3] = 0.98;
-                            else
-                                tabQ[nb][3] = 0.98;
-                        if (nbPieceCapturable == 3)
-                            if (joueur == originalPlayer)
-                                tabP[nb][3] = 0.96;
-                            else
-                                tabQ[nb][3] = 0.96;
-                        if (nbPieceCapturable == 4)
-                            if (joueur == originalPlayer)
-                                tabP[nb][3] = 0.93;
-                            else
-                                tabQ[nb][3] = 0.93;
-                        if (nbPieceCapturable == 5)
-                            if (joueur == originalPlayer)
-                                tabP[nb][3] = 0.90;
-                            else
-                                tabQ[nb][3] = 0.90;
-                    } else {
-                        if (joueur == originalPlayer)
-                            tabP[nb][3] = 1;
-                        else
-                            tabQ[nb][3] = 1;
-                    }
+                    if (joueur == originalPlayer)
+                        tabP[nb][3] = nbPieceCapturable;
+                    else
+                        tabQ[nb][3] = nbPieceCapturable;
                     if (moves[cpt][0] + (-1 * cardinalPoint[i][0]) >= 0 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) >= 0  
                         && moves[cpt][0] + (-1 * cardinalPoint[i][0]) <= 18 && moves[cpt][1] + (-1 * cardinalPoint[i][1]) <= 18) {
                             if (board[moves[cpt][0] + (-1 * cardinalPoint[i][0])][moves[cpt][1] + (-1 * cardinalPoint[i][1])] == 0) {
@@ -1995,26 +1784,30 @@ class IA {
         let res = this.createTabP(board, joueur, moves, nbmoves);
         let q = res.q;
         let p = res.p;
+        let qCapture = res.q[1][3] + res.q[2][3] + res.q[3][3] + res.q[4][3] + res.q[5][3];
+        let pCapture = res.p[1][3] + res.p[2][3] + res.p[3][3] + res.p[4][3] + res.p[5][3];
+
         for (i = 1; i <= n-3; i++) {
-            valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]) * p[i][3];    
-            valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]) * q[i][3];
+            valueP += (a[((2 * i) - 1)] * p[i][1]) + (a[(2 * i)] * p[i][2]);    
+            valueQ += (a[((2 * i) - 1)] * q[i][1]) + (a[(2 * i)] * q[i][2]);
         }
       //  console.log(n);
-        valueP += a[((2 * (n - 2)) - 1)] * p[n - 2][1] * p[n - 2][3]; //
-        valueP += 100 * p[n - 2][2] * p[n - 2][2]; 
-        valueP += 80 * p[n - 1][1] * p[n - 1][1];
-        valueP += 250 * p[n - 1][2] * p[n - 1][2];
-        valueP += 1000000 * (p[n][0] + p[n][1] + p[n][2]) * p[n][3];
+        valueP += a[((2 * (n - 2)) - 1)] * p[n - 2][1]; //
+        valueP += 100 * p[n - 2][2]; 
+        valueP += 80 * p[n - 1][1];
+        valueP += 250 * p[n - 1][2];
+        valueP += 1000000 * (p[n][0] + p[n][1] + p[n][2]);
         
-        valueQ += a[((2 * (n - 2)) - 1)] * q[n - 2][1] * q[n - 2][3];
-        valueQ += 1300 * q[n - 2][2] * q[n - 2][2]; 
-        valueQ += 2000 * q[n - 1][1] * q[n - 1][1];
-        valueQ += 5020 * q[n - 1][2] * q[n - 1][2];
-        valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]) * q[n][3];
+        valueQ += a[((2 * (n - 2)) - 1)] * q[n - 2][1];
+        valueQ += 1300 * q[n - 2][2]; 
+        valueQ += 2000 * q[n - 1][1];
+        valueQ += 5020 * q[n - 1][2];
+        valueQ += 1000000 * (q[n][0] + q[n][1] + q[n][2]);
+            
         return valueP - valueQ;
     }
     
-    heuristicValue(board, moves, nbmoves) {
-        return this.heuristic(board , 5, moves, nbmoves)
+    heuristicValue(node, moves, nbmoves) {
+        return this.heuristic(node , 5, moves, nbmoves)
     }
 }
